@@ -46,7 +46,7 @@ const Testimonials = () => {
         {/* header section */}
         <div className="text-left mb-10 max-w-[500px] space-y-2 mr-auto">
           <h1 className="text-4xl font-bold">
-            What Are The Costumer Saying About Us
+          Ce Que Nos Clients Disent De Nous
           </h1>
         </div>
 
@@ -67,7 +67,7 @@ const Testimonials = () => {
                       <p className="text-xl font-bold text-black/80">
                         {data.name}
                       </p>
-                      <p>{data.name}</p>
+                      <p>{data.b}</p>
                     </div>
                   </div>
                   {/* bottom section */}

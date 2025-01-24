@@ -13,16 +13,16 @@ import Footer from "./components/Footer/Footer";
 
 const BannerData = {
   image: Img1,
-  title: "The Importants To Take Care Of Yourself",
+  title: "Chez ARENALINK, Prendre Soin De Vous Est Une Priorité",
   subtitle:
-    "The Importants To Take Care Of Yourself Lorem ipsum dolor sit amet consectetur, adipisicing elit. Id nam obcaecati sequi odio dolore officia magni reiciendis, architecto, eos, aut asperiores reprehenderit quas rerum omnis facilis quam eius doloribus maxime! Lorem ipsum, dolor sit amet consectetur adipisicing elit. Beatae vero inventore assumenda ducimus alias doloribus.",
+    "Rejoignez une communauté passionnée, participez à des événements sportifs et dépassez vos limites avec ARENALINK.",
   link: "#",
 };
 const Banner2Data = {
   image: Img2,
-  title: "The Importants To Take Care Of Yourself",
+  title: "Votre Corps Est Votre Meilleur Atout",
   subtitle:
-    "The Importants To Take Care Of Yourself Lorem ipsum dolor sit amet consectetur, adipisicing elit. Id nam obcaecati sequi odio dolore officia magni reiciendis, architecto, eos, aut asperiores reprehenderit quas rerum omnis facilis quam eius doloribus maxime! Lorem ipsum, dolor sit amet consectetur adipisicing elit. Beatae vero inventore assumenda ducimus alias doloribus.",
+    " Que vous soyez débutant ou expert, ARENALINK vous aide à atteindre vos objectifs et à repousser vos limites.",
   link: "#",
 };
 

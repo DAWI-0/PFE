@@ -40,7 +40,7 @@ export const SlideRight = (delay) => {
       opacity: 1,
       x: 0,
       transition: {
-        duration: 1,
+        duration: 1.5,
         delay: delay,
       },
     },

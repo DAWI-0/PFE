@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 const TabComp = () => {
   const [activeTab, setActiveTab] = useState("All");
 
-  const tabs = ["All", "Yoga", "Fitness", "Muscles"];
+  const tabs = ["All", "football", "handball","bascketball","tennis"];
 
   const filteredCards =
     activeTab === "All"
