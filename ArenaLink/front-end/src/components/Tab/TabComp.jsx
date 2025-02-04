@@ -14,7 +14,7 @@ const TabComp = () => {
 
   return (
     <>
-      <div className="container my-12 md:my-16">
+      <div id="programme" className="container my-12 md:my-16">
         {/* Tabs button section */}
         <div className="flex space-x-4 mb-4 p-6">
           {tabs.map((tab) => (

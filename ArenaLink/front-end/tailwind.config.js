@@ -7,8 +7,8 @@ export default {
         playfair: ["Playfair Display", "serif"],
       },
       colors: {
-        primary: "green",
-        secondary: "#fb923c",
+        primary: "#6A1B9A",
+        secondary: "#FF8C42",
       },
       container: {
         center: true,

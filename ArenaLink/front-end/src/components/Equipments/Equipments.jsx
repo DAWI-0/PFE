@@ -43,7 +43,7 @@ const EquipmentData = [
 const Equipments = () => {
   return (
     <div>
-      <div className="container py-24">
+      <div id="services" className="container py-24">
         <div className="grid grid-cols-1 gap-6 font-playfair">
           {/* Titre et paragraphe */}
           <div className="space-y-4 p-6 text-center">
