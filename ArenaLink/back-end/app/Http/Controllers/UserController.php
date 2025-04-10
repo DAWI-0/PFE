@@ -31,17 +31,12 @@ class   UserController extends Controller
         $data = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users',
-            'address' => 'required|string',
-            'gender' => 'required|string',
-            
             'password' => 'required|string|min:8|confirmed',
         ]);
 
         $user = User::create([
             'name' => $data['name'],
             'email' => $data['email'],
-            'address' => 'required|string',
-            'gender' => 'required|string',
             'password' => bcrypt($data['password']),
 
         ]);

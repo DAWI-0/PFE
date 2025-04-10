@@ -12,6 +12,7 @@ const Login = () => {
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const navigate=useNavigate()
+  const URL="http://127.0.0.1:8000/api"
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -20,9 +21,10 @@ const Login = () => {
 
     try {
       // Step 1: Login and get the token
-      const loginResponse = await fetch('http://localhost:8000/api/login', {
+      const loginResponse = await fetch(`${URL}/login`, {
         method: 'POST',
         headers: {
+          "Accept": "application/json", 
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ email, password }),
@@ -41,7 +43,7 @@ const Login = () => {
       console.log('Login successful!', loginData);
 
       // Step 2: Fetch user data using the token (optional)
-      const userResponse = await fetch('http://localhost:8000/api/user', {
+      const userResponse = await fetch(`${URL}/user`, {
         method: 'GET',
         headers: {
           Authorization: `Bearer ${token}`,

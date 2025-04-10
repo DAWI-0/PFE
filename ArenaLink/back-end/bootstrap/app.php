@@ -12,15 +12,19 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
+        // Suppression de EnsureFrontendRequestsAreStateful du groupe 'api'
         $middleware->api(prepend: [
-            \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
+            // Rien ici, ou ajoute d'autres middlewares si besoin
         ]);
 
         $middleware->alias([
             'verified' => \App\Http\Middleware\EnsureEmailIsVerified::class,
         ]);
 
-        //
+        // Optionnel : Si tu veux désactiver CSRF explicitement pour les routes API
+        $middleware->validateCsrfTokens(except: [
+            'api/*', // Désactive la vérification CSRF pour toutes les routes API
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

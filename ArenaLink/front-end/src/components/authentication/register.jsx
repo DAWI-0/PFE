@@ -6,19 +6,19 @@ const Register = () => {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [passwordConfirmation, setPasswordConfirmation] = useState('');
+    const [password_confirmation, setpassword_confirmation] = useState('');
     const [address, setAddress] = useState('');
     const [gender, setGender] = useState('');
     const [errors, setErrors] = useState({});
     const [isLoading, setIsLoading] = useState(false);
     const navigate=useNavigate()
-
+    const URL = 'http://127.0.0.1:8000/api';
     const handleSubmit = async (e) => {
         e.preventDefault();
         setErrors({}); // Reset errors
 
         // Client-side validation: Check if passwords match
-        if (password !== passwordConfirmation) {
+        if (password !== password_confirmation) {
             setErrors({ password_confirmation: ['Passwords do not match.'] });
             return;
         }
@@ -26,17 +26,18 @@ const Register = () => {
         setIsLoading(true); // Set loading state
 
         try {
-            const response = await fetch('http://localhost:8000/api/register', {
+            const response = await fetch(`${URL}/register`, {
                 method: 'POST',
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json',
                 },
+                credentials: 'include',
                 body: JSON.stringify({
                     name,
                     email,
                     password,
-                    password_confirmation: passwordConfirmation,
+                    password_confirmation: password_confirmation,
                     address,
                     gender,
                 }),
@@ -46,14 +47,14 @@ const Register = () => {
 
             if (response.ok) {
                 localStorage.setItem('token', data.token);
-                navigate('/interface') ; // Redirect to dashboard
+                navigate('/login') ;
             } else {
-                setErrors(data.errors || {}); // Set validation errors
+                setErrors(data.errors || {});
             }
         } catch (error) {
-            setErrors({ general: ['An error occurred. Please try again later.'] }); // Handle server errors
+            setErrors({ general: ['An error occurred. Please try again later.'] });
         } finally {
-            setIsLoading(false); // Reset loading state
+            setIsLoading(false); 
         }
     };
 
@@ -114,50 +115,17 @@ const Register = () => {
 
                         {/* Password Confirmation Field */}
                         <div>
-                            <label htmlFor="passwordConfirmation" className="block text-sm font-medium text-gray-700">Confirm Password</label>
+                            <label htmlFor="password_confirmation" className="block text-sm font-medium text-gray-700">Confirm Password</label>
                             <input
                                 type="password"
-                                id="passwordConfirmation"
+                                id="password_confirmation"
                                 placeholder="Confirm your password"
-                                value={passwordConfirmation}
-                                onChange={(e) => setPasswordConfirmation(e.target.value)}
+                                value={password_confirmation}
+                                onChange={(e) => setpassword_confirmation(e.target.value)}
                                 className="w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                                 required
                             />
                             {errors.password_confirmation && <p className="text-sm text-red-500">{errors.password_confirmation[0]}</p>}
-                        </div>
-
-                        {/* Address Field */}
-                        <div>
-                            <label htmlFor="address" className="block text-sm font-medium text-gray-700">Address</label>
-                            <input
-                                type="text"
-                                id="address"
-                                placeholder="Enter your address"
-                                value={address}
-                                onChange={(e) => setAddress(e.target.value)}
-                                className="w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                                required
-                            />
-                            {errors.address && <p className="text-sm text-red-500">{errors.address[0]}</p>}
-                        </div>
-
-                        {/* Gender Field */}
-                        <div>
-                            <label htmlFor="gender" className="block text-sm font-medium text-gray-700">Gender</label>
-                            <select
-                                id="gender"
-                                value={gender}
-                                onChange={(e) => setGender(e.target.value)}
-                                className="w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                                required
-                            >
-                                <option value="" disabled>Select your gender</option>
-                                <option value="male">Male</option>
-                                <option value="female">Female</option>
-                                <option value="other">Other</option>
-                            </select>
-                            {errors.gender && <p className="text-sm text-red-500">{errors.gender[0]}</p>}
                         </div>
 
                         {/* Submit Button */}
