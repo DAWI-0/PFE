@@ -2,7 +2,6 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Database\Schema\ForeignKeyDefinition;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
@@ -12,17 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('tournaments', function (Blueprint $table) {
+        Schema::create('reservations', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->text('description');
-            $table->string('sport_type');
-            $table->dateTime('start_date');
-            $table->dateTime('end_date');
             $table->foreignId('user_id')->constrained();
             $table->foreignId('stade_id')->constrained();
-            $table->integer('max_teams');
-            $table->string('status');
+            $table->dateTime('start_time');
+            $table->integer('duration');
+            $table->decimal('total_price', 8, 2);
+            $table->string('status');//'pending', 'accepted', 'refused'
             $table->timestamps();
         });
     }
@@ -32,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('tournaments');
+        Schema::dropIfExists('reservations');
     }
 };
