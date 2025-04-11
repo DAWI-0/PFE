@@ -14,7 +14,7 @@ const Layout = ({ children }) => {
       </div>
 
       {/* Content */}
-      <main className="relative z-10 w-full h-full flex items-center justify-end p-8">
+      <main className="relative z-10 w-full h-full flex items-center justify-center p-8">
         {children}
       </main>
     </div>
