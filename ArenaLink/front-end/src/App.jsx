@@ -4,6 +4,7 @@ import Acceuil from './components/acceuil/Acceuil';
 import Login from './components/authentication/login';
 import Register from './components/authentication/register';
 import LayoutUser from './components/layout/layoutUser';
+import ResetPassword from './components/authentication/ResetPassword';
 
 
 export default function App() {
@@ -15,6 +16,7 @@ export default function App() {
         <Route path="/" element={<Acceuil />} /> {/* Home page */}
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/password-reset/:token" element={<ResetPassword />} />
         <Route element={<LayoutUser />}>
         <Route path="/home" element={<home />} />
        
