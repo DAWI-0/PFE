@@ -14,6 +14,8 @@ const Login = () => {
   const [resetError, setResetError] = useState('');
   const [showPassword, setShowPassword] = useState(false);
 
+
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
@@ -35,9 +37,7 @@ const Login = () => {
 
       const loginData = await loginResponse.json();
       const token = loginData.token;
-      navigate("/home");
       localStorage.setItem('authToken', token);
-      console.log('Connexion réussie!', loginData);
 
       const userResponse = await fetch(`${URL}/user`, {
         method: 'GET',
@@ -52,6 +52,8 @@ const Login = () => {
 
       const userData = await userResponse.json();
       console.log('Données utilisateur:', userData);
+      localStorage.setItem('user', JSON.stringify(userData));
+      window.location.href = '/home';
     } catch (err) {
       setError('Identifiants invalides. Veuillez réessayer.');
       console.error('Erreur:', err.message);

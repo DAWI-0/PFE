@@ -1,45 +1,113 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link, useLocation, Outlet } from 'react-router-dom';
-import { FaUserCircle } from 'react-icons/fa';
+import logoBasket from '../../assets/Logo/basket.png';
+import logoFoot from '../../assets/Logo/foot.png';
+import logohand from '../../assets/Logo/hand.png';
+import logoTennis from '../../assets/Logo/tennis.png';
 
 const LayoutUser = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
+  const menuRef = useRef(null);
 
   // Navigation items
   const navItems = [
-    { id: 1, name: 'Acceuil', to: '/home' },
+    { id: 1, name: 'Accueil', to: '/home' },
     { id: 2, name: 'Magasin', to: '/store' },
     { id: 3, name: 'Commande', to: '/commande' },
   ];
 
-  // User data (replace with actual user data)
-  const [user, setUser] = useState({
+  // Parse user data from localStorage with fallback
+  const user = JSON.parse(localStorage.getItem('user')) || {
     name: 'Utilisateur',
-    email: 'user@example.com',
-    profilePhoto: 'https://via.placeholder.com/30x30?text=U', // Placeholder image URL
-  });
+    profilePhoto: null,
+  };
+
+  // Close menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setIsMenuOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
+  const handleLogout = async () => {
+    try {
+      const response = await fetch('http://127.0.0.1:8000/api/logout', {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('authToken')}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Logout failed');
+      }
+
+      localStorage.removeItem('authToken');
+      localStorage.removeItem('user');
+      window.location.href = '/login';
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
+  };
+
+  // Get first letter of user's name for fallback icon
+  const getInitial = (name) => {
+    return name ? name.charAt(0).toUpperCase() : 'U';
+  };
 
   return (
     <div>
-      {/* Navbar */}
       <nav className="bg-white shadow-lg fixed top-0 left-0 right-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            {/* Logo */}
             <div className="flex items-center">
-              <span className="text-2xl font-bold text-blue-600 tracking-wider">VotreLogo</span>
+              <div className="relative mb-12 w-48">
+                <img
+                  src={logoBasket}
+                  alt="ArenaLink Basket"
+                  className="absolute top-0 left-0 opacity-0 animate-changeLogo"
+                  style={{ animationDelay: '0s' }}
+                />
+                <img
+                  src={logoFoot}
+                  alt="ArenaLink Foot"
+                  className="absolute top-0 left-0 opacity-0 animate-changeLogo"
+                  style={{ animationDelay: '2s' }}
+                />
+                <img
+                  src={logohand}
+                  alt="ArenaLink Hand"
+                  className="absolute top-0 left-0 opacity-0 animate-changeLogo"
+                  style={{ animationDelay: '4s' }}
+                />
+                <img
+                  src={logoTennis}
+                  alt="ArenaLink Tennis"
+                  className="absolute top-0 left-0 opacity-0 animate-changeLogo"
+                  style={{ animationDelay: '6s' }}
+                />
+              </div>
             </div>
 
-            {/* Navigation links */}
             <div className="hidden sm:flex sm:space-x-8">
-              {navItems.map(item => (
+              {navItems.map((item) => (
                 <Link
                   key={item.id}
                   to={item.to}
                   onClick={() => console.log(`Navigating to ${item.to}`)}
                   className={`px-3 py-2 rounded-md text-sm font-medium ${
-                    item.to === location.pathname ? 'text-blue-600' : 'text-gray-700 hover:text-blue-500'
+                    item.to === location.pathname
+                      ? 'text-blue-600'
+                      : 'text-gray-700 hover:text-blue-500'
                   }`}
                 >
                   {item.name}
@@ -47,68 +115,87 @@ const LayoutUser = () => {
               ))}
             </div>
 
-            {/* Profile section */}
-            <div className="flex items-center">
+            <div className="flex items-center" ref={menuRef}>
               <div className="relative flex items-center text-sm font-medium text-gray-700 hover:text-blue-500">
                 <button
                   className="flex items-center focus:outline-none"
                   onClick={() => setIsMenuOpen(!isMenuOpen)}
+                  aria-label="Toggle profile menu"
                 >
-                  {/* Profile Photo */}
-                  <img
-                    src={user.profilePhoto} // Display the profile photo
-                    alt="Profile Photo"
-                    className="w-6 h-6 rounded-full mr-2"
-                  />
-
-                  {/* User Name */}
+                  {user.profile_image ? (
+                    <img
+                      src={"http://localhost:8000/storage/"+user.profile_image}
+                      alt={`${user.name}'s profile`}
+                      className="w-6 h-6 rounded-full object-cover mr-2"
+                      onError={(e) => (e.target.src = 'https://via.placeholder.com/150')}
+                    />
+                  ) : (
+                    <div className="w-6 h-6 rounded-full mr-2 bg-blue-500 flex items-center justify-center text-white text-sm">
+                      {getInitial(user.name)}
+                    </div>
+                  )}
                   <span>{user.name}</span>
                 </button>
 
-                {/* Profile dropdown menu */}
                 {isMenuOpen && (
-                  <div className="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
+                  <div className="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 top-full">
                     <div className="py-1">
-                      {/* Mon Profile Link */}
                       <Link
                         to="/profile"
                         className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                        onClick={() => setIsMenuOpen(false)}
                       >
-                        Mon Profile
+                        Mon Profil
                       </Link>
-
-                      {/* Logout Link */}
-                      <Link
-                        to="/login"
-                        onClick={() => {
-                          localStorage.removeItem('authToken'); // Clear token
-                          window.location.href = '/login'; // Redirect to login
-                        }}
-                        className="block px-4 py-2 text-sm text-red-500 hover:bg-gray-100"
+                      <button
+                        onClick={handleLogout}
+                        className="block w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-gray-100"
                       >
                         Se déconnecter
-                      </Link>
+                      </button>
                     </div>
                   </div>
                 )}
               </div>
             </div>
 
-            {/* Mobile menu button */}
             <div className="sm:hidden">
               <button
                 type="button"
                 className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none"
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
+                aria-label="Toggle mobile menu"
               >
                 <span className="sr-only">Ouvrir le menu</span>
                 {!isMenuOpen ? (
-                  <svg className="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                  <svg
+                    className="block h-6 w-6"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M4 6h16M4 12h16M4 18h16"
+                    />
                   </svg>
                 ) : (
-                  <svg className="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  <svg
+                    className="block h-6 w-6"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M6 18L18 6M6 6l12 12"
+                    />
                   </svg>
                 )}
               </button>
@@ -116,15 +203,15 @@ const LayoutUser = () => {
           </div>
         </div>
 
-        {/* Mobile menu */}
         {isMenuOpen && (
           <div className="sm:hidden">
             <div className="pt-2 pb-3 space-y-1">
-              {navItems.map(item => (
+              {navItems.map((item) => (
                 <Link
                   key={item.id}
                   to={item.to}
                   className="block px-4 py-2 text-base font-medium text-gray-700 hover:bg-gray-50"
+                  onClick={() => setIsMenuOpen(false)}
                 >
                   {item.name}
                 </Link>
@@ -134,9 +221,8 @@ const LayoutUser = () => {
         )}
       </nav>
 
-      {/* Main content */}
       <main className="container mx-auto pt-20 pb-10">
-        <Outlet /> {/* Render child routes */}
+        <Outlet />
       </main>
     </div>
   );

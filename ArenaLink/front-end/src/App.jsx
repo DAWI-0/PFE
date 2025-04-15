@@ -30,9 +30,9 @@ export default function App() {
           <Route path="/home" element={<Home />} />
           <Route path="/store" element={<Store />} />
           <Route path="/commande" element={<Commande />} />
+          <Route path="/profile" element={<Profile />} />
           
         </Route>
-        <Route path="/profile" element={<Profile />} />
 
         {/* Fallback route for invalid URLs */}
         <Route path="*" element={<NotFound />} />
