@@ -6,7 +6,7 @@ import Register from './components/authentication/register';
 import LayoutUser from './components/layout/layoutUser';
 import ResetPassword from './components/authentication/ResetPassword';
 import Home from './components/pages/home/home'; // Import home.jsx
-import Store from './components/pages/home/store'; // Import store.jsx
+import Magasin from './components/pages/home/magasin'; 
 import Commande from './components/pages/home/commande'; // Import commande.jsx
 import Profile from './components/pages/profile/profile'; // Import profile.jsx
 import NotFound from './components/pages/NotFound'; // Create a 404 page
@@ -28,7 +28,7 @@ export default function App() {
           element={token ? <LayoutUser /> : <Navigate to="/login" replace />}
         >
           <Route path="/home" element={<Home />} />
-          <Route path="/store" element={<Store />} />
+          <Route path="/magasin" element={<Magasin />} />
           <Route path="/commande" element={<Commande />} />
           <Route path="/profile" element={<Profile />} />
           

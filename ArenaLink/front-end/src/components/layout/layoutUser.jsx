@@ -13,7 +13,7 @@ const LayoutUser = () => {
   // Navigation items
   const navItems = [
     { id: 1, name: 'Accueil', to: '/home' },
-    { id: 2, name: 'Magasin', to: '/store' },
+    { id: 2, name: 'Magasin', to: '/magasin' },
     { id: 3, name: 'Commande', to: '/commande' },
   ];
 
