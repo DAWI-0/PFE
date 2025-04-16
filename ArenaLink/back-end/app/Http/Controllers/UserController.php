@@ -59,10 +59,10 @@ class   UserController extends Controller
             'country' => 'nullable|string|max:100',
             'city_state' => 'nullable|string|max:100',
             'postal_code' => 'nullable|string|max:20',
-            'facebook' => 'nullable|url|max:255',
-            'instagram' => 'nullable|url|max:255',
-            'linkedin' => 'nullable|url|max:255',
-            'twitter' => 'nullable|url|max:255',
+            'facebook' => 'nullable|max:255',
+            'instagram' => 'nullable|max:255',
+            'linkedin' => 'nullable|max:255',
+            'twitter' => 'nullable|max:255',
             'profile_image' => 'nullable|file|mimes:png,jpg,jpeg|max:2048',
         ]);
 
@@ -104,7 +104,35 @@ class   UserController extends Controller
         return response()->json(['message' => 'Successfully logged out'], 200);
     }
 
+    public function Changerole (Request $request , $id){
+        $user = User::findOrFail($id);
+
+        $validated = $request->validate([
+            'role' => 'required|string|max:255',
+        ]);
+
+        $user->role=$validated['role'];
+        $user->update();
+
+        return response()->json(['message' => 'Role changer avec succée'], 200);
+
+    }
+
+    public function Confirmer ($id){
+        $user = User::findOrFail($id);
+        $user->is_confirmed=true;
+        $user->update();
+        return response()->json(['message' => 'role est confirmer avec succée'], 200);
+    }
 
 
+    public function getAllUsers()
+    {
+        $users = User::where(function ($query) {
+            $query->where('role', '=', 'vendeur')
+                  ->orWhere('role', '=', 'propriétaire');
+        })->where('is_confirmed', '=', 0)->get();
+        return response()->json($users, 200);
+    }
 
 }

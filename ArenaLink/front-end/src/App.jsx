@@ -10,6 +10,7 @@ import Magasin from './components/pages/home/magasin';
 import Commande from './components/pages/home/commande'; // Import commande.jsx
 import Profile from './components/pages/profile/profile'; // Import profile.jsx
 import NotFound from './components/pages/NotFound'; // Create a 404 page
+import UserRoleConfirmation from './components/pages/home/GestionDesRoles';
 
 export default function App() {
   const token = localStorage.getItem('authToken');
@@ -31,6 +32,7 @@ export default function App() {
           <Route path="/magasin" element={<Magasin />} />
           <Route path="/commande" element={<Commande />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/gestion_des_role" element={<UserRoleConfirmation />} />
           
         </Route>
 

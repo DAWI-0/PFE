@@ -21,47 +21,46 @@ const Profile = () => {
     instagram: '',
     linkedin: '',
     twitter: '',
-    profile_image: null, // Store File object or null
+    profile_image: null,
   });
+  const fetchUserProfile = async () => {
+    try {
+      const response = await fetch('http://localhost:8000/api/user', {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('authToken')}`,
+          Accept: 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Network error');
+      }
+
+      const data = await response.json();
+      setUser(data);
+      // Initialize form data with user data
+      setFormData({
+        name: data.name || '',
+        email: data.email || '',
+        phone: data.phone || '',
+        country: data.country || '',
+        city_state: data.city_state || '',
+        postal_code: data.postal_code || '',
+        bio: data.bio || '',
+        facebook: data.facebook || '',
+        instagram: data.instagram || '',
+        linkedin: data.linkedin || '',
+        twitter: data.twitter || '',
+        profile_image: null, // File input starts empty
+      });
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchUserProfile = async () => {
-      try {
-        const response = await fetch('http://localhost:8000/api/user', {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('authToken')}`,
-            Accept: 'application/json',
-          },
-        });
-
-        if (!response.ok) {
-          throw new Error('Network error');
-        }
-
-        const data = await response.json();
-        setUser(data);
-        // Initialize form data with user data
-        setFormData({
-          name: data.name || '',
-          email: data.email || '',
-          phone: data.phone || '',
-          country: data.country || '',
-          city_state: data.city_state || '',
-          postal_code: data.postal_code || '',
-          bio: data.bio || '',
-          facebook: data.facebook || '',
-          instagram: data.instagram || '',
-          linkedin: data.linkedin || '',
-          twitter: data.twitter || '',
-          profile_image: null, // File input starts empty
-        });
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     if (userId) {
       fetchUserProfile();
     } else {
@@ -77,6 +76,22 @@ const Profile = () => {
       [name]: value,
     }));
   };
+
+
+  const ChangeRole = async (data) => {
+    fetch(`http://localhost:8000/api/changerole/${userId}`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('authToken')}`,
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data)
+    } 
+  );
+  fetchUserProfile();
+  }
+
 
   const handleProfileImageUpload = (e) => {
     const file = e.target.files[0];
@@ -545,18 +560,39 @@ const Profile = () => {
                             </dd>
                           </div>
                           <div className="sm:col-span-1">
-                            <dt className="text-sm font-medium text-gray-500">Email verification</dt>
-                            <dd className="mt-1 text-lg text-gray-900">
-                              {user.email_verified_at ? (
-                                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                  Verified
-                                </span>
-                              ) : (
-                                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
-                                  Not verified
-                                </span>
-                              )}
-                            </dd>
+                                {user && user.role === 'utilisateur' ?(
+                                <>
+                                  <dt className="text-sm font-medium text-gray-500">Changer mon role</dt>
+                                  <dd className="mt-1 text-lg text-gray-900">
+                                      <select
+                                        name="role"
+                                        value={formData.role || ''}
+                                        onChange={(e) => ChangeRole({ role: e.target.value })}
+                                        className="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                      >
+                                        <option value="" disabled>
+                                          choisir un role
+                                        </option>
+                                        <option value="propriétaire">Propriétaire</option>
+                                        <option value="vendeur">Vendeur</option>
+                                      </select>
+                                  </dd>
+                                </>
+                                ) : user && user.role !== "admin" && user.is_confirmed == 0? (
+                                  <>
+                                    <dt className="text-sm font-medium text-gray-500">Role</dt>
+                                    <dd className="mt-1 text-lg text-gray-900">
+                                      <span className="text-gray-500">en attant de confirmation</span>
+                                    </dd>
+                                  </>
+                                 ) :  (
+                                  <>
+                                    <dt className="text-sm font-medium text-gray-500">Role</dt>
+                                    <dd className="mt-1 text-lg text-gray-900">
+                                      <span className="text-gray-500">{user.role}</span>
+                                    </dd>
+                                  </>
+                                )} 
                           </div>
                         </dl>
                       </div>

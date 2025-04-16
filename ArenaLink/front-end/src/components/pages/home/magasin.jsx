@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FaBoxOpen, FaTimes, FaShoppingCart, FaTrash, FaPlus, FaMinus, FaTrashAlt, FaCheck } from 'react-icons/fa';
 
 const Magasin = () => {
@@ -8,7 +8,7 @@ const Magasin = () => {
     name: '',
     description: '',
     price: 0,
-    category: 'Sportif', // Default to "Sportif"
+    category: 'Sportif',
     image: '',
     stock: 0,
   });
@@ -16,13 +16,41 @@ const Magasin = () => {
   const [deleteMode, setDeleteMode] = useState(false);
   const [selectedForDeletion, setSelectedForDeletion] = useState([]);
 
+  const URL = "http://127.0.0.1:8000/api/";
+  
+  // Safely parse user from localStorage with fallback
+  const user = localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')) : { role: 'client', is_confirmed: 0 };
+
+  const fetchProducts = async () => {
+    try {
+      const response = await fetch(`${URL}produits`);
+      if (!response.ok) {
+        throw new Error('Erreur lors de la récupération des produits');
+      }
+      const data = await response.json();
+      // Initialize products with selectedQuantity property
+      const productsWithQuantity = data.products.map(product => ({
+        ...product,
+        selectedQuantity: 0
+      }));
+      setProducts(productsWithQuantity);
+    } catch (error) {
+      console.error('Erreur:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
+  // Function to update product quantity selection
   const updateQuantity = (productId, amount) => {
     setProducts((prevProducts) =>
       prevProducts.map((product) =>
         product.id === productId
           ? {
               ...product,
-              selectedQuantity: Math.max(0, product.selectedQuantity + amount),
+              selectedQuantity: Math.max(0, (product.selectedQuantity || 0) + amount),
             }
           : product
       )
@@ -30,9 +58,8 @@ const Magasin = () => {
   };
 
   const addToCart = (product) => {
-    if (product.selectedQuantity === 0 || product.stock < product.selectedQuantity) return;
+    if (!product.selectedQuantity || product.selectedQuantity === 0 || product.stock < product.selectedQuantity) return;
 
-    // Mettre à jour le panier
     setCart((prevCart) => {
       const existingItem = prevCart.find((item) => item.id === product.id);
       if (existingItem) {
@@ -48,7 +75,7 @@ const Magasin = () => {
             id: product.id,
             name: product.name,
             price: product.price,
-            image: product.image,
+            image: product.image_url,
             quantity: product.selectedQuantity,
           },
         ];
@@ -88,27 +115,57 @@ const Magasin = () => {
   };
 
   const addNewProduct = () => {
-    const newId = products.length > 0 ? Math.max(...products.map((p) => p.id)) + 1 : 1;
-    const newProductToAdd = {
-      id: newId,
-      name: newProduct.name,
-      description: newProduct.description,
-      price: parseFloat(newProduct.price),
-      category: "Sportif", // Always set category to "Sportif"
-      image: newProduct.image,
-      stock: parseInt(newProduct.stock),
-      selectedQuantity: 0,
-    };
-    setProducts([...products, newProductToAdd]);
-    setNewProduct({
-      name: '',
-      description: '',
-      price: 0,
-      category: 'Sportif', // Reset to "Sportif"
-      image: '',
-      stock: 0,
-    });
-    setShowAddProductForm(false);
+    if (!newProduct.name || !newProduct.price || !newProduct.image || !newProduct.stock) {
+      return;
+    }
+    
+    const formData = new FormData();
+    formData.append('name', newProduct.name);
+    formData.append('description', newProduct.description);
+    formData.append('price', newProduct.price);
+    formData.append('category', 'Sportif');
+    if (newProduct.image instanceof File && newProduct.image.type.startsWith('image/')) {
+      formData.append('image', newProduct.image);
+    } else {
+      console.error('The image field must be a valid image file.');
+      return;
+    }
+    formData.append('stock', newProduct.stock);
+
+    fetch(`${URL}produits`, {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+      },
+      body: formData,
+    })
+      .then((response) => {
+      if (!response.ok) {
+        throw new Error('Erreur lors de l\'ajout du produit');
+      }
+      return response.json();
+      })
+      .then((data) => {
+        // Add selectedQuantity to the new product
+        const newProductWithQuantity = {
+          ...data.product,
+          selectedQuantity: 0
+        };
+        setProducts([...products, newProductWithQuantity]);
+        setNewProduct({
+          name: '',
+          description: '',
+          price: 0,
+          category: 'Sportif',
+          image: '',
+          stock: 0,
+        });
+        setShowAddProductForm(false);
+      })
+      .catch((error) => {
+        console.error('Erreur:', error);
+      });
   };
 
   // Activer/désactiver le mode suppression
@@ -132,11 +189,18 @@ const Magasin = () => {
 
     // Supprimer les produits sélectionnés (même s'ils sont dans le panier)
     setProducts(products.filter(product => !selectedForDeletion.includes(product.id)));
+    
+    // Also remove these products from cart if they exist there
+    setCart(cart.filter(item => !selectedForDeletion.includes(item.id)));
+    
     setSelectedForDeletion([]);
     setDeleteMode(false);
   };
 
   const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+
+  // Check if user has permissions to manage products
+  const canManageProducts = user && (user.role === 'admin' || (user.role === 'vendeur' && user.is_confirmed === 1));
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -155,14 +219,19 @@ const Magasin = () => {
             {cart.map((item) => (
               <div key={item.id} className="flex justify-between items-center py-2">
                 <div className="flex items-center space-x-3">
-                  <img
-                    src={item.image}
-                    alt={item.name}
-                    className="w-10 h-10 object-cover rounded"
-                  />
+                  {item.image && (
+                    <img
+                      src={`http://localhost:8000/storage/${item.image}`}
+                      alt={item.name}
+                      className="w-10 h-10 object-cover rounded"
+                      onError={(e) => {
+                        e.target.src = 'https://via.placeholder.com/300x200?text=Image+Non+Disponible';
+                      }}
+                    />
+                  )}
                   <div>
                     <h3 className="text-sm font-medium">{item.name}</h3>
-                    <p className="text-gray-500 text-xs">{item.price.toFixed(2)} DH × {item.quantity}</p>
+                    <p className="text-gray-500 text-xs">{item.price} DH × {item.quantity}</p>
                   </div>
                 </div>
                 <div className="flex items-center space-x-2">
@@ -186,7 +255,7 @@ const Magasin = () => {
           </div>
           <div className="flex justify-end mt-2">
             <button className="bg-blue-600 hover:bg-blue-700 shadow-xl hover:scale-105 text-white p-2 rounded-xl flex items-center gap-2 transition-all">
-              Confirmer
+              <FaCheck className="text-lg" /> Confirmer la commande
             </button>
           </div>
         </div>
@@ -225,40 +294,42 @@ const Magasin = () => {
           </>
         ) : (
           <>
-            {/* Bouton pour activer le mode suppression */}
-            <button
-              onClick={toggleDeleteMode}
-              className={`flex items-center gap-2 font-bold py-2 px-4 rounded-lg focus:outline-none transition-all duration-300 ${
-                products.length === 0
-                  ? 'bg-gray-400 cursor-not-allowed text-white'
-                  : 'bg-red-500 hover:bg-red-600 text-white shadow-md hover:shadow-lg'
-              }`}
-              disabled={products.length === 0}
-              aria-label="Sélectionner les produits à supprimer"
-            >
-              <FaTrashAlt className="text-lg" /> Supprimer Produits
-            </button>
-            
-            {/* Bouton pour ajouter un nouveau produit */}
-            <button
-              onClick={() => setShowAddProductForm(!showAddProductForm)}
-              className={`flex items-center gap-2 font-bold py-2 px-4 rounded-lg focus:outline-none transition-all duration-300 ${
-                showAddProductForm
-                  ? 'bg-blue-500 hover:bg-blue-600 text-white shadow-md'
-                  : 'bg-green-600 hover:bg-green-700 text-white shadow-md hover:shadow-lg'
-              }`}
-              aria-label={showAddProductForm ? "Fermer le formulaire" : "Ajouter un produit"}
-            >
-              {showAddProductForm ? (
-                <>
-                  <FaTimes className="text-lg" /> Fermer
-                </>
-              ) : (
-                <>
-                  <FaBoxOpen className="text-lg" /> Nouveau Produit
-                </>
-              )}
-            </button>
+            {/* Admin/Vendor Controls */}
+            {canManageProducts && (
+              <>
+                <button
+                  onClick={toggleDeleteMode}
+                  className={`flex items-center gap-2 font-bold py-2 px-4 rounded-lg focus:outline-none transition-all duration-300 ${
+                    products.length === 0
+                      ? 'bg-gray-400 cursor-not-allowed text-white'
+                      : 'bg-red-500 hover:bg-red-600 text-white shadow-md hover:shadow-lg'
+                  }`}
+                  disabled={products.length === 0}
+                  aria-label="Sélectionner les produits à supprimer"
+                >
+                  <FaTrashAlt className="text-lg" /> Supprimer Produits
+                </button>
+                <button
+                  onClick={() => setShowAddProductForm(!showAddProductForm)}
+                  className={`flex items-center gap-2 font-bold py-2 px-4 rounded-lg focus:outline-none transition-all duration-300 ${
+                    showAddProductForm
+                      ? 'bg-blue-500 hover:bg-blue-600 text-white shadow-md'
+                      : 'bg-green-600 hover:bg-green-700 text-white shadow-md hover:shadow-lg'
+                  }`}
+                  aria-label={showAddProductForm ? "Fermer le formulaire" : "Ajouter un produit"}
+                >
+                  {showAddProductForm ? (
+                    <>
+                      <FaTimes className="text-lg" /> Fermer
+                    </>
+                  ) : (
+                    <>
+                      <FaBoxOpen className="text-lg" /> Nouveau Produit
+                    </>
+                  )}
+                </button>
+              </>
+            )}
           </>
         )}
       </div>
@@ -311,7 +382,7 @@ const Magasin = () => {
                 min="0"
                 placeholder="Prix"
                 value={newProduct.price}
-                onChange={(e) => setNewProduct({ ...newProduct, price: e.target.value })}
+                onChange={(e) => setNewProduct({ ...newProduct, price: parseFloat(e.target.value) })}
               />
             </div>
 
@@ -329,21 +400,23 @@ const Magasin = () => {
               />
             </div>
 
-            {/* Image URL */}
             <div className="mb-4">
               <label className="block text-green-700 text-sm font-bold mb-2" htmlFor="image">
-                URL de l'image
+              Image
               </label>
               <input
-                className="shadow appearance-none border rounded w-full py-2 px-3 text-green-700 leading-tight focus:outline-none focus:ring-2 focus:ring-green-500"
+                className="shadow cursor-pointer appearance-none border rounded w-full py-2 px-3 text-green-700 leading-tight focus:outline-none focus:ring-2 focus:ring-green-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-green-50 file:text-green-700 hover:file:bg-green-100"
                 id="image"
-                type="text"
-                placeholder="URL de l'image"
-                value={newProduct.image}
-                onChange={(e) => setNewProduct({ ...newProduct, image: e.target.value })}
+                type="file"
+                accept="image/*"
+                onChange={(e) => {
+                  const file = e.target.files[0];
+                  if (file && file.type.startsWith('image/')) {
+                    setNewProduct({ ...newProduct, image: file });
+                  }
+                }}
               />
             </div>
-
             {/* Stock */}
             <div className="mb-4">
               <label className="block text-green-700 text-sm font-bold mb-2" htmlFor="stock">
@@ -356,7 +429,7 @@ const Magasin = () => {
                 min="0"
                 placeholder="Quantité en stock"
                 value={newProduct.stock}
-                onChange={(e) => setNewProduct({ ...newProduct, stock: e.target.value })}
+                onChange={(e) => setNewProduct({ ...newProduct, stock: parseInt(e.target.value) })}
               />
             </div>
 
@@ -378,99 +451,109 @@ const Magasin = () => {
 
       {/* Grille de produits */}
       <div className="container mx-auto px-4 pb-12">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {products.map((product) => (
-            <div
-              key={product.id}
-              className={`bg-white rounded-lg shadow-sm overflow-hidden border ${
-                deleteMode
-                  ? selectedForDeletion.includes(product.id)
-                    ? 'border-red-500 ring-2 ring-red-500'
+        {products.length === 0 ? (
+          <div className="text-center py-8">
+            <p className="text-gray-500">Aucun produit disponible pour le moment</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {products.map((product) => (
+              <div
+                key={product.id}
+                className={`bg-white rounded-lg shadow-sm overflow-hidden border ${
+                  deleteMode
+                    ? selectedForDeletion.includes(product.id)
+                      ? 'border-red-500 ring-2 ring-red-500'
+                      : 'border-gray-200'
                     : 'border-gray-200'
-                  : 'border-gray-200'
-              } hover:shadow-md transition-shadow duration-200 relative`}
-            >
-              {/* Overlay de sélection pour le mode suppression */}
-              {deleteMode && (
-                <div 
-                  className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center cursor-pointer z-10"
-                  onClick={() => toggleProductSelection(product.id)}
-                >
-                  <div className={`w-8 h-8 rounded-full ${
-                    selectedForDeletion.includes(product.id) 
-                      ? 'bg-red-500 text-white' 
-                      : 'bg-white text-gray-700'
-                    } flex items-center justify-center`}
+                } hover:shadow-md transition-shadow duration-200 relative`}
+              >
+                {/* Overlay de sélection pour le mode suppression */}
+                {deleteMode && (
+                  <div 
+                    className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center cursor-pointer z-10"
+                    onClick={() => toggleProductSelection(product.id)}
                   >
-                    {selectedForDeletion.includes(product.id) && <FaCheck />}
+                    <div className={`w-8 h-8 rounded-full ${
+                      selectedForDeletion.includes(product.id) 
+                        ? 'bg-red-500 text-white' 
+                        : 'bg-white text-gray-700'
+                      } flex items-center justify-center`}
+                    >
+                      {selectedForDeletion.includes(product.id) && <FaCheck />}
+                    </div>
                   </div>
+                )}
+
+                {/* Image du produit */}
+                <div className="relative h-48">
+                  <img
+                    src={`http://localhost:8000/storage/${product.image_url}`}
+                    alt={product.name}
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      e.target.src = 'https://via.placeholder.com/300x200?text=Image+Non+Disponible';
+                    }}
+                  />
                 </div>
-              )}
 
-              {/* Image du produit */}
-              <div className="relative h-48">
-                <img
-                  src={product.image || 'https://via.placeholder.com/300x200?text=Image+Non+Disponible'}
-                  alt={product.name}
-                  className="w-full h-full object-cover"
-                />
-              </div>
+                {/* Détails du produit */}
+                <div className="p-4">
+                  <h3 className="text-lg font-semibold text-green-800 mb-1">{product.name}</h3>
+                  <p className="text-gray-600 text-sm mb-1">Catégorie: Sportif</p>
+                  <p className="text-gray-500 text-xs mb-2">{product.description}</p>
+                  <p className="text-green-600 font-medium">{product.price} DH</p>
+                  <p className="text-gray-500 text-xs">Stock restant: {product.stock}</p>
 
-              {/* Détails du produit */}
-              <div className="p-4">
-                <h3 className="text-lg font-semibold text-green-800 mb-1">{product.name}</h3>
-                <p className="text-gray-600 text-sm mb-1">Catégorie: Sportif</p>
-                <p className="text-gray-500 text-xs mb-2">{product.description}</p>
-                <p className="text-green-600 font-medium">{product.price.toFixed(2)} DH</p>
-                <p className="text-gray-500 text-xs">Stock restant: {product.stock}</p>
+                  {/* Sélecteur de quantité (visible uniquement en mode normal) */}
+                  {!deleteMode && (
+                    <div className="mt-4 flex items-center justify-between">
+                      <div className="flex items-center border border-gray-300 rounded-md">
+                        <button
+                          onClick={() => updateQuantity(product.id, -1)}
+                          className={`px-3 py-1 text-gray-600 hover:bg-gray-100 transition-colors ${(product.selectedQuantity || 0) === 0 ? 'cursor-not-allowed' : ''}`}
+                          disabled={(product.selectedQuantity || 0) === 0}
+                          aria-label="Réduire la quantité"
+                        >
+                          <FaMinus />
+                        </button>
+                        <span className="px-3 py-1 text-center min-w-[2rem]">
+                          {product.selectedQuantity || 0}
+                        </span>
+                        <button
+                          onClick={() => updateQuantity(product.id, 1)}
+                          className={`px-3 py-1 text-gray-600 hover:bg-gray-100 transition-colors ${product.stock <= (product.selectedQuantity || 0) ? 'cursor-not-allowed' : ''}`}
+                          disabled={product.stock <= (product.selectedQuantity || 0)}
+                          aria-label="Augmenter la quantité"
+                        >
+                          <FaPlus />
+                        </button>
+                      </div>
 
-                {/* Sélecteur de quantité (visible uniquement en mode normal) */}
-                {!deleteMode && (
-                  <div className="mt-4 flex items-center justify-between">
-                    <div className="flex items-center border border-gray-300 rounded-md">
+                      {/* Bouton "Ajouter au panier" */}
                       <button
-                        onClick={() => updateQuantity(product.id, -1)}
-                        className="px-3 py-1 text-gray-600 hover:bg-gray-100 transition-colors"
-                        disabled={product.selectedQuantity === 0}
-                        aria-label="Réduire la quantité"
+                        onClick={() => addToCart(product)}
+                        disabled={(product.selectedQuantity || 0) === 0 || product.stock < (product.selectedQuantity || 0)}
+                        className={`px-3 py-1 rounded-md text-sm font-medium transition-colors flex items-center gap-1 ${
+                          (product.selectedQuantity || 0) === 0 || product.stock < (product.selectedQuantity || 0)
+                            ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
+                            : 'bg-green-600 text-white hover:bg-green-700'
+                        }`}
                       >
-                        <FaMinus />
-                      </button>
-                      <span className="px-3 py-1 text-center min-w-[2rem]">
-                        {product.selectedQuantity}
-                      </span>
-                      <button
-                        onClick={() => updateQuantity(product.id, 1)}
-                        className="px-3 py-1 text-gray-600 hover:bg-gray-100 transition-colors"
-                        aria-label="Augmenter la quantité"
-                      >
-                        <FaPlus />
+                        <FaShoppingCart /> Ajouter
                       </button>
                     </div>
+                  )}
 
-                    {/* Bouton "Ajouter au panier" */}
-                    <button
-                      onClick={() => addToCart(product)}
-                      disabled={product.selectedQuantity === 0 || product.stock < product.selectedQuantity}
-                      className={`px-3 py-1 rounded-md text-sm font-medium transition-colors flex items-center gap-1 ${
-                        product.selectedQuantity === 0 || product.stock < product.selectedQuantity
-                          ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
-                          : 'bg-green-600 text-white hover:bg-green-700'
-                      }`}
-                    >
-                      <FaShoppingCart /> Ajouter
-                    </button>
-                  </div>
-                )}
-
-                {/* Message d'erreur si le stock est insuffisant */}
-                {!deleteMode && product.selectedQuantity > product.stock && (
-                  <p className="text-red-500 text-xs mt-1">Stock insuffisant</p>
-                )}
+                  {/* Message d'erreur si le stock est insuffisant */}
+                  {!deleteMode && (product.selectedQuantity || 0) > product.stock && (
+                    <p className="text-red-500 text-xs mt-1">Stock insuffisant</p>
+                  )}
+                </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

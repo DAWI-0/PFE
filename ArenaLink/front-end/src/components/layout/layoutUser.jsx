@@ -9,6 +9,7 @@ const LayoutUser = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
   const menuRef = useRef(null);
+  const [isMenuOpenMobile, setIsMenuOpenMobile] = useState(false);
 
   // Navigation items
   const navItems = [
@@ -16,13 +17,14 @@ const LayoutUser = () => {
     { id: 2, name: 'Magasin', to: '/magasin' },
     { id: 3, name: 'Commande', to: '/commande' },
   ];
-
+  
   // Parse user data from localStorage with fallback
   const user = JSON.parse(localStorage.getItem('user')) || {
     name: 'Utilisateur',
     profilePhoto: null,
   };
-
+  
+  user?.role === "admin" && navItems.push({ id: 4, name: 'Gestion des roles', to: '/gestion_des_role' });
   // Close menu when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -163,11 +165,11 @@ const LayoutUser = () => {
               <button
                 type="button"
                 className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none"
-                onClick={() => setIsMenuOpen(!isMenuOpen)}
+                onClick={() => setIsMenuOpenMobile(!isMenuOpenMobile)}
                 aria-label="Toggle mobile menu"
               >
                 <span className="sr-only">Ouvrir le menu</span>
-                {!isMenuOpen ? (
+                {!isMenuOpenMobile ? (
                   <svg
                     className="block h-6 w-6"
                     xmlns="http://www.w3.org/2000/svg"
@@ -203,7 +205,7 @@ const LayoutUser = () => {
           </div>
         </div>
 
-        {isMenuOpen && (
+        {isMenuOpenMobile && (
           <div className="sm:hidden">
             <div className="pt-2 pb-3 space-y-1">
               {navItems.map((item) => (
@@ -211,11 +213,24 @@ const LayoutUser = () => {
                   key={item.id}
                   to={item.to}
                   className="block px-4 py-2 text-base font-medium text-gray-700 hover:bg-gray-50"
-                  onClick={() => setIsMenuOpen(false)}
+                  onClick={() => setIsMenuOpenMobile(false)}
                 >
                   {item.name}
                 </Link>
               ))}
+              <Link
+                to="/profile"
+                className="block px-4 py-2 text-base font-medium text-gray-700 hover:bg-gray-50"
+                onClick={() => setIsMenuOpenMobile(false)}
+              >
+                Mon Profil
+              </Link>
+              <button
+                onClick={handleLogout}
+                className="block px-4 py-2 text-base font-medium text-red-500 hover:bg-gray-100"
+              >
+                Se déconnecter
+              </button>
             </div>
           </div>
         )}
