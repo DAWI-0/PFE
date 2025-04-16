@@ -198,12 +198,46 @@ const Magasin = () => {
   };
 
   const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
-
+  const [successMessage, setSuccessMessage] = useState('');
   // Check if user has permissions to manage products
   const canManageProducts = user && (user.role === 'admin' || (user.role === 'vendeur' && user.is_confirmed === 1));
 
+  const handlConfirmOrder = async () => {
+    if (cart.length === 0) return;
+    const product_ids = [cart.map(item => item.id)];
+    const total_amount = total;
+    const user_id = user.id;
+    const orderData = { product_ids, total_amount, user_id };
+    const response = await fetch(`${URL}orders`, {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(orderData),
+    });
+    if (!response.ok) {
+      console.error('Erreur lors de la confirmation de la commande');
+      return;
+    }
+    const data = await response.json();
+    console.log('Commande confirmée:', data)
+    setSuccessMessage('Commande confirmée avec succès !');
+    setCart([]); 
+    setTimeout(() => {
+      setSuccessMessage('');
+    }, 7000);
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
+      {/* Message de succès */}
+      {successMessage && (
+        <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mx-4 mb-4" role="alert">
+          <span className="block sm:inline">{successMessage}</span>
+        </div>
+      )}
       {/* Panier */}
       {cart.length > 0 && (
         <div className="bg-white rounded-lg shadow-sm p-4 border border-gray-200 mb-8 mx-4">
@@ -254,7 +288,10 @@ const Magasin = () => {
             <span className="font-bold text-lg">{total.toFixed(2)} DH</span>
           </div>
           <div className="flex justify-end mt-2">
-            <button className="bg-blue-600 hover:bg-blue-700 shadow-xl hover:scale-105 text-white p-2 rounded-xl flex items-center gap-2 transition-all">
+            <button 
+            onClick={handlConfirmOrder}
+            disabled={cart.length === 0}
+            className="bg-blue-600 hover:bg-blue-700 shadow-xl hover:scale-105 text-white p-2 rounded-xl flex items-center gap-2 transition-all">
               <FaCheck className="text-lg" /> Confirmer la commande
             </button>
           </div>

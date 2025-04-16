@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -32,4 +33,13 @@ Route::get('/produits/{id}', [ProduitController::class, 'show']);
 Route::post('/produits', [ProduitController::class, 'store']);
 Route::put('/produits/{id}', [ProduitController::class, 'update']);
 Route::delete('/produits/{id}', [ProduitController::class, 'destroy']);
+
+Route::prefix("orders")->group(function () {
+    Route::get("/", [OrderController::class, "index"]);
+    Route::get("/{id}", [OrderController::class, "show"]);
+    Route::post("/", [OrderController::class, "store"]);
+    Route::get("/user/{id}", [OrderController::class, "getOrdersByUserId"]);
+    Route::post("/confirmer/{id}", [OrderController::class, "Confirmer"]);
+    Route::get("/status/pending", [OrderController::class, "getOrdersByStatus"]);
+});
 

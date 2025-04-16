@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { MapPin, Filter, Search, Trash } from 'lucide-react';
 
-function Commande() {
+function GestionDesCommendes() {
   const [facilities, setFacilities] = useState([]);
   const [selectedCity, setSelectedCity] = useState("");
   const [selectedSport, setSelectedSport] = useState("Tous les sports");
@@ -16,25 +16,25 @@ function Commande() {
   const user = JSON.parse(localStorage.getItem('user')) || {user: null};
 
   // Fetch orders from the API
-  useEffect(() => {
-    const fetchOrders = async () => {
-      try {
-        setLoading(true);
-        const response = await fetch(`http://127.0.0.1:8000/api/orders/user/${user?.id}` );
-        
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        
-        const data = await response.json();
-        setOrders(data);
-        setLoading(false);
-      } catch (err) {
-        setError(err.message);
-        setLoading(false);
-        console.error('Error fetching orders:', err);
+  const fetchOrders = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch(`http://127.0.0.1:8000/api/orders/status/pending` );
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
       }
-    };
+      
+      const data = await response.json();
+      setOrders(data);
+      setLoading(false);
+    } catch (err) {
+      setError(err.message);
+      setLoading(false);
+      console.error('Error fetching orders:', err);
+    }
+  };
+  useEffect(() => {
 
     fetchOrders();
   }, []);
@@ -83,29 +83,22 @@ function Commande() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-blue-600 text-white py-6">
-        <div className="container mx-auto px-4">
-          <h1 className="text-3xl font-bold">ArenaLink</h1>
-          <p className="mt-2">Trouvez et réservez votre terrain de sport idéal</p>
-        </div>
-      </header>
 
       {/* Main Content */}
       <div className="container mx-auto px-4 py-6">
         {/* Reservations Section */}
         <div className="bg-white rounded-lg shadow p-6 mb-8">
-          <h2 className="text-2xl font-bold mb-6">Mes Réservations</h2>
+          <h2 className="text-2xl font-bold mb-6">Gestion des commendes</h2>
           
           {/* Loading and error states */}
-          {loading && <p className="text-center py-4">Chargement des réservations...</p>}
+          {loading && <p className="text-center py-4">Chargement des commendes...</p>}
           {error && <p className="text-center py-4 text-red-600">Erreur: {error}</p>}
           
           {/* Reservation Cards */}
           {!loading && !error && (
             <div className="space-y-4">
               {orders.length === 0 ? (
-                <p className="text-center py-4 text-gray-600">Aucune réservation trouvée.</p>
+                <p className="text-center py-4 text-gray-600">Aucune commende trouvée.</p>
               ) : (
                 orders.map(order => (
                   <div key={order.id} className="flex flex-col md:flex-row p-4 border rounded-lg">
@@ -131,13 +124,37 @@ function Commande() {
                           {formatDate(order.created_at)}
                         </span>
                       </div>
-                      <div className="mt-2">
-                        <StatusBadge status={order.status} />
-                      </div>
                     </div>
                     <div className="font-bold text-blue-600 md:text-right mt-3 md:mt-0">
                       {parseFloat(order.total_amount).toFixed(2)} DH
                       <div className="text-sm text-gray-500">Total</div>
+                    </div>
+
+                    <div className="mt-4 md:mt-3 md:ml-4">
+                        <button
+                            onClick={async () => {
+                                try {
+                                    const response = await fetch(`http://127.0.0.1:8000/api/orders/confirmer/${order.id}`, {
+                                        method: 'POST',
+                                        headers: {
+                                            'Content-Type': 'application/json',
+                                        },
+                                    });
+
+                                    if (!response.ok) {
+                                        throw new Error(`HTTP error! Status: ${response.status}`);
+                                    }
+
+                                    fetchOrders();
+                                } catch (err) {
+                                    console.error('Error confirming order:', err);
+                                    alert('Erreur lors de la confirmation de la commande.');
+                                }
+                            }}
+                            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                        >
+                            Confirmer
+                        </button>
                     </div>
                   </div>
                 ))
@@ -150,4 +167,4 @@ function Commande() {
   );
 }
 
-export default Commande;
+export default GestionDesCommendes;
