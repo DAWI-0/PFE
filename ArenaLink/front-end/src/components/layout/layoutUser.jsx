@@ -25,7 +25,8 @@ const LayoutUser = () => {
   };
   
   user?.role === "admin" && navItems.push({ id: 4, name: 'Gestion des roles', to: '/gestion_des_role' });
-  user?.role === "admin" || user?.role === "vendeur" && navItems.push({ id: 4, name: 'Gestion des commendes', to: '/gestion_des_commendes' });
+  user?.role === "admin" && navItems.push({ id: 4, name: 'Gestion des commendes', to: '/gestion_des_commendes' });
+  user?.role === "vendeur" && navItems.push({ id: 4, name: 'Gestion des commendes', to: '/gestion_des_commendes' });
   // Close menu when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
