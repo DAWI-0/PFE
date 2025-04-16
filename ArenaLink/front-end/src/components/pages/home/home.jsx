@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { MapPin, Filter, Search, Trash } from 'lucide-react';
+import { MapPin, Filter, Search, Trash, MessageCircle, X, Send } from 'lucide-react';
 
 // Mock data for sports facilities (empty array to remove existing facilities)
 const initialFacilities = [];
@@ -16,6 +16,71 @@ const sports = [
   "Paddle",
 ];
 const priceRanges = ["Tous les prix", "0-50 MAD", "50-100 MAD", "100 MAD+"];
+
+// Component for the comments modal
+const CommentsModal = ({ facility, isOpen, onClose, onAddComment }) => {
+  const [newComment, setNewComment] = useState('');
+
+  if (!isOpen) return null;
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (newComment.trim()) {
+      onAddComment(facility.id, newComment);
+      setNewComment('');
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div className="bg-white rounded-lg shadow-xl w-full max-w-md p-6">
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-2xl font-bold">Commentaires - {facility.name}</h2>
+          <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
+            <X className="w-6 h-6" />
+          </button>
+        </div>
+
+        <div className="max-h-80 overflow-y-auto mb-4">
+          {facility.comments && facility.comments.length > 0 ? (
+            facility.comments.map((comment, index) => (
+              <div key={index} className="bg-gray-50 p-3 rounded-lg mb-2">
+                <div className="flex items-center mb-1">
+                  <div className="bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center">
+                    {comment.author.charAt(0).toUpperCase()}
+                  </div>
+                  <span className="font-semibold ml-2">{comment.author}</span>
+                  <span className="text-xs text-gray-500 ml-auto">{comment.date}</span>
+                </div>
+                <p className="text-gray-700">{comment.text}</p>
+              </div>
+            ))
+          ) : (
+            <p className="text-gray-500 text-center py-4">Aucun commentaire pour le moment</p>
+          )}
+        </div>
+
+        <form onSubmit={handleSubmit} className="mt-4">
+          <div className="flex">
+            <input
+              type="text"
+              placeholder="Ajouter un commentaire..."
+              className="flex-1 px-4 py-2 border rounded-l-lg focus:ring-2 focus:ring-blue-500"
+              value={newComment}
+              onChange={(e) => setNewComment(e.target.value)}
+            />
+            <button
+              type="submit"
+              className="bg-blue-600 text-white px-4 py-2 rounded-r-lg hover:bg-blue-700"
+            >
+              <Send className="w-5 h-5" />
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+};
 
 const AddFacilityForm = ({ onAdd }) => {
   const [name, setName] = useState('');
@@ -50,6 +115,7 @@ const AddFacilityForm = ({ onAdd }) => {
         price_per_hour: parseFloat(pricePerHour),
         user_id: 1, // Replace with the logged-in user's ID (handled backend)
         image: previewImage, // Stocker l'image en Base64
+        comments: [] // Initialize empty comments array
       });
       setName('');
       setAddress('');
@@ -181,6 +247,10 @@ function App() {
   const [selectedPrice, setSelectedPrice] = useState("Tous les prix");
   const [searchQuery, setSearchQuery] = useState("");
   const [showAddForm, setShowAddForm] = useState(false);
+  const [commentsModal, setCommentsModal] = useState({
+    isOpen: false,
+    facilityId: null
+  });
 
   const handleAddFacility = (newFacility) => {
     setFacilities((prevFacilities) => [...prevFacilities, newFacility]);
@@ -189,6 +259,41 @@ function App() {
 
   const handleDeleteFacility = (id) => {
     setFacilities((prevFacilities) => prevFacilities.filter(facility => facility.id !== id));
+  };
+
+  const openCommentsModal = (facilityId) => {
+    setCommentsModal({
+      isOpen: true,
+      facilityId
+    });
+  };
+
+  const closeCommentsModal = () => {
+    setCommentsModal({
+      isOpen: false,
+      facilityId: null
+    });
+  };
+
+  const handleAddComment = (facilityId, commentText) => {
+    setFacilities((prevFacilities) =>
+      prevFacilities.map((facility) => {
+        if (facility.id === facilityId) {
+          const newComment = {
+            id: Date.now(),
+            author: "Utilisateur", // Remplacer par le nom d'utilisateur connecté
+            date: new Date().toLocaleDateString(),
+            text: commentText
+          };
+          
+          return {
+            ...facility,
+            comments: [...(facility.comments || []), newComment]
+          };
+        }
+        return facility;
+      })
+    );
   };
 
   const filteredFacilities = facilities.filter((facility) => {
@@ -210,6 +315,9 @@ function App() {
 
     return matchesCity && matchesSport && matchesPrice && matchesSearch;
   });
+
+  // Find the currently selected facility for comments modal
+  const selectedFacility = facilities.find(f => f.id === commentsModal.facilityId) || { comments: [] };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -319,12 +427,25 @@ function App() {
                     Réserver
                   </button>
                 </div>
-                <div className="mt-4">
+                <div className="mt-4 flex gap-2">
                   <button
                     onClick={() => handleDeleteFacility(facility.id)}
                     className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors"
+                    title="Supprimer"
                   >
                     <Trash className="w-4 h-4" />
+                  </button>
+                  <button
+                    onClick={() => openCommentsModal(facility.id)}
+                    className="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors flex items-center"
+                    title="Commentaires"
+                  >
+                    <MessageCircle className="w-4 h-4" />
+                    {facility.comments && facility.comments.length > 0 && (
+                      <span className="ml-1 text-xs bg-blue-600 text-white rounded-full w-5 h-5 flex items-center justify-center">
+                        {facility.comments.length}
+                      </span>
+                    )}
                   </button>
                 </div>
               </div>
@@ -332,6 +453,14 @@ function App() {
           ))}
         </div>
       </div>
+
+      {/* Comments Modal */}
+      <CommentsModal
+        facility={selectedFacility}
+        isOpen={commentsModal.isOpen}
+        onClose={closeCommentsModal}
+        onAddComment={handleAddComment}
+      />
     </div>
   );
 }
