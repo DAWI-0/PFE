@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { MapPin, Filter, Search, Trash, MessageCircle, X, Send } from 'lucide-react';
+import { MapPin, Filter, Search, Trash, MessageCircle, X, Send, Star } from 'lucide-react';
 
 // Mock data for sports facilities (empty array to remove existing facilities)
 const initialFacilities = [];
@@ -17,19 +17,64 @@ const sports = [
 ];
 const priceRanges = ["Tous les prix", "0-50 MAD", "50-100 MAD", "100 MAD+"];
 
+// Simuler un utilisateur connecté
+const currentUser = { id: 1, name: "Utilisateur" };
+
+// Star Rating component
+const StarRating = ({ rating, setRating, editable = false }) => {
+  const [hover, setHover] = useState(0);
+  
+  return (
+    <div className="flex">
+      {[...Array(5)].map((_, index) => {
+        const ratingValue = index + 1;
+        return (
+          <button
+            type="button"
+            key={index}
+            className={`${editable ? 'cursor-pointer' : 'cursor-default'} bg-transparent border-none outline-none`}
+            onClick={() => editable && setRating(ratingValue)}
+            onMouseEnter={() => editable && setHover(ratingValue)}
+            onMouseLeave={() => editable && setHover(0)}
+          >
+            <Star 
+              className={`w-5 h-5 ${
+                ratingValue <= (hover || rating) 
+                  ? 'text-yellow-500 fill-yellow-500' 
+                  : 'text-gray-300'
+              }`} 
+            />
+          </button>
+        );
+      })}
+    </div>
+  );
+};
+
 // Component for the comments modal
-const CommentsModal = ({ facility, isOpen, onClose, onAddComment }) => {
+const CommentsModal = ({ facility, isOpen, onClose, onAddComment, onAddRating, hasRated }) => {
   const [newComment, setNewComment] = useState('');
+  const [newRating, setNewRating] = useState(0);
 
   if (!isOpen) return null;
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (newComment.trim()) {
-      onAddComment(facility.id, newComment);
+    if ((newComment.trim() || newRating > 0) && (!hasRated || newComment.trim())) {
+      onAddComment(facility.id, newComment, newRating);
       setNewComment('');
+      setNewRating(0);
     }
   };
+
+  // Calculate average rating
+  const averageRating = facility.comments && facility.comments.length > 0
+    ? facility.comments.reduce((acc, comment) => acc + (comment.rating || 0), 0) / facility.comments.length
+    : 0;
+
+  // Vérifier si l'utilisateur actuel a déjà noté ce terrain
+  const userRatingComment = facility.comments?.find(comment => comment.userId === currentUser.id && comment.rating > 0);
+  const userRating = userRatingComment ? userRatingComment.rating : 0;
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -39,6 +84,13 @@ const CommentsModal = ({ facility, isOpen, onClose, onAddComment }) => {
           <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
             <X className="w-6 h-6" />
           </button>
+        </div>
+
+        {/* Average Rating Display */}
+        <div className="flex items-center mb-4">
+          <span className="text-gray-700 mr-2">Note moyenne :</span>
+          <StarRating rating={averageRating} editable={false} />
+          <span className="ml-2 text-gray-700">({averageRating.toFixed(1)})</span>
         </div>
 
         <div className="max-h-80 overflow-y-auto mb-4">
@@ -52,7 +104,12 @@ const CommentsModal = ({ facility, isOpen, onClose, onAddComment }) => {
                   <span className="font-semibold ml-2">{comment.author}</span>
                   <span className="text-xs text-gray-500 ml-auto">{comment.date}</span>
                 </div>
-                <p className="text-gray-700">{comment.text}</p>
+                {comment.rating > 0 && (
+                  <div className="mb-1">
+                    <StarRating rating={comment.rating} editable={false} />
+                  </div>
+                )}
+                {comment.text && <p className="text-gray-700">{comment.text}</p>}
               </div>
             ))
           ) : (
@@ -61,6 +118,28 @@ const CommentsModal = ({ facility, isOpen, onClose, onAddComment }) => {
         </div>
 
         <form onSubmit={handleSubmit} className="mt-4">
+          {/* Afficher la note existante ou permettre d'en ajouter une nouvelle */}
+          {hasRated ? (
+            <div className="mb-3">
+              <label className="block text-gray-700 font-bold mb-2">
+                Votre note :
+              </label>
+              <div className="flex items-center">
+                <StarRating rating={userRating} editable={false} />
+                <span className="ml-2 text-gray-500 text-sm">
+                  Vous avez déjà noté ce terrain
+                </span>
+              </div>
+            </div>
+          ) : (
+            <div className="mb-3">
+              <label className="block text-gray-700 font-bold mb-2">
+                Votre note :
+              </label>
+              <StarRating rating={newRating} setRating={setNewRating} editable={true} />
+            </div>
+          )}
+          
           <div className="flex">
             <input
               type="text"
@@ -115,7 +194,9 @@ const AddFacilityForm = ({ onAdd }) => {
         price_per_hour: parseFloat(pricePerHour),
         user_id: 1, // Replace with the logged-in user's ID (handled backend)
         image: previewImage, // Stocker l'image en Base64
-        comments: [] // Initialize empty comments array
+        comments: [], // Initialize empty comments array
+        average_rating: 0, // Initialize with zero rating
+        rated_users: [] // Liste des utilisateurs ayant noté le terrain
       });
       setName('');
       setAddress('');
@@ -275,20 +356,48 @@ function App() {
     });
   };
 
-  const handleAddComment = (facilityId, commentText) => {
+  const handleAddComment = (facilityId, commentText, rating) => {
     setFacilities((prevFacilities) =>
       prevFacilities.map((facility) => {
         if (facility.id === facilityId) {
+          // Vérifier si l'utilisateur a déjà noté ce terrain
+          const hasUserRated = facility.rated_users?.includes(currentUser.id);
+          
+          // Si l'utilisateur a déjà noté et tente de noter à nouveau, ignorer la nouvelle note
+          const finalRating = hasUserRated ? 0 : rating;
+          
+          // Créer un nouveau commentaire
           const newComment = {
             id: Date.now(),
-            author: "Utilisateur", // Remplacer par le nom d'utilisateur connecté
+            userId: currentUser.id,
+            author: currentUser.name,
             date: new Date().toLocaleDateString(),
-            text: commentText
+            text: commentText,
+            rating: finalRating
           };
+          
+          // Si le commentaire n'est qu'une note sans texte et que l'utilisateur a déjà noté, ne pas l'ajouter
+          if (!commentText.trim() && hasUserRated) {
+            return facility;
+          }
+          
+          const updatedComments = [...(facility.comments || []), newComment];
+          
+          // Ajouter l'utilisateur à la liste des notateurs s'il a fourni une note
+          let updatedRatedUsers = [...(facility.rated_users || [])];
+          if (finalRating > 0) {
+            updatedRatedUsers.push(currentUser.id);
+          }
+          
+          // Calculer la nouvelle note moyenne
+          const newAverageRating = updatedComments.reduce((acc, comment) => acc + (comment.rating || 0), 0) / 
+                                  updatedComments.filter(comment => comment.rating > 0).length || 0;
           
           return {
             ...facility,
-            comments: [...(facility.comments || []), newComment]
+            comments: updatedComments,
+            average_rating: newAverageRating || 0,
+            rated_users: updatedRatedUsers
           };
         }
         return facility;
@@ -318,6 +427,7 @@ function App() {
 
   // Find the currently selected facility for comments modal
   const selectedFacility = facilities.find(f => f.id === commentsModal.facilityId) || { comments: [] };
+  const hasUserRated = selectedFacility.rated_users?.includes(currentUser.id);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -413,12 +523,25 @@ function App() {
                   <MapPin className="w-4 h-4 mr-1" />
                   <span>{facility.address}</span>
                 </div>
-                <div className="flex items-center mb-4">
+                <div className="flex items-center mb-2">
                   <span className="text-gray-600">Type de sport : {facility.sport_type}</span>
                 </div>
-                <div className="flex items-center mb-4">
+                <div className="flex items-center mb-2">
                   <span className="text-gray-600">Capacité : {facility.capacity}</span>
                 </div>
+                
+                {/* Rating display */}
+                <div className="flex items-center mb-4">
+                  <StarRating rating={facility.average_rating || 0} editable={false} />
+                  {facility.comments && facility.comments.length > 0 && facility.comments.some(c => c.rating > 0) ? (
+                    <span className="ml-2 text-sm text-gray-600">
+                      ({facility.average_rating.toFixed(1)}) {facility.comments.filter(c => c.rating > 0).length} avis
+                    </span>
+                  ) : (
+                    <span className="ml-2 text-sm text-gray-600">Aucun avis</span>
+                  )}
+                </div>
+                
                 <div className="flex items-center justify-between">
                   <span className="text-2xl font-bold text-blue-600">
                     {facility.price_per_hour} MAD<span className="text-sm">/heure</span>
@@ -460,6 +583,7 @@ function App() {
         isOpen={commentsModal.isOpen}
         onClose={closeCommentsModal}
         onAddComment={handleAddComment}
+        hasRated={hasUserRated}
       />
     </div>
   );
