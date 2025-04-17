@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { MapPin, Filter, Search, Trash, MessageCircle, X, Send, Star } from 'lucide-react';
 
 // Mock data for sports facilities (empty array to remove existing facilities)
@@ -17,8 +17,7 @@ const sports = [
 ];
 const priceRanges = ["Tous les prix", "0-50 MAD", "50-100 MAD", "100 MAD+"];
 
-// Simuler un utilisateur connecté
-const currentUser = { id: 1, name: "Utilisateur" };
+const currentUser = JSON.parse(localStorage.getItem('user')) ;
 
 // Star Rating component
 const StarRating = ({ rating, setRating, editable = false }) => {
@@ -176,7 +175,7 @@ const AddFacilityForm = ({ onAdd }) => {
       setImage(file);
       const reader = new FileReader();
       reader.onloadend = () => {
-        setPreviewImage(reader.result); // Prévisualisation en Base64
+        setPreviewImage(reader.result); 
       };
       reader.readAsDataURL(file);
     }
@@ -184,20 +183,31 @@ const AddFacilityForm = ({ onAdd }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (name && address && sportType && capacity && pricePerHour && image) {
-      onAdd({
-        id: Date.now(), // Use a unique ID, such as the current timestamp
-        name,
-        address,
-        sport_type: sportType,
-        capacity: parseInt(capacity),
-        price_per_hour: parseFloat(pricePerHour),
-        user_id: 1, // Replace with the logged-in user's ID (handled backend)
-        image: previewImage, // Stocker l'image en Base64
-        comments: [], // Initialize empty comments array
-        average_rating: 0, // Initialize with zero rating
-        rated_users: [] // Liste des utilisateurs ayant noté le terrain
-      });
+    const formData = new FormData();
+    formData.append('name', name);
+    formData.append('address', address);
+    formData.append('sport_type', sportType);
+    formData.append('capacity', parseInt(capacity));
+    formData.append('price_per_hour', parseFloat(pricePerHour));
+    formData.append('user_id', currentUser.id); 
+    formData.append('image', image);
+
+    fetch('http://127.0.0.1:8000/api/stades', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+      },
+      body: formData,
+    })
+      .then((response) => {
+      if (!response.ok) {
+        throw new Error('Failed to add facility');
+      }
+      return response.json();
+      })
+      .then((data) => {
+      console.log('Facility added successfully:', data);
+      onAdd(data);
       setName('');
       setAddress('');
       setSportType('');
@@ -205,7 +215,10 @@ const AddFacilityForm = ({ onAdd }) => {
       setPricePerHour('');
       setImage(null);
       setPreviewImage('');
-    }
+      })
+      .catch((error) => {
+      console.error('Error adding facility:', error);
+      });
   };
 
   return (
@@ -333,12 +346,36 @@ function App() {
     facilityId: null
   });
 
+  const fetchStades = async () => {
+    const rep = await fetch("http://127.0.0.1:8000/api/stades");
+    const data = await rep.json();
+    setFacilities(data);
+  };
+
+  useEffect(() => {
+    fetchStades();
+  }, []);
+
+
+
   const handleAddFacility = (newFacility) => {
     setFacilities((prevFacilities) => [...prevFacilities, newFacility]);
     setShowAddForm(false);
   };
 
-  const handleDeleteFacility = (id) => {
+  const handleDeleteFacility = async (id) => {
+    // Send DELETE request to the API
+    const rep = await fetch(`http://127.0.0.1:8000/api/stades/${id}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      },
+    });
+    if (!rep.ok) {
+      console.error('Failed to delete facility:', rep.statusText);
+      return;
+    }
     setFacilities((prevFacilities) => prevFacilities.filter(facility => facility.id !== id));
   };
 
@@ -494,12 +531,15 @@ function App() {
         </div>
 
         {/* Add Facility Button */}
-        <button
+        {currentUser && (currentUser.role === 'admin' || currentUser.role === "propriétaire") && (
+          <button
           onClick={() => setShowAddForm(!showAddForm)}
           className="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition-colors mb-6"
         >
           {showAddForm ? "Annuler" : "Ajouter un terrain"}
         </button>
+        )
+        }
 
         {/* Add Facility Form */}
         {showAddForm && <AddFacilityForm onAdd={handleAddFacility} />}
@@ -513,7 +553,7 @@ function App() {
             >
               {/* Image */}
               <img
-                src={facility.image}
+                src={`http://127.0.0.1:8000/storage/${facility.image}`}
                 alt={facility.name}
                 className="w-full h-48 object-cover"
               />
@@ -551,13 +591,14 @@ function App() {
                   </button>
                 </div>
                 <div className="mt-4 flex gap-2">
-                  <button
+                  {currentUser && (currentUser.role === 'admin' || currentUser.role === "propriétaire") && (
+                    <button
                     onClick={() => handleDeleteFacility(facility.id)}
                     className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors"
                     title="Supprimer"
                   >
                     <Trash className="w-4 h-4" />
-                  </button>
+                  </button>)}
                   <button
                     onClick={() => openCommentsModal(facility.id)}
                     className="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors flex items-center"
