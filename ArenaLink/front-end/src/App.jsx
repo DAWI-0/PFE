@@ -12,7 +12,7 @@ import Profile from './components/pages/profile/profile'; // Import profile.jsx
 import NotFound from './components/pages/NotFound'; // Create a 404 page
 import UserRoleConfirmation from './components/pages/home/GestionDesRoles';
 import GestionDesCommendes from './components/pages/home/GestionDesCommendes';
-import { Dashboard } from './components/pages/home/Dashboard';
+import  Dashboard  from './components/pages/home/Dashboard';
 
 export default function App() {
   const token = localStorage.getItem('authToken');
