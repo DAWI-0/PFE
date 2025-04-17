@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('reservations', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained();
-            $table->foreignId('stade_id')->constrained();
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('stade_id')->constrained('stades')->onDelete('cascade');
             $table->dateTime('start_time');
             $table->integer('duration');
             $table->decimal('total_price', 8, 2);

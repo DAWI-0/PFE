@@ -19,8 +19,8 @@ return new class extends Migration
             $table->string('sport_type');
             $table->dateTime('start_date');
             $table->dateTime('end_date');
-            $table->foreignId('team_id')->constrained();
-            $table->foreignId('stade_id')->constrained();
+            $table->foreignId('team_id')->constrained('teams')->onDelete('cascade');
+            $table->foreignId('stade_id')->constrained('stades')->onDelete('cascade');
             $table->integer('max_teams');
             $table->timestamps();
         });

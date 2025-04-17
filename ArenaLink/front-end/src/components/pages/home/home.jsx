@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { MapPin, Filter, Search, Trash, MessageCircle, X, Send, Star } from 'lucide-react';
+import { MapPin, Filter, Search, Trash, MessageCircle, X, Send, Star, Calendar, Clock } from 'lucide-react';
 
 // Mock data for sports facilities (empty array to remove existing facilities)
 const initialFacilities = [];
@@ -46,6 +46,272 @@ const StarRating = ({ rating, setRating, editable = false }) => {
           </button>
         );
       })}
+    </div>
+  );
+};
+
+// New component for reservation modal
+const ReservationModal = ({ facility, isOpen, onClose }) => {
+  const [date, setDate] = useState('');
+  const [startTime, setStartTime] = useState('');
+  const [duration, setDuration] = useState(1);
+  const [totalPrice, setTotalPrice] = useState(0);
+  const [reservationSuccess, setReservationSuccess] = useState(false);
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [existingReservations, setExistingReservations] = useState([]);
+
+  useEffect(() => {
+    if (isOpen && facility) {
+      // Reset form when modal opens
+      setDate('');
+      setStartTime('');
+      setDuration(1);
+      setTotalPrice(facility.price_per_hour);
+      setReservationSuccess(false);
+      setError('');
+      
+      // Get today's date in YYYY-MM-DD format for min attribute
+      const today = new Date().toISOString().split('T')[0];
+      document.getElementById('reservation-date').min = today;
+      
+      // Fetch existing reservations for this facility
+      fetchExistingReservations(facility.id);
+    }
+  }, [isOpen, facility]);
+
+  // Update total price when duration changes
+  useEffect(() => {
+    if (facility) {
+      setTotalPrice(facility.price_per_hour * duration);
+    }
+  }, [duration, facility]);
+
+  const fetchExistingReservations = async (stadeId) => {
+    try {
+      const response = await fetch(`http://localhost:8000/api/reservations/stade/${stadeId}`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch existing reservations');
+      }
+      const data = await response.json();
+      setExistingReservations(data);
+    } catch (error) {
+      console.error('Error fetching reservations:', error);
+    }
+  };
+
+  // Check if selected time slot is available
+  const isTimeSlotAvailable = () => {
+    if (!date || !startTime) return true;
+    
+    const selectedDateTime = new Date(`${date}T${startTime}`);
+    const selectedEndTime = new Date(selectedDateTime);
+    selectedEndTime.setHours(selectedEndTime.getHours() + parseInt(duration));
+    
+    return !existingReservations.some(reservation => {
+      const reservationStartTime = new Date(reservation.start_time);
+      const reservationEndTime = new Date(reservationStartTime);
+      reservationEndTime.setHours(reservationEndTime.getHours() + parseInt(reservation.duration));
+      
+      // Check if there's any overlap between the selected time and existing reservations
+      return (
+        (selectedDateTime < reservationEndTime && selectedEndTime > reservationStartTime)
+      );
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    
+    if (!currentUser) {
+      setError('Vous devez être connecté pour effectuer une réservation');
+      return;
+    }
+    
+    if (!date || !startTime) {
+      setError('Veuillez sélectionner une date et une heure');
+      return;
+    }
+    
+    // Check if the selected time slot is available
+    if (!isTimeSlotAvailable()) {
+      setError('Ce créneau est déjà réservé. Veuillez choisir un autre horaire.');
+      return;
+    }
+    
+    setLoading(true);
+    setError('');
+    
+    // Format startTime for API
+    const formattedStartTime = `${date}T${startTime}:00`;
+    
+    try {
+      const response = await fetch('http://localhost:8000/api/reservations/stade', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+        body: JSON.stringify({
+          user_id: currentUser.id,
+          stade_id: facility.id,
+          start_time: formattedStartTime,
+          duration: parseInt(duration),
+          total_price: totalPrice,
+          status : "pending",
+        })
+      });
+      
+      if (!response.ok) {
+        throw new Error('Échec de la réservation');
+      }
+      
+      const data = await response.json();
+      setReservationSuccess(true);
+      
+      // Refresh the reservations list
+      fetchExistingReservations(facility.id);
+      
+    } catch (error) {
+      console.error('Error making reservation:', error);
+      setError(`Erreur: ${error.message}`);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div className="bg-white rounded-lg shadow-xl w-full max-w-md p-6">
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-2xl font-bold">Réserver - {facility.name}</h2>
+          <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
+            <X className="w-6 h-6" />
+          </button>
+        </div>
+        
+        {reservationSuccess ? (
+          <div className="text-center py-8">
+            <div className="bg-green-100 text-green-800 p-4 rounded-lg mb-4">
+              <p className="font-semibold">Réservation confirmée !</p>
+              <p>Votre terrain a été réservé avec succès.</p>
+            </div>
+            <button
+              onClick={onClose}
+              className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700"
+            >
+              Fermer
+            </button>
+          </div>
+        ) : (
+          <form onSubmit={handleSubmit}>
+            {/* Date selection */}
+            <div className="mb-4">
+              <label className="block text-gray-700 font-bold mb-2" htmlFor="reservation-date">
+                Date
+              </label>
+              <div className="relative">
+                <Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                <input
+                  type="date"
+                  id="reservation-date"
+                  className="w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
+                  value={date}
+                  onChange={(e) => setDate(e.target.value)}
+                  required
+                />
+              </div>
+            </div>
+            
+            {/* Time selection */}
+            <div className="mb-4">
+              <label className="block text-gray-700 font-bold mb-2" htmlFor="reservation-time">
+                Heure de début
+              </label>
+              <div className="relative">
+                <Clock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                <input
+                  type="time"
+                  id="reservation-time"
+                  className="w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
+                  value={startTime}
+                  onChange={(e) => setStartTime(e.target.value)}
+                  required
+                />
+              </div>
+            </div>
+            
+            {/* Duration selection */}
+            <div className="mb-4">
+              <label className="block text-gray-700 font-bold mb-2" htmlFor="reservation-duration">
+                Durée (heures)
+              </label>
+              <select
+                id="reservation-duration"
+                className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
+                value={duration}
+                onChange={(e) => setDuration(e.target.value)}
+                required
+              >
+                {[1, 2, 3, 4].map((hours) => (
+                  <option key={hours} value={hours}>
+                    {hours} {hours === 1 ? 'heure' : 'heures'}
+                  </option>
+                ))}
+              </select>
+            </div>
+            
+            {/* Display existing reservations if any */}
+            {existingReservations.length > 0 && (
+              <div className="mb-4">
+                <h3 className="font-bold text-gray-700 mb-2">Créneaux déjà réservés:</h3>
+                <div className="max-h-32 overflow-y-auto bg-gray-50 p-2 rounded">
+                  {existingReservations.map((reservation, index) => {
+                    const startDate = new Date(reservation.start_time);
+                    const endDate = new Date(startDate);
+                    endDate.setHours(endDate.getHours() + parseInt(reservation.duration));
+                    
+                    return (
+                      <div key={index} className="text-sm text-gray-600 mb-1">
+                        {startDate.toLocaleDateString()} - {startDate.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})} à {endDate.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+            
+            {/* Total price */}
+            <div className="bg-gray-50 p-4 rounded-lg mb-6">
+              <div className="flex justify-between items-center">
+                <span className="font-bold">Prix total:</span>
+                <span className="text-2xl font-bold text-blue-600">{totalPrice} MAD</span>
+              </div>
+              <div className="text-sm text-gray-600 mt-1">
+                {facility.price_per_hour} MAD/heure × {duration} {duration === 1 ? 'heure' : 'heures'}
+              </div>
+            </div>
+            
+            {/* Error message */}
+            {error && (
+              <div className="bg-red-100 text-red-700 p-3 rounded mb-4">
+                {error}
+              </div>
+            )}
+            
+            {/* Submit button */}
+            <button
+              type="submit"
+              className="w-full bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 disabled:bg-gray-400"
+              disabled={loading}
+            >
+              {loading ? 'Traitement en cours...' : 'Confirmer la réservation'}
+            </button>
+          </form>
+        )}
+      </div>
     </div>
   );
 };
@@ -455,8 +721,13 @@ function App() {
     isOpen: false,
     facilityId: null
   });
+  const [reservationModal, setReservationModal] = useState({
+    isOpen: false,
+    facilityId: null
+  });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [userReservations, setUserReservations] = useState([]);
 
   const fetchStades = async () => {
     setLoading(true);
@@ -476,6 +747,7 @@ function App() {
     }
   };
 
+
   useEffect(() => {
     fetchStades();
   }, []);
@@ -487,7 +759,6 @@ function App() {
 
   const handleDeleteFacility = async (id) => {
     try {
-      // Send DELETE request to the API
       const rep = await fetch(`http://127.0.0.1:8000/api/stades/${id}`, {
         method: 'DELETE',
         headers: {
@@ -520,6 +791,22 @@ function App() {
       isOpen: false,
       facilityId: null
     });
+  };
+
+  const openReservationModal = (facilityId) => {
+    setReservationModal({
+      isOpen: true,
+      facilityId
+    });
+  };
+
+  const closeReservationModal = () => {
+    setReservationModal({
+      isOpen: false,
+      facilityId: null
+    });
+    // Refresh user reservations when modal closes
+    fetchUserReservations();
   };
 
   const handleAddComment = (facilityId, commentText, rating) => {
@@ -572,8 +859,8 @@ function App() {
     return matchesCity && matchesSport && matchesPrice && matchesSearch;
   });
 
-  // Find the currently selected facility for comments modal
-  const selectedFacility = facilities.find(f => f.id === commentsModal.facilityId) || { comments: [] };
+  // Find the currently selected facility for modals
+  const selectedFacility = facilities.find(f => f.id === commentsModal.facilityId || f.id === reservationModal.facilityId) || { comments: [] };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -584,6 +871,44 @@ function App() {
           <p className="mt-2">Trouvez et réservez votre terrain de sport idéal</p>
         </div>
       </header>
+
+      {/* User Reservations Section (if user is logged in) */}
+      {currentUser && userReservations.length > 0 && (
+        <div className="container mx-auto px-4 py-6">
+          <div className="bg-white rounded-lg shadow p-6 mb-8">
+            <h2 className="text-xl font-bold mb-4">Mes réservations</h2>
+            <div className="overflow-x-auto">
+              <table className="w-full table-auto">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-4 py-2 text-left">Terrain</th>
+                    <th className="px-4 py-2 text-left">Date</th>
+                    <th className="px-4 py-2 text-left">Heure</th>
+                    <th className="px-4 py-2 text-left">Durée</th>
+                    <th className="px-4 py-2 text-left">Prix</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {userReservations.map((reservation) => {
+                    const startTime = new Date(reservation.start_time);
+                    const facility = facilities.find(f => f.id === reservation.stade_id);
+                    
+                    return (
+                      <tr key={reservation.id} className="border-b hover:bg-gray-50">
+                        <td className="px-4 py-3">{facility ? facility.name : `Terrain #${reservation.stade_id}`}</td>
+                        <td className="px-4 py-3">{startTime.toLocaleDateString()}</td>
+                        <td className="px-4 py-3">{startTime.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</td>
+                        <td className="px-4 py-3">{reservation.duration} {reservation.duration === 1 ? 'heure' : 'heures'}</td>
+                        <td className="px-4 py-3">{reservation.total_price} MAD</td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Filters */}
       <div className="container mx-auto px-4 py-6">
@@ -724,7 +1049,10 @@ function App() {
                     <span className="text-2xl font-bold text-blue-600">
                       {facility.price_per_hour} MAD<span className="text-sm">/heure</span>
                     </span>
-                    <button className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                    <button 
+                      className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+                      onClick={() => openReservationModal(facility.id)}
+                    >
                       Réserver
                     </button>
                   </div>
@@ -770,6 +1098,13 @@ function App() {
         onAddComment={handleAddComment}
         onDeleteComment={handleDeleteComment}
         hasRated={selectedFacility.user_has_rated}
+      />
+
+      {/* Reservation Modal */}
+      <ReservationModal
+        facility={selectedFacility}
+        isOpen={reservationModal.isOpen}
+        onClose={closeReservationModal}
       />
     </div>
   );

@@ -12,10 +12,12 @@ import Profile from './components/pages/profile/profile'; // Import profile.jsx
 import NotFound from './components/pages/NotFound'; // Create a 404 page
 import UserRoleConfirmation from './components/pages/home/GestionDesRoles';
 import GestionDesCommendes from './components/pages/home/GestionDesCommendes';
+import { Dashboard } from './components/pages/home/Dashboard';
 
 export default function App() {
   const token = localStorage.getItem('authToken');
-
+  const user = localStorage.getItem('user');
+  const userData = user ? JSON.parse(user) : null;
   return (
     <Router>
       <Routes>
@@ -29,7 +31,8 @@ export default function App() {
         <Route
           element={token ? <LayoutUser /> : <Navigate to="/login" replace />}
         >
-          <Route path="/home" element={<Home />} />
+          <Route path="/home" element={userData?.role === "admin" ? <Dashboard /> : <Home />} />
+          <Route path="/stades" element={<Home />} />
           <Route path="/magasin" element={<Magasin />} />
           <Route path="/commande" element={<Commande />} />
           <Route path="/profile" element={<Profile />} />

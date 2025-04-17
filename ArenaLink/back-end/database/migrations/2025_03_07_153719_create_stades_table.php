@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('sport_type');
             $table->integer('capacity');
             $table->decimal('price_per_hour', 8, 2);
-            $table->foreignId('user_id')->constrained();
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->timestamps();
         });
     }

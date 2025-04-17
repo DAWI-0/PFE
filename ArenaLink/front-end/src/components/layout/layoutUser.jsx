@@ -13,9 +13,6 @@ const LayoutUser = () => {
 
   // Navigation items
   const navItems = [
-    { id: 1, name: 'Accueil', to: '/home' },
-    { id: 2, name: 'Magasin', to: '/magasin' },
-    { id: 3, name: 'Commande', to: '/commande' },
   ];
   
   // Parse user data from localStorage with fallback
@@ -24,9 +21,15 @@ const LayoutUser = () => {
     profilePhoto: null,
   };
   
-  user?.role === "admin" && navItems.push({ id: 4, name: 'Gestion des roles', to: '/gestion_des_role' });
-  user?.role === "admin" && navItems.push({ id: 4, name: 'Gestion des commendes', to: '/gestion_des_commendes' });
-  user?.role === "vendeur" && navItems.push({ id: 4, name: 'Gestion des commendes', to: '/gestion_des_commendes' });
+  navItems.push({ id: 1, name: 'Accueil', to: '/home' });
+  user?.role === "admin" && navItems.push({ id: 2, name: 'Stades', to: '/stades' });
+  navItems.push(
+    { id: 3, name: 'Magasin', to: '/magasin' },
+    { id: 4, name: 'Commande', to: '/commande' },
+  )
+  user?.role === "admin" && navItems.push({ id: 5, name: 'Gestion des roles', to: '/gestion_des_role' });
+  user?.role === "admin" && navItems.push({ id: 6, name: 'Gestion des commendes', to: '/gestion_des_commendes' });
+  user?.role === "vendeur" && navItems.push({ id: 7, name: 'Gestion des commendes', to: '/gestion_des_commendes' });
   // Close menu when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {

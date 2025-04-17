@@ -22,7 +22,7 @@ class OrderController extends Controller
         return response()->json($order);
     }
 
-    public function store(Request $request)
+    public function store(Request $request , $id)
     {
         $validatedData = $request->validate([
             'user_id' => 'required',

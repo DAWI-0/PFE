@@ -7,6 +7,7 @@ use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProduitController;
+use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\StadeController;
 
@@ -59,4 +60,12 @@ Route::prefix("reviews")->group(function () {
     Route::post("/", [ReviewController::class, "store"]);
     Route::put("/{id}", [ReviewController::class, "update"]);
     Route::delete("/{id}", [ReviewController::class, "destroy"]);
+});
+
+Route::prefix("reservations")->group(function () {
+    Route::get("/", [ReservationController::class, "index"]);
+    Route::get("/{id}", [ReservationController::class, "show"]);
+    Route::post("/stade", [ReservationController::class, "store"]);
+    Route::put("/{id}", [ReservationController::class, "update"]);
+    Route::delete("/{id}", [ReservationController::class, "destroy"]);
 });
