@@ -12,13 +12,9 @@ import Profile from './components/pages/profile/profile'; // Import profile.jsx
 import NotFound from './components/pages/NotFound'; // Create a 404 page
 import UserRoleConfirmation from './components/pages/home/GestionDesRoles';
 import GestionDesCommendes from './components/pages/home/GestionDesCommendes';
-<<<<<<< HEAD
-import  Dashboard  from './components/pages/home/Dashboard';
-=======
-import { Dashboard } from './components/pages/home/Dashboard';
-import { GestionDesReservation } from './components/pages/home/GestionDesReservation';
->>>>>>> c3ac7a12c9581e1d7b3b2a5e2e575a35664e064c
-import GestionDesReservation from './components/pages/home/GestionDesReservation';
+import GestionDesReservations from './components/pages/home/GestionDesReservation';
+import DashboardCharts from './components/pages/home/Dashboard';
+
 
 export default function App() {
   const token = localStorage.getItem('authToken');
@@ -37,14 +33,14 @@ export default function App() {
         <Route
           element={token ? <LayoutUser /> : <Navigate to="/login" replace />}
         >
-          <Route path="/home" element={userData?.role === "admin" ? <Dashboard /> : <Home />} />
+          <Route path="/home" element={userData?.role === "admin" ? <DashboardCharts /> : <Home />} />
           <Route path="/stades" element={<Home />} />
           <Route path="/magasin" element={<Magasin />} />
           <Route path="/commande" element={<Commande />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/gestion_des_role" element={<UserRoleConfirmation />} />
           <Route path="/gestion_des_commendes" element={<GestionDesCommendes />} />
-          <Route path="/gestion_des_reservation" element={<GestionDesReservation />} />
+          <Route path="/gestion_des_reservation" element={<GestionDesReservations />} />
           
         </Route>
 
