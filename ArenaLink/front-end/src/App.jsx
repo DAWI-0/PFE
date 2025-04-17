@@ -12,7 +12,12 @@ import Profile from './components/pages/profile/profile'; // Import profile.jsx
 import NotFound from './components/pages/NotFound'; // Create a 404 page
 import UserRoleConfirmation from './components/pages/home/GestionDesRoles';
 import GestionDesCommendes from './components/pages/home/GestionDesCommendes';
+<<<<<<< HEAD
+import  Dashboard  from './components/pages/home/Dashboard';
+=======
 import { Dashboard } from './components/pages/home/Dashboard';
+import { GestionDesReservation } from './components/pages/home/GestionDesReservation';
+>>>>>>> c3ac7a12c9581e1d7b3b2a5e2e575a35664e064c
 import GestionDesReservation from './components/pages/home/GestionDesReservation';
 
 export default function App() {
