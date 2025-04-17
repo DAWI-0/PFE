@@ -61,7 +61,7 @@ class ReservationController extends Controller
 
     public function annuler($id)
     {
-        $reservation = reservation::find($id);
+        $reservation = reservation::where('id', $id)->first();
         if (!$reservation) {
             return response()->json(['message' => 'Reservation not found'], 404);
         }
@@ -72,7 +72,7 @@ class ReservationController extends Controller
     }
     public function confirmer($id)
     {
-        $reservation = reservation::find($id);
+        $reservation = reservation::where('id', $id)->where('status', 'pending')->first();
         if (!$reservation) {
             return response()->json(['message' => 'Reservation not found'], 404);
         }
@@ -81,4 +81,14 @@ class ReservationController extends Controller
 
         return response()->json(['message' => 'Reservation confirmed successfully']);
     }
+
+    public function ShowByUserId($id)
+    {
+        $reservations = reservation::where('user_id', $id)->get();
+        foreach ($reservations as $reservation) {
+            $reservation->stade;
+        }
+        return response()->json($reservations);
+    }
+
 }

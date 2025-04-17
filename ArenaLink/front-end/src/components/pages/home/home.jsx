@@ -94,7 +94,10 @@ const ReservationModal = ({ facility, isOpen, onClose }) => {
         throw new Error('Failed to fetch existing reservations');
       }
       const data = await response.json();
-      setExistingReservations(data);
+      data.forEach(reservation => {
+        if(reservation.status === 'confirmed') {  
+          setExistingReservations(prev => [...prev, reservation]);
+        }});
     } catch (error) {
       console.error('Error fetching reservations:', error);
     }
@@ -1036,14 +1039,14 @@ function App() {
                   </div>
                   
                   {/* Rating display */}
-                  <div className="flex items-center mb-4">
+                  {/* <div className="flex items-center mb-4">
                     <StarRating rating={facility.average_rating || 0} editable={false} />
                     <span className="ml-2 text-sm text-gray-600">
                       {facility.average_rating ? 
                         `(${parseFloat(facility.average_rating).toFixed(1)})` : 
                         "Aucun avis"}
                     </span>
-                  </div>
+                  </div> */}
                   
                   <div className="flex items-center justify-between">
                     <span className="text-2xl font-bold text-blue-600">

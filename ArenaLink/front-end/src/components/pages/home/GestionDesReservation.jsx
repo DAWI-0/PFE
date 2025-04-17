@@ -137,8 +137,8 @@ function GestionDesReservations() {
 
   const confirmReservation = async (reservationId) => {
     try {
-      const response = await fetch(`http://127.0.0.1:8000/api/reservation/confirmer/${reservationId}`, {
-        method: 'PUT',
+      const response = await fetch(`http://127.0.0.1:8000/api/reservations/confirmer/${reservationId}`, {
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
@@ -148,7 +148,12 @@ function GestionDesReservations() {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
 
-      fetchReservations();
+      if(user?.role === "admin") {
+        fetchReservations(selectedStadeId);
+      }
+        if(user?.role === "propriétaire") {
+        fetchReservations(user?.id);
+      }
     } catch (err) {
       console.error('Error confirming reservation:', err);
       alert('Erreur lors de la confirmation de la réservation.');
@@ -158,8 +163,8 @@ function GestionDesReservations() {
   // Function to cancel a reservation
   const cancelReservation = async (reservationId) => {
     try {
-      const response = await fetch(`http://127.0.0.1:8000/api/reservation/annuler/${reservationId}`, {
-        method: 'PUT',
+      const response = await fetch(`http://127.0.0.1:8000/api/reservations/annuler/${reservationId}`, {
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
@@ -169,7 +174,12 @@ function GestionDesReservations() {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
 
-      fetchReservations();
+      if(user?.role === "admin") {
+        fetchReservations(selectedStadeId);
+      }
+        if(user?.role === "propriétaire") {
+        fetchReservations(user?.id);
+      }
     } catch (err) {
       console.error('Error cancelling reservation:', err);
       alert('Erreur lors de l\'annulation de la réservation.');

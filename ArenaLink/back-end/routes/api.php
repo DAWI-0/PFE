@@ -67,7 +67,7 @@ Route::prefix("reservations")->group(function () {
     Route::get("/{id}", [ReservationController::class, "show"]);
     Route::get("/stade/{id}", [ReservationController::class, "showByStadeId"]);
     Route::post("/stade", [ReservationController::class, "store"]);
-    Route::put("/annuler/{id}", [ReservationController::class, "annuler"]);
-    Route::put("/confirmer/{id}", [ReservationController::class, "confirmer"]);
-
+    Route::POST("/annuler/{id}", [ReservationController::class, "annuler"]);
+    Route::POST("/confirmer/{id}", [ReservationController::class, "confirmer"]);
+    Route::get("/user/{id}", [ReservationController::class, "showByUserId"]);
 });
