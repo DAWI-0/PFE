@@ -17,7 +17,7 @@ const sports = [
 ];
 const priceRanges = ["Tous les prix", "0-50 MAD", "50-100 MAD", "100 MAD+"];
 
-const currentUser = JSON.parse(localStorage.getItem('user')) ;
+const currentUser = JSON.parse(localStorage.getItem('user'));
 
 // Star Rating component
 const StarRating = ({ rating, setRating, editable = false }) => {
@@ -51,28 +51,105 @@ const StarRating = ({ rating, setRating, editable = false }) => {
 };
 
 // Component for the comments modal
-const CommentsModal = ({ facility, isOpen, onClose, onAddComment, onAddRating, hasRated }) => {
+const CommentsModal = ({ facility, isOpen, onClose, onAddComment, onAddRating, hasRated, onDeleteComment }) => {
   const [newComment, setNewComment] = useState('');
   const [newRating, setNewRating] = useState(0);
+  const [comments, setComments] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (isOpen && facility && facility.id) {
+      fetchComments(facility.id);
+    }
+  }, [isOpen, facility]);
+
+  const fetchComments = async (stadeId) => {
+    setLoading(true);
+    try {
+      const response = await fetch(`http://localhost:8000/api/reviews/${stadeId}`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch comments');
+      }
+      const data = await response.json();
+      setComments(data);
+    } catch (error) {
+      console.error('Error fetching comments:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   if (!isOpen) return null;
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if ((newComment.trim() || newRating > 0) && (!hasRated || newComment.trim())) {
-      onAddComment(facility.id, newComment, newRating);
-      setNewComment('');
-      setNewRating(0);
+      const commentData = {
+        user_id: currentUser.id,
+        stade_id: facility.id,
+        rating: newRating,
+        comment: newComment,
+      };
+
+      fetch(`http://127.0.0.1:8000/api/reviews/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+        body: JSON.stringify(commentData),
+      })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Failed to add comment');
+        }
+        return response.json();
+      })
+      .then((data) => {
+        // Refresh comments after adding a new one
+        fetchComments(facility.id);
+        onAddComment(facility.id, newComment, newRating);
+        setNewComment('');
+        setNewRating(0);
+      })
+      .catch((error) => {
+        console.error('Error adding comment:', error);
+      });
     }
   };
 
-  // Calculate average rating
-  const averageRating = facility.comments && facility.comments.length > 0
-    ? facility.comments.reduce((acc, comment) => acc + (comment.rating || 0), 0) / facility.comments.length
+  // Function to handle comment deletion
+  const handleDeleteComment = async (commentId) => {
+    try {
+      const response = await fetch(`http://127.0.0.1:8000/api/reviews/${commentId}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        }
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to delete comment');
+      }
+      
+      // Refresh comments after deletion
+      fetchComments(facility.id);
+      // Also update the parent component state
+      onDeleteComment(facility.id, commentId);
+      
+    } catch (error) {
+      console.error('Error deleting comment:', error);
+    }
+  };
+
+  // Calculate average rating from fetched comments
+  const averageRating = comments.length > 0
+    ? comments.reduce((acc, comment) => acc + (comment.rating || 0), 0) / comments.length
     : 0;
 
-  // Vérifier si l'utilisateur actuel a déjà noté ce terrain
-  const userRatingComment = facility.comments?.find(comment => comment.userId === currentUser.id && comment.rating > 0);
+  // Check if current user has already rated this facility
+  const userRatingComment = comments.find(comment => comment.user_id === currentUser?.id && comment.rating > 0);
   const userRating = userRatingComment ? userRatingComment.rating : 0;
 
   return (
@@ -93,22 +170,49 @@ const CommentsModal = ({ facility, isOpen, onClose, onAddComment, onAddRating, h
         </div>
 
         <div className="max-h-80 overflow-y-auto mb-4">
-          {facility.comments && facility.comments.length > 0 ? (
-            facility.comments.map((comment, index) => (
-              <div key={index} className="bg-gray-50 p-3 rounded-lg mb-2">
+          {loading ? (
+            <p className="text-center py-4">Chargement des commentaires...</p>
+          ) : comments.length > 0 ? (
+            comments.map((comment) => (
+              <div key={comment.id} className="bg-gray-50 p-3 rounded-lg mb-2">
                 <div className="flex items-center mb-1">
-                  <div className="bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center">
-                    {comment.author.charAt(0).toUpperCase()}
-                  </div>
-                  <span className="font-semibold ml-2">{comment.author}</span>
-                  <span className="text-xs text-gray-500 ml-auto">{comment.date}</span>
+                  {comment.user?.profile_image ? (
+                    <img
+                      src={`http://localhost:8000/storage/${comment?.user.profile_image}`}
+                      alt={comment.user.name}
+                      className="w-8 h-8 rounded-full object-cover"
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = "https://via.placeholder.com/32?text=U";
+                      }}
+                    />
+                  ) : (
+                    <div className="bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center">
+                      {comment.user?.name?.charAt(0).toUpperCase() || 'U'}
+                    </div>
+                  )}
+                  <span className="font-semibold ml-2">{comment.user?.name || 'Utilisateur'}</span>
+                  <span className="text-xs text-gray-500 ml-auto">
+                    {new Date(comment.created_at).toLocaleDateString()}
+                  </span>
+                  
+                  {/* Delete button - only visible to admins */}
+                  {currentUser && currentUser.role === 'admin' && (
+                    <button 
+                      onClick={() => handleDeleteComment(comment.id)}
+                      className="ml-2 text-red-500 hover:text-red-700"
+                      title="Supprimer ce commentaire"
+                    >
+                      <Trash className="w-4 h-4" />
+                    </button>
+                  )}
                 </div>
                 {comment.rating > 0 && (
                   <div className="mb-1">
                     <StarRating rating={comment.rating} editable={false} />
                   </div>
                 )}
-                {comment.text && <p className="text-gray-700">{comment.text}</p>}
+                {comment.comment && <p className="text-gray-700">{comment.comment}</p>}
               </div>
             ))
           ) : (
@@ -117,8 +221,8 @@ const CommentsModal = ({ facility, isOpen, onClose, onAddComment, onAddRating, h
         </div>
 
         <form onSubmit={handleSubmit} className="mt-4">
-          {/* Afficher la note existante ou permettre d'en ajouter une nouvelle */}
-          {hasRated ? (
+          {/* Display existing rating or allow adding a new one */}
+          {userRating > 0 ? (
             <div className="mb-3">
               <label className="block text-gray-700 font-bold mb-2">
                 Votre note :
@@ -166,8 +270,8 @@ const AddFacilityForm = ({ onAdd }) => {
   const [sportType, setSportType] = useState('');
   const [capacity, setCapacity] = useState('');
   const [pricePerHour, setPricePerHour] = useState('');
-  const [image, setImage] = useState(null); // Stocke le fichier image
-  const [previewImage, setPreviewImage] = useState(''); // Stocke l'URL de prévisualisation
+  const [image, setImage] = useState(null); // Store image file
+  const [previewImage, setPreviewImage] = useState(''); // Store preview URL
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -225,7 +329,7 @@ const AddFacilityForm = ({ onAdd }) => {
     <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow p-6">
       <h2 className="text-2xl font-bold mb-4">Ajouter un nouveau terrain</h2>
 
-      {/* Champ : Nom */}
+      {/* Field: Name */}
       <div className="mb-4">
         <label className="block text-gray-700 font-bold mb-2" htmlFor="name">
           Nom
@@ -236,10 +340,11 @@ const AddFacilityForm = ({ onAdd }) => {
           className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
           value={name}
           onChange={(e) => setName(e.target.value)}
+          required
         />
       </div>
 
-      {/* Champ : Adresse */}
+      {/* Field: Address */}
       <div className="mb-4">
         <label className="block text-gray-700 font-bold mb-2" htmlFor="address">
           Adresse
@@ -250,10 +355,11 @@ const AddFacilityForm = ({ onAdd }) => {
           className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
           value={address}
           onChange={(e) => setAddress(e.target.value)}
+          required
         />
       </div>
 
-      {/* Champ : Type de sport */}
+      {/* Field: Sport Type */}
       <div className="mb-4">
         <label className="block text-gray-700 font-bold mb-2" htmlFor="sportType">
           Type de sport
@@ -263,6 +369,7 @@ const AddFacilityForm = ({ onAdd }) => {
           className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
           value={sportType}
           onChange={(e) => setSportType(e.target.value)}
+          required
         >
           <option value="">Sélectionnez un sport</option>
           {sports.map((sport) => (
@@ -273,7 +380,7 @@ const AddFacilityForm = ({ onAdd }) => {
         </select>
       </div>
 
-      {/* Champ : Capacité */}
+      {/* Field: Capacity */}
       <div className="mb-4">
         <label className="block text-gray-700 font-bold mb-2" htmlFor="capacity">
           Capacité
@@ -284,10 +391,11 @@ const AddFacilityForm = ({ onAdd }) => {
           className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
           value={capacity}
           onChange={(e) => setCapacity(e.target.value)}
+          required
         />
       </div>
 
-      {/* Champ : Prix par heure */}
+      {/* Field: Price per hour */}
       <div className="mb-4">
         <label className="block text-gray-700 font-bold mb-2" htmlFor="pricePerHour">
           Prix par heure (MAD)
@@ -299,10 +407,11 @@ const AddFacilityForm = ({ onAdd }) => {
           className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
           value={pricePerHour}
           onChange={(e) => setPricePerHour(e.target.value)}
+          required
         />
       </div>
 
-      {/* Champ : Image */}
+      {/* Field: Image */}
       <div className="mb-4">
         <label className="block text-gray-700 font-bold mb-2" htmlFor="image">
           Image
@@ -313,6 +422,7 @@ const AddFacilityForm = ({ onAdd }) => {
           accept="image/*"
           className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
           onChange={handleImageChange}
+          required
         />
         {previewImage && (
           <img
@@ -323,7 +433,7 @@ const AddFacilityForm = ({ onAdd }) => {
         )}
       </div>
 
-      {/* Bouton d'ajout */}
+      {/* Add button */}
       <button
         type="submit"
         className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
@@ -345,18 +455,30 @@ function App() {
     isOpen: false,
     facilityId: null
   });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const fetchStades = async () => {
-    const rep = await fetch("http://127.0.0.1:8000/api/stades");
-    const data = await rep.json();
-    setFacilities(data);
+    setLoading(true);
+    setError(null);
+    try {
+      const rep = await fetch("http://127.0.0.1:8000/api/stades");
+      if (!rep.ok) {
+        throw new Error(`Failed to fetch facilities: ${rep.status}`);
+      }
+      const data = await rep.json();
+      setFacilities(data);
+    } catch (err) {
+      console.error("Error fetching facilities:", err);
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
     fetchStades();
   }, []);
-
-
 
   const handleAddFacility = (newFacility) => {
     setFacilities((prevFacilities) => [...prevFacilities, newFacility]);
@@ -364,19 +486,26 @@ function App() {
   };
 
   const handleDeleteFacility = async (id) => {
-    // Send DELETE request to the API
-    const rep = await fetch(`http://127.0.0.1:8000/api/stades/${id}`, {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-      },
-    });
-    if (!rep.ok) {
-      console.error('Failed to delete facility:', rep.statusText);
-      return;
+    try {
+      // Send DELETE request to the API
+      const rep = await fetch(`http://127.0.0.1:8000/api/stades/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+      });
+      
+      if (!rep.ok) {
+        throw new Error(`Failed to delete facility: ${rep.status} ${rep.statusText}`);
+      }
+      
+      // Update state after successful deletion
+      setFacilities((prevFacilities) => prevFacilities.filter(facility => facility.id !== id));
+    } catch (error) {
+      console.error('Error deleting facility:', error);
+      alert(`Erreur lors de la suppression: ${error.message}`);
     }
-    setFacilities((prevFacilities) => prevFacilities.filter(facility => facility.id !== id));
   };
 
   const openCommentsModal = (facilityId) => {
@@ -394,48 +523,29 @@ function App() {
   };
 
   const handleAddComment = (facilityId, commentText, rating) => {
-    setFacilities((prevFacilities) =>
+    // This function will now be called after a successful backend update
+    // It updates the local state to reflect changes in the UI
+    setFacilities((prevFacilities) => 
       prevFacilities.map((facility) => {
         if (facility.id === facilityId) {
-          // Vérifier si l'utilisateur a déjà noté ce terrain
-          const hasUserRated = facility.rated_users?.includes(currentUser.id);
-          
-          // Si l'utilisateur a déjà noté et tente de noter à nouveau, ignorer la nouvelle note
-          const finalRating = hasUserRated ? 0 : rating;
-          
-          // Créer un nouveau commentaire
-          const newComment = {
-            id: Date.now(),
-            userId: currentUser.id,
-            author: currentUser.name,
-            date: new Date().toLocaleDateString(),
-            text: commentText,
-            rating: finalRating
-          };
-          
-          // Si le commentaire n'est qu'une note sans texte et que l'utilisateur a déjà noté, ne pas l'ajouter
-          if (!commentText.trim() && hasUserRated) {
-            return facility;
-          }
-          
-          const updatedComments = [...(facility.comments || []), newComment];
-          
-          // Ajouter l'utilisateur à la liste des notateurs s'il a fourni une note
-          let updatedRatedUsers = [...(facility.rated_users || [])];
-          if (finalRating > 0) {
-            updatedRatedUsers.push(currentUser.id);
-          }
-          
-          // Calculer la nouvelle note moyenne
-          const newAverageRating = updatedComments.reduce((acc, comment) => acc + (comment.rating || 0), 0) / 
-                                  updatedComments.filter(comment => comment.rating > 0).length || 0;
-          
-          return {
-            ...facility,
-            comments: updatedComments,
-            average_rating: newAverageRating || 0,
-            rated_users: updatedRatedUsers
-          };
+          // Since we're now fetching real comments from the backend,
+          // we just need to mark the facility for re-render
+          return { ...facility, commentCount: (facility.commentCount || 0) + 1 };
+        }
+        return facility;
+      })
+    );
+  };
+
+  const handleDeleteComment = (facilityId, commentId) => {
+    // This function will be called after a successful backend deletion
+    // It updates the local state to reflect changes in the UI
+    setFacilities((prevFacilities) => 
+      prevFacilities.map((facility) => {
+        if (facility.id === facilityId) {
+          // Since we're now fetching real comments from the backend,
+          // we just need to mark the facility for re-render
+          return { ...facility, commentCount: Math.max((facility.commentCount || 0) - 1, 0) };
         }
         return facility;
       })
@@ -464,7 +574,6 @@ function App() {
 
   // Find the currently selected facility for comments modal
   const selectedFacility = facilities.find(f => f.id === commentsModal.facilityId) || { comments: [] };
-  const hasUserRated = selectedFacility.rated_users?.includes(currentUser.id);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -491,7 +600,7 @@ function App() {
               />
             </div>
             <div className="flex flex-wrap gap-4">
-              {/* Ville (champ de texte libre) */}
+              {/* City (free text field) */}
               <input
                 type="text"
                 placeholder="Entrez une ville..."
@@ -500,7 +609,7 @@ function App() {
                 onChange={(e) => setSelectedCity(e.target.value)}
               />
 
-              {/* Type de sport */}
+              {/* Sport type */}
               <select
                 className="px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
                 value={selectedSport}
@@ -514,7 +623,7 @@ function App() {
                 ))}
               </select>
 
-              {/* Plage de prix */}
+              {/* Price range */}
               <select
                 className="px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
                 value={selectedPrice}
@@ -533,89 +642,124 @@ function App() {
         {/* Add Facility Button */}
         {currentUser && (currentUser.role === 'admin' || currentUser.role === "propriétaire") && (
           <button
-          onClick={() => setShowAddForm(!showAddForm)}
-          className="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition-colors mb-6"
-        >
-          {showAddForm ? "Annuler" : "Ajouter un terrain"}
-        </button>
-        )
-        }
+            onClick={() => setShowAddForm(!showAddForm)}
+            className="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition-colors mb-6"
+          >
+            {showAddForm ? "Annuler" : "Ajouter un terrain"}
+          </button>
+        )}
 
         {/* Add Facility Form */}
         {showAddForm && <AddFacilityForm onAdd={handleAddFacility} />}
 
-        {/* Facilities Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredFacilities.map((facility) => (
-            <div
-              key={facility.id}
-              className="bg-white rounded-lg shadow-lg overflow-hidden transform transition-transform hover:scale-[1.02]"
+        {/* Loading state */}
+        {loading && (
+          <div className="text-center py-12">
+            <p className="text-lg text-gray-600">Chargement des terrains...</p>
+          </div>
+        )}
+
+        {/* Error state */}
+        {error && (
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
+            <p>Erreur lors du chargement des terrains: {error}</p>
+            <button 
+              className="underline mt-2"
+              onClick={fetchStades}
             >
-              {/* Image */}
-              <img
-                src={`http://127.0.0.1:8000/storage/${facility.image}`}
-                alt={facility.name}
-                className="w-full h-48 object-cover"
-              />
-              <div className="p-6">
-                <h3 className="text-xl font-semibold mb-2">{facility.name}</h3>
-                <div className="flex items-center text-gray-600 mb-2">
-                  <MapPin className="w-4 h-4 mr-1" />
-                  <span>{facility.address}</span>
-                </div>
-                <div className="flex items-center mb-2">
-                  <span className="text-gray-600">Type de sport : {facility.sport_type}</span>
-                </div>
-                <div className="flex items-center mb-2">
-                  <span className="text-gray-600">Capacité : {facility.capacity}</span>
-                </div>
-                
-                {/* Rating display */}
-                <div className="flex items-center mb-4">
-                  <StarRating rating={facility.average_rating || 0} editable={false} />
-                  {facility.comments && facility.comments.length > 0 && facility.comments.some(c => c.rating > 0) ? (
+              Réessayer
+            </button>
+          </div>
+        )}
+
+        {/* Empty state */}
+        {!loading && !error && filteredFacilities.length === 0 && (
+          <div className="text-center py-12">
+            <p className="text-lg text-gray-600">Aucun terrain trouvé</p>
+          </div>
+        )}
+
+        {/* Facilities Grid */}
+        {!loading && !error && (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredFacilities.map((facility) => (
+              <div
+                key={facility.id}
+                className="bg-white rounded-lg shadow-lg overflow-hidden transform transition-transform hover:scale-[1.02]"
+              >
+                {/* Image */}
+                <img
+                  src={`http://127.0.0.1:8000/storage/${facility.image}`}
+                  alt={facility.name}
+                  className="w-full h-48 object-cover"
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src = "https://via.placeholder.com/400x300?text=Image+non+disponible";
+                  }}
+                />
+                <div className="p-6">
+                  <h3 className="text-xl font-semibold mb-2">{facility.name}</h3>
+                  <div className="flex items-center text-gray-600 mb-2">
+                    <MapPin className="w-4 h-4 mr-1" />
+                    <span>{facility.address}</span>
+                  </div>
+                  <div className="flex items-center mb-2">
+                    <span className="text-gray-600">Type de sport : {facility.sport_type}</span>
+                  </div>
+                  <div className="flex items-center mb-2">
+                    <span className="text-gray-600">Capacité : {facility.capacity}</span>
+                  </div>
+                  
+                  {/* Rating display */}
+                  <div className="flex items-center mb-4">
+                    <StarRating rating={facility.average_rating || 0} editable={false} />
                     <span className="ml-2 text-sm text-gray-600">
-                      ({facility.average_rating.toFixed(1)}) {facility.comments.filter(c => c.rating > 0).length} avis
+                      {facility.average_rating ? 
+                        `(${parseFloat(facility.average_rating).toFixed(1)})` : 
+                        "Aucun avis"}
                     </span>
-                  ) : (
-                    <span className="ml-2 text-sm text-gray-600">Aucun avis</span>
-                  )}
-                </div>
-                
-                <div className="flex items-center justify-between">
-                  <span className="text-2xl font-bold text-blue-600">
-                    {facility.price_per_hour} MAD<span className="text-sm">/heure</span>
-                  </span>
-                  <button className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors">
-                    Réserver
-                  </button>
-                </div>
-                <div className="mt-4 flex gap-2">
-                  {currentUser && (currentUser.role === 'admin' || currentUser.role === "propriétaire") && (
-                    <button
-                    onClick={() => handleDeleteFacility(facility.id)}
-                    className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors"
-                    title="Supprimer"
-                  >
-                    <Trash className="w-4 h-4" />
-                  </button>)}
-                  <button
-                    onClick={() => openCommentsModal(facility.id)}
-                    className="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors flex items-center"
-                    title="Commentaires"
-                  >
-                    <MessageCircle className="w-4 h-4" />
-                    {facility.comments && facility.comments.length > 0 && (
-                      <span className="ml-1 text-xs bg-blue-600 text-white rounded-full w-5 h-5 flex items-center justify-center">
-                        {facility.comments.length}
-                      </span>
+                  </div>
+                  
+                  <div className="flex items-center justify-between">
+                    <span className="text-2xl font-bold text-blue-600">
+                      {facility.price_per_hour} MAD<span className="text-sm">/heure</span>
+                    </span>
+                    <button className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                      Réserver
+                    </button>
+                  </div>
+                  <div className="mt-4 flex gap-2">
+                    {/* Delete button - only visible to admins and owners */}
+                    {currentUser && (currentUser.role === 'admin' || 
+                      (currentUser.role === "propriétaire" && currentUser.id === facility.user_id)) && (
+                      <button
+                        onClick={() => handleDeleteFacility(facility.id)}
+                        className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors"
+                        title="Supprimer"
+                      >
+                        <Trash className="w-4 h-4" />
+                      </button>
                     )}
-                  </button>
+                    
+                    {/* Comments button */}
+                    <button
+                      onClick={() => openCommentsModal(facility.id)}
+                      className="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors flex items-center"
+                      title="Commentaires"
+                    >
+                      <MessageCircle className="w-4 h-4" />
+                      {facility.comment_count > 0 && (
+                        <span className="ml-1 text-xs bg-blue-600 text-white rounded-full w-5 h-5 flex items-center justify-center">
+                          {facility.comment_count}
+                        </span>
+                      )}
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Comments Modal */}
@@ -624,7 +768,8 @@ function App() {
         isOpen={commentsModal.isOpen}
         onClose={closeCommentsModal}
         onAddComment={handleAddComment}
-        hasRated={hasUserRated}
+        onDeleteComment={handleDeleteComment}
+        hasRated={selectedFacility.user_has_rated}
       />
     </div>
   );

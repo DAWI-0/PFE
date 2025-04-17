@@ -7,6 +7,7 @@ use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProduitController;
+use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\StadeController;
 
 Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
@@ -50,4 +51,12 @@ Route::prefix("stades")->group(function () {
     Route::post("/", [StadeController::class, "store"]);
     Route::put("/{id}", [StadeController::class, "update"]);
     Route::delete("/{id}", [StadeController::class, "destroy"]);
+});
+
+Route::prefix("reviews")->group(function () {
+    Route::get("/", [ReviewController::class, "index"]);
+    Route::get("/{id}", [ReviewController::class, "show"]);
+    Route::post("/", [ReviewController::class, "store"]);
+    Route::put("/{id}", [ReviewController::class, "update"]);
+    Route::delete("/{id}", [ReviewController::class, "destroy"]);
 });

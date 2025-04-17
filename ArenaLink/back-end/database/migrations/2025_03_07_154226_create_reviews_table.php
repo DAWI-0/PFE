@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignId('stade_id')->constrained();
             $table->integer('rating');
             // $table->tinyInteger('rating');
-            $table->text('comment'); 
+            $table->text('comment')->nullable();
             $table->timestamps();
         });
     }
