@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\reservation;
+use App\Models\stade;
 use Illuminate\Http\Request;
 
 class ReservationController extends Controller
@@ -21,5 +22,63 @@ class ReservationController extends Controller
         $reservation = reservation::create($validatedData);
 
         return response()->json(['reservation' => $reservation], 201);
+    }
+
+    public function index()
+    {
+        $reservations = reservation::all();
+        foreach ($reservations as $reservation) {
+            $reservation->user;
+            $reservation->stade;
+        }
+        return response()->json($reservations);
+    }
+    public function show($id)
+    {
+        $stade=stade::where("user_id", $id)->first();
+        if (!$stade) {
+            return response()->json(['message' => 'Stade not found'], 404);
+        }
+        $reservations = reservation::where('stade_id', $stade->id)->get();
+        foreach ($reservations as $reservation) {
+            $reservation->user;
+        }
+        return response()->json($reservations);
+    }
+
+    public function showByStadeId($id)
+    {
+        $stade = stade::find($id);
+        if (!$stade) {
+            return response()->json(['message' => 'Stade not found'], 404);
+        }
+        $reservations = reservation::where('stade_id', $stade->id)->get();
+        foreach ($reservations as $reservation) {
+            $reservation->user;
+        }
+        return response()->json($reservations);
+    }
+
+    public function annuler($id)
+    {
+        $reservation = reservation::find($id);
+        if (!$reservation) {
+            return response()->json(['message' => 'Reservation not found'], 404);
+        }
+        $reservation->status = 'cancelled';
+        $reservation->save();
+
+        return response()->json(['message' => 'Reservation cancelled successfully']);
+    }
+    public function confirmer($id)
+    {
+        $reservation = reservation::find($id);
+        if (!$reservation) {
+            return response()->json(['message' => 'Reservation not found'], 404);
+        }
+        $reservation->status = 'confirmed';
+        $reservation->save();
+
+        return response()->json(['message' => 'Reservation confirmed successfully']);
     }
 }

@@ -65,7 +65,9 @@ Route::prefix("reviews")->group(function () {
 Route::prefix("reservations")->group(function () {
     Route::get("/", [ReservationController::class, "index"]);
     Route::get("/{id}", [ReservationController::class, "show"]);
+    Route::get("/stade/{id}", [ReservationController::class, "showByStadeId"]);
     Route::post("/stade", [ReservationController::class, "store"]);
-    Route::put("/{id}", [ReservationController::class, "update"]);
-    Route::delete("/{id}", [ReservationController::class, "destroy"]);
+    Route::put("/annuler/{id}", [ReservationController::class, "annuler"]);
+    Route::put("/confirmer/{id}", [ReservationController::class, "confirmer"]);
+
 });
