@@ -28,8 +28,10 @@ const LayoutUser = () => {
     { id: 4, name: 'Commande', to: '/commande' },
   )
   user?.role === "admin" && navItems.push({ id: 5, name: 'Gestion des roles', to: '/gestion_des_role' });
-  user?.role === "admin" && navItems.push({ id: 6, name: 'Gestion des commendes', to: '/gestion_des_commendes' });
-  user?.role === "vendeur" && navItems.push({ id: 7, name: 'Gestion des commendes', to: '/gestion_des_commendes' });
+  user?.role === "admin" && navItems.push({ id: 6, name: 'Gestion des réservation', to: '/gestion_des_reservation' });
+  user?.role === "propriétaire" && navItems.push({ id: 7, name: 'Gestion des réservation', to: '/gestion_des_reservation' });
+  user?.role === "admin" && navItems.push({ id: 7, name: 'Gestion des commendes', to: '/gestion_des_commendes' });
+  user?.role === "vendeur" && navItems.push({ id: 8, name: 'Gestion des commendes', to: '/gestion_des_commendes' });
   // Close menu when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -74,7 +76,7 @@ const LayoutUser = () => {
   return (
     <div>
       <nav className="bg-white shadow-lg fixed top-0 left-0 right-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
               <div className="relative mb-12 w-48">
@@ -111,7 +113,7 @@ const LayoutUser = () => {
                   key={item.id}
                   to={item.to}
                   onClick={() => console.log(`Navigating to ${item.to}`)}
-                  className={`px-3 py-2 rounded-md text-sm font-medium ${
+                  className={`px-3 py-2 rounded-md text-sm font-medium text-nowrap ${
                     item.to === location.pathname
                       ? 'text-blue-600'
                       : 'text-gray-700 hover:text-blue-500'

@@ -13,6 +13,7 @@ import NotFound from './components/pages/NotFound'; // Create a 404 page
 import UserRoleConfirmation from './components/pages/home/GestionDesRoles';
 import GestionDesCommendes from './components/pages/home/GestionDesCommendes';
 import { Dashboard } from './components/pages/home/Dashboard';
+import { GestionDesReservation } from './components/pages/home/GestionDesReservation';
 
 export default function App() {
   const token = localStorage.getItem('authToken');
@@ -38,6 +39,7 @@ export default function App() {
           <Route path="/profile" element={<Profile />} />
           <Route path="/gestion_des_role" element={<UserRoleConfirmation />} />
           <Route path="/gestion_des_commendes" element={<GestionDesCommendes />} />
+          <Route path="/gestion_des_reservation" element={<GestionDesReservation />} />
           
         </Route>
 
