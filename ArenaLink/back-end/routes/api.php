@@ -10,6 +10,7 @@ use App\Http\Controllers\ProduitController;
 use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\StadeController;
+use App\Http\Controllers\Auth\PasswordController;
 
 Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
     return $request->user();
@@ -27,6 +28,7 @@ Route::middleware('auth:sanctum')->post('/modifier/{id}', [UserController::class
 Route::middleware('auth:sanctum')->post('/changerole/{id}', [UserController::class, 'changerole']);
 Route::get('/getAllUsers', [UserController::class, 'getAllUsers']);
 Route::post('/Confirmer/{id}', [UserController::class, 'Confirmer']);
+Route::post('/change-password/{idUser}', [PasswordController::class, 'changePassword']);
 
 Route::middleware('auth:sanctum')->post('/logout', [UserController::class, 'logout']);
 
