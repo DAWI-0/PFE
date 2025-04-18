@@ -28,7 +28,6 @@ export default function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/password-reset/:token" element={<ResetPassword />} />
-
         {/* Protected routes with LayoutUser */}
         <Route
           element={token ? <LayoutUser /> : <Navigate to="/login" replace />}

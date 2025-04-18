@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Link, useLocation, Outlet } from 'react-router-dom';
+import { Link, useLocation, Outlet, useNavigate } from 'react-router-dom';
 import logoBasket from '../../assets/Logo/basket.png';
 import logoFoot from '../../assets/Logo/foot.png';
 import logohand from '../../assets/Logo/hand.png';
@@ -22,14 +22,29 @@ const LayoutUser = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isMenuOpenMobile, setIsMenuOpenMobile] = useState(false);
   const [sidebarExpanded, setSidebarExpanded] = useState(true);
+  const [showNavbar, setShowNavbar] = useState(true);
   const location = useLocation();
   const menuRef = useRef(null);
+  const navigate = useNavigate();
 
   // Parse user data from localStorage with fallback
   const user = JSON.parse(localStorage.getItem('user')) || {
     name: 'Utilisateur',
     profilePhoto: null,
   };
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 768) {
+        setSidebarExpanded(false);
+      } else {
+        setSidebarExpanded(true);
+      }
+    };
+    window.addEventListener('resize', handleResize);
+    handleResize();
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const isAdmin = user?.role === 'admin';
 
@@ -83,6 +98,7 @@ const LayoutUser = () => {
 
   const getInitial = (name) => (name ? name.charAt(0).toUpperCase() : 'U');
 
+
   // Render sidebar for admin users
   if (isAdmin) {
     return (
@@ -133,27 +149,45 @@ const LayoutUser = () => {
                 </li>
               ))}
               <li>
-                <button
-                  onClick={handleLogout}
-                  className={`
-                    flex items-center py-3 px-4 rounded-lg transition-all duration-200
-                    text-red-400 hover:bg-red-500/20 hover:text-red-300 w-full
-                    ${!sidebarExpanded ? 'justify-center' : ''}
-                  `}
-                >
-                  <LogOut size={20} />
-                  {sidebarExpanded && (
-                    <span className="ml-3 whitespace-nowrap font-medium">Se déconnecter</span>
-                  )}
-                </button>
               </li>
             </ul>
           </nav>
+          <div className='absolute bottom-0 w-full bg-slate-500'>
+          <div className={`items-center justify-between ${!sidebarExpanded ? 'block' : 'flex'} border-t-2 border-gray-600 p-2`}>
+            <div className='flex items-center cursor-pointer' onClick={()=>navigate("/profile")}>
+                {user.profile_image ? (
+                        <img
+                          src={"http://localhost:8000/storage/"+user.profile_image}
+                          alt={`${user.name}'s profile`}
+                          className="w-10 h-10 rounded-full object-cover mr-2"
+                          onError={(e) => (e.target.src = 'https://via.placeholder.com/150')}
+                        />
+                  ) : (
+                    <div className="w-10 h-10 rounded-full mr-2 bg-green-600 shadow-sm shadow-green-600 flex items-center justify-center text-white text-lg">
+                      {getInitial(user.name)}
+                    </div>
+                  )}
+                  <span className={`text-white font-semibold ${!sidebarExpanded ? 'hidden' : ''}`}>{user.name}</span>
+            </div>
+            <button
+                  onClick={handleLogout}
+                  className={`text-red-500 mr-2 font-semibold hover:scale-110 hover:text-red-600 hover:shadow-2xl hover:shadow-red-600 ${!sidebarExpanded ? 'hidden' : ''}`}
+                >
+                  <LogOut size={20} />
+                </button>
+          </div>
+          </div>
+          <button
+              onClick={handleLogout}
+              className={`text-red-500 m-5 font-semibold hover:scale-110 hover:text-red-600 hover:shadow-2xl hover:shadow-red-600 ${!sidebarExpanded ? '' : 'hidden'}`}
+            >
+              <LogOut size={20} />
+            </button>
         </aside>
 
         {/* Main Content */}
         <div className="flex-1 overflow-auto">
-          <main className="container mx-auto p-6">
+          <main className="mx-auto pl-16 md:p-0">
             <Outlet />
           </main>
         </div>
@@ -192,17 +226,27 @@ const LayoutUser = () => {
             {/* Profile Menu */}
             <div className="flex items-center" ref={menuRef}>
               <button
-                className="flex items-center space-x-2 focus:outline-none"
-                onClick={() => setIsMenuOpen(!isMenuOpen)}
-              >
-                <div className="w-8 h-8 rounded-full bg-gray-300 text-gray-900 flex items-center justify-center text-sm font-bold">
-                  {getInitial(user.name)}
-                </div>
-                <span className="hidden sm:inline text-sm font-medium text-gray-900">{user.name}</span>
-              </button>
+                  className="md:flex items-center focus:outline-none hidden"
+                  onClick={() => setIsMenuOpen(!isMenuOpen)}
+                  aria-label="Toggle profile menu"
+                >
+                  {user.profile_image ? (
+                    <img
+                      src={"http://localhost:8000/storage/"+user.profile_image}
+                      alt={`${user.name}'s profile`}
+                      className="w-6 h-6 rounded-full object-cover mr-2"
+                      onError={(e) => (e.target.src = 'https://via.placeholder.com/150')}
+                    />
+                  ) : (
+                    <div className="w-8 h-8 rounded-full mr-2 bg-green-600 shadow-sm shadow-green-600 flex items-center justify-center text-white text-lg">
+                      {getInitial(user.name)}
+                    </div>
+                  )}
+                  <span className='text-black font-semibold'>{user.name}</span>
+                </button>
 
               {isMenuOpen && (
-                <div className="absolute right-4 top-16 w-56 bg-white rounded-lg shadow-lg">
+                <div className={"absolute right-4 top-16 w-56 bg-white rounded-lg shadow-lg"}>
                   <div className="py-2">
                     <Link
                       to="/profile"
@@ -266,7 +310,7 @@ const LayoutUser = () => {
         )}
       </nav>
 
-      <main className="container mx-auto pt-20 pb-10 min-h-screen">
+      <main className="mx-auto pt-16 pb-10 min-h-screen">
         <Outlet />
       </main>
     </div>

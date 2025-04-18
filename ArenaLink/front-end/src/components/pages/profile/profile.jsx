@@ -9,6 +9,7 @@
     const [savedSuccess, setSavedSuccess] = useState(false);
     const [isUploading, setIsUploading] = useState(false);
     const userId = JSON.parse(localStorage.getItem('user'))?.id || null;
+    const [editpassworForm , setEditpassworForm] = useState(false);
     const [formData, setFormData] = useState({
       name: '',
       email: '',
@@ -143,10 +144,18 @@
               new_password: '',
               confirm_password: ''
           });
-      } catch (err) {
+        } catch (err) {
           setPasswordError(err.message || 'Failed to change password');
-      }
-  };
+        }
+      };
+      useEffect(() => {
+        if (passwordSuccess === true) {
+          setTimeout(() => {
+            setEditpassworForm(false);
+            setPasswordSuccess(false);
+          }, 3000);
+        }
+      }, [passwordSuccess]);
 
 
     const handleProfileImageUpload = (e) => {
@@ -440,16 +449,6 @@
       >
         Social Links
       </button>
-      <button
-        onClick={() => setActiveTab('password')}
-        className={`px-6 py-4 text-sm font-medium ${
-          activeTab === 'password'
-            ? 'border-b-2 border-blue-500 text-blue-600'
-            : 'text-gray-500 hover:text-gray-700'
-        } focus:outline-none`}
-      >
-        Change Password
-      </button>
     </nav>
   </div>
 
@@ -664,6 +663,15 @@
                           </dl>
                         </div>
                       </div>
+                      <div className='flex justify-end'>
+                      <button
+                            type="button"
+                            onClick={() => setEditpassworForm(!editpassworForm)}
+                            className="mt-4 bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded"
+                          >
+                            {editpassworForm ? 'Cancel' : 'Edit Password'}
+                          </button>
+                      </div>
                     </div>
                   )}
 
@@ -776,82 +784,84 @@
                   )}
                 </div>
               )}
-              {activeTab === 'password' && (
-    <div className="space-y-6">
-      {passwordSuccess && (
-        <div className="mb-4 p-4 bg-green-100 border border-green-400 text-green-700 rounded flex items-center justify-between">
-          <div className="flex items-center">
-            <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
-              <path
-                fillRule="evenodd"
-                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                clipRule="evenodd"
-              />
-            </svg>
-            <span>Password changed successfully!</span>
-          </div>
-        </div>
-      )}
-
-      {passwordError && (
-        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
-          <strong className="font-bold">Error!</strong>
-          <span className="block sm:inline"> {passwordError}</span>
-        </div>
-      )}
-
-      <form onSubmit={handlePasswordChange}>
-        <div className="space-y-6">
-          <div className="grid grid-cols-1 gap-6">
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Current Password</label>
-              <input
-                type="password"
-                name="current_password"
-                value={passwordData.current_password}
-                onChange={(e) => setPasswordData({...passwordData, current_password: e.target.value})}
-                className="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              />
             </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700">New Password</label>
-              <input
-                type="password"
-                name="new_password"
-                value={passwordData.new_password}
-                onChange={(e) => setPasswordData({...passwordData, new_password: e.target.value})}
-                className="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Confirm New Password</label>
-              <input
-                type="password"
-                name="confirm_password"
-                value={passwordData.confirm_password}
-                onChange={(e) => setPasswordData({...passwordData, confirm_password: e.target.value})}
-                className="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              />
-            </div>
-          </div>
-          <button
-            type="submit"
-            className="px-4 py-2 bg-blue-500 text-white rounded-lg font-medium hover:bg-blue-600 transition shadow-md flex items-center"
-          >
-            <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M5 13l4 4L19 7"
-              />
-            </svg>
-            Change Password
-          </button>
-        </div>
-      </form>
-    </div>
-  )}
+            <div className='container mb-5'>
+              {editpassworForm && (
+                 <div className="space-y-6">
+                 {passwordSuccess && (
+                   <div className="mb-4 p-4 bg-green-100 border border-green-400 text-green-700 rounded flex items-center justify-between">
+                     <div className="flex items-center">
+                       <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                         <path
+                           fillRule="evenodd"
+                           d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                           clipRule="evenodd"
+                         />
+                       </svg>
+                       <span>Password changed successfully!</span>
+                     </div>
+                   </div>
+                 )}
+           
+                 {passwordError && (
+                   <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+                     <strong className="font-bold">Error!</strong>
+                     <span className="block sm:inline"> {passwordError}</span>
+                   </div>
+                 )}
+           
+                 <form onSubmit={handlePasswordChange}>
+                   <div className="space-y-6">
+                     <div className="grid grid-cols-1 gap-6">
+                       <div>
+                         <label className="block text-sm font-medium text-gray-700">Current Password</label>
+                         <input
+                           type="password"
+                           name="current_password"
+                           value={passwordData.current_password}
+                           onChange={(e) => setPasswordData({...passwordData, current_password: e.target.value})}
+                           className="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                         />
+                       </div>
+                       <div>
+                         <label className="block text-sm font-medium text-gray-700">New Password</label>
+                         <input
+                           type="password"
+                           name="new_password"
+                           value={passwordData.new_password}
+                           onChange={(e) => setPasswordData({...passwordData, new_password: e.target.value})}
+                           className="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                         />
+                       </div>
+                       <div>
+                         <label className="block text-sm font-medium text-gray-700">Confirm New Password</label>
+                         <input
+                           type="password"
+                           name="confirm_password"
+                           value={passwordData.confirm_password}
+                           onChange={(e) => setPasswordData({...passwordData, confirm_password: e.target.value})}
+                           className="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                         />
+                       </div>
+                     </div>
+                     <button
+                       type="submit"
+                       className="px-4 py-2 bg-blue-500 text-white rounded-lg font-medium hover:bg-blue-600 transition shadow-md flex items-center"
+                     >
+                       <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                         <path
+                           strokeLinecap="round"
+                           strokeLinejoin="round"
+                           strokeWidth="2"
+                           d="M5 13l4 4L19 7"
+                         />
+                       </svg>
+                       Change Password
+                     </button>
+                   </div>
+                 </form>
+               </div>
+              )}
             </div>
           </div>
         </div>
