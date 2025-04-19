@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { MapPin, Filter, Search, Calendar, ChevronsUpDown } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 function GestionDesReservations() {
   const [reservations, setReservations] = useState([]);
@@ -12,6 +13,7 @@ function GestionDesReservations() {
   const [error, setError] = useState(null);
   const [stades, setStades] = useState([]);
   const user = JSON.parse(localStorage.getItem('user')) || {user: null};
+  const { t } = useTranslation();
 
   // Fetch reservations from the API
   const fetchReservations = async (id) => {
@@ -53,7 +55,7 @@ function GestionDesReservations() {
     try {
       const response = await fetch(`http://localhost:8000/api/stades`);
       if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
+        throw new Error(`t(HTTP error! Status:) ${response.status}`);
       }
       const data = await response.json();
       setStades(data);
@@ -101,7 +103,7 @@ function GestionDesReservations() {
     }
 
     // Filter by status
-    if (selectedStatus !== "Tous les statuts") {
+    if (selectedStatus !== t("Tous les statuts")) {
       const statusMap = {
         "Confirmé": "confirmed",
         "En attente": "pending",
@@ -145,7 +147,7 @@ function GestionDesReservations() {
       });
 
       if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
+        throw new Error(`t(HTTP error! Status:) ${response.status}`);
       }
 
       if(user?.role === "admin") {
@@ -156,7 +158,7 @@ function GestionDesReservations() {
       }
     } catch (err) {
       console.error('Error confirming reservation:', err);
-      alert('Erreur lors de la confirmation de la réservation.');
+      alert(t('Erreur lors de la confirmation de la réservation.'));
     }
   };
 
@@ -182,7 +184,7 @@ function GestionDesReservations() {
       }
     } catch (err) {
       console.error('Error cancelling reservation:', err);
-      alert('Erreur lors de l\'annulation de la réservation.');
+      alert(t("Erreur lors de l'annulation de la réservation."));
     }
   };
 
@@ -197,17 +199,17 @@ function GestionDesReservations() {
       case 'complete':
         bgColor = 'bg-green-100';
         textColor = 'text-green-800';
-        statusText = 'Confirmé';
+        statusText = t('Confirmé');
         break;
       case 'pending':
         bgColor = 'bg-yellow-100';
         textColor = 'text-yellow-800';
-        statusText = 'En attente';
+        statusText = t('En attente');
         break;
       case 'cancelled':
         bgColor = 'bg-red-100';
         textColor = 'text-red-800';
-        statusText = 'Annulé';
+        statusText = t('Annulé');
         break;
       default:
         bgColor = 'bg-gray-100';
@@ -228,7 +230,7 @@ function GestionDesReservations() {
       <div className="container mx-auto px-4 py-6">
         {/* Reservations Section */}
         <div className="bg-white rounded-lg shadow p-6 mb-8">
-          <h2 className="text-2xl font-bold mb-6">Gestion des réservations</h2>
+          <h2 className="text-2xl font-bold mb-6">{t("Gestion des réservations")}</h2>
           
           {/* Filters Section */}
           <div className="bg-gray-50 p-4 rounded-lg mb-6">
@@ -237,7 +239,7 @@ function GestionDesReservations() {
               {user?.role === "admin" && (
                 <div className="w-full md:w-1/4">
                   <label htmlFor="stadeSelect" className="block text-sm font-medium text-gray-700 mb-1">
-                    Stade
+                    {t("Stade")}
                   </label>
                   <select
                     id="stadeSelect"
@@ -245,7 +247,7 @@ function GestionDesReservations() {
                     onChange={(e) => setSelectedStadeId(e.target.value)}
                     value={selectedStadeId}
                   >
-                    <option value="">Tous les stades</option>
+                    <option value="">{t("Tous les stades")}</option>
                     {stades.map((stade) => (
                       <option key={stade.id} value={stade.id}>
                         {stade.name}
@@ -258,7 +260,7 @@ function GestionDesReservations() {
               {/* Date Range Filters */}
               <div className="w-full md:w-1/4">
                 <label htmlFor="startDate" className="block text-sm font-medium text-gray-700 mb-1">
-                  Date de début
+                  {t("Date de début")}
                 </label>
                 <div className="relative">
                   <input
@@ -274,7 +276,7 @@ function GestionDesReservations() {
               
               <div className="w-full md:w-1/4">
                 <label htmlFor="endDate" className="block text-sm font-medium text-gray-700 mb-1">
-                  Date de fin
+                  {t("Date de fin")}
                 </label>
                 <div className="relative">
                   <input
@@ -291,7 +293,7 @@ function GestionDesReservations() {
               {/* Status Filter */}
               <div className="w-full md:w-1/4">
                 <label htmlFor="statusSelect" className="block text-sm font-medium text-gray-700 mb-1">
-                  Statut
+                  {t("Statut")}
                 </label>
                 <select
                   id="statusSelect"
@@ -299,10 +301,10 @@ function GestionDesReservations() {
                   onChange={(e) => setSelectedStatus(e.target.value)}
                   value={selectedStatus}
                 >
-                  <option value="Tous les statuts">Tous les statuts</option>
-                  <option value="En attente">En attente</option>
-                  <option value="Confirmé">Confirmé</option>
-                  <option value="Annulé">Annulé</option>
+                  <option value="Tous les statuts">{t("Tous les statuts")}</option>
+                  <option value="En attente">{t("En attente")}</option>
+                  <option value="Confirmé">{t("Confirmé")}</option>
+                  <option value="Annulé">{t("Annulé")}</option>
                 </select>
               </div>
               
@@ -313,55 +315,55 @@ function GestionDesReservations() {
                   className="w-full md:w-auto px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 flex items-center justify-center"
                 >
                   <Filter className="h-4 w-4 mr-2" />
-                  Réinitialiser
+                  {t("Réinitialiser")}
                 </button>
               </div>
             </div>
           </div>
           
           {/* Loading and error states */}
-          {loading && <p className="text-center py-4">Chargement des réservations...</p>}
-          {error && <p className="text-center py-4 text-red-600">Erreur: {error}</p>}
+          {loading && <p className="text-center py-4">{t("Chargement des réservations...")}</p>}
+          {error && <p className="text-center py-4 text-red-600">{t("Erreur:")} {error}</p>}
           
           {/* Reservations List */}
           {!loading && !error && (
             <div className="space-y-4">
               {filteredReservations.length === 0 ? (
-                <p className="text-center py-4 text-gray-600">Aucune réservation trouvée.</p>
+                <p className="text-center py-4 text-gray-600">{t("Aucune réservation trouvée.")}</p>
               ) : (
                 filteredReservations.map(reservation => (
                   <div key={reservation.id} className="flex flex-col md:flex-row border rounded-lg shadow-sm p-4 bg-white">
                     <div className="flex-1">
                       <div className="flex items-center">
                         <h3 className="text-lg font-semibold">
-                          Réservation #{reservation.id}
+                          {t("Réservation")} #{reservation.id}
                         </h3>
                         <StatusBadge status={reservation.status} />
                       </div>
                       
                       <div className="mt-2 grid grid-cols-1 md:grid-cols-2 gap-2">
                         <div>
-                          <p className="text-sm text-gray-500">Client:</p>
-                          <p className="font-medium">{reservation.user?.name || "N/A"}</p>
+                          <p className="text-sm text-gray-500">{t("Client:")}</p>
+                          <p className="font-medium">{reservation.user?.name || t("N/A")}</p>
                         </div>
                         <div>
-                          <p className="text-sm text-gray-500">Téléphone:</p>
-                          <p className="font-medium">{reservation.user?.phone || "N/A"}</p>
+                          <p className="text-sm text-gray-500">{t("Téléphone:")}</p>
+                          <p className="font-medium">{reservation.user?.phone || t("N/A")}</p>
                         </div>
                         <div>
-                          <p className="text-sm text-gray-500">Date et heure:</p>
+                          <p className="text-sm text-gray-500">{t("Date et heure:")}</p>
                           <p className="font-medium">{formatDate(reservation.start_time)}</p>
                         </div>
                         <div>
-                          <p className="text-sm text-gray-500">Durée:</p>
-                          <p className="font-medium">{reservation.duration} heure(s)</p>
+                          <p className="text-sm text-gray-500">{t("Durée:")}</p>
+                          <p className="font-medium">{reservation.duration} {t("heure(s)")}</p>
                         </div>
                       </div>
                     </div>
                     
                     <div className="mt-4 md:mt-0 md:ml-4 flex flex-col items-end justify-between">
                       <div className="font-bold text-blue-600 text-xl">
-                        {parseFloat(reservation.total_price).toFixed(2)} DH
+                        {parseFloat(reservation.total_price).toFixed(2)} {t("DH")}
                       </div>
                       
                       <div className="flex space-x-2 mt-4">
@@ -371,13 +373,13 @@ function GestionDesReservations() {
                               onClick={() => confirmReservation(reservation.id)}
                               className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
                             >
-                              Confirmer
+                              {t("Confirmer")}
                             </button>
                             <button
                               onClick={() => cancelReservation(reservation.id)}
                               className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
                             >
-                              Annuler
+                              {t("Annuler")}
                             </button>
                           </>
                         )}

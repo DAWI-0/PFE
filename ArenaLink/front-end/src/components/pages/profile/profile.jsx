@@ -1,4 +1,5 @@
   import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 
   const Profile = () => {
     const [user, setUser] = useState(null);
@@ -31,6 +32,8 @@
     });
     const [passwordError, setPasswordError] = useState('');
     const [passwordSuccess, setPasswordSuccess] = useState(false);
+    const {t}=useTranslation();
+
     const fetchUserProfile = async () => {
       try {
         const response = await fetch('http://localhost:8000/api/user', {
@@ -41,7 +44,7 @@
         });
 
         if (!response.ok) {
-          throw new Error('Network error');
+          throw new Error(t('Network error'));
         }
 
         const data = await response.json();
@@ -72,7 +75,7 @@
       if (userId) {
         fetchUserProfile();
       } else {
-        setError('No user ID found');
+        setError(t('No user ID found'));
         setLoading(false);
       }
     }, [userId]);
@@ -106,15 +109,15 @@
   
       // Simple client-side validation
       if (!passwordData.current_password) {
-          setPasswordError('Please enter your current password');
+          setPasswordError(t('Please enter your current password'));
           return;
       }
       if (!passwordData.new_password || passwordData.new_password.length < 6) {
-          setPasswordError('New password must be at least 6 characters');
+          setPasswordError(t('New password must be at least 6 characters'));
           return;
       }
       if (passwordData.new_password !== passwordData.confirm_password) {
-          setPasswordError('New passwords do not match');
+          setPasswordError(t('New passwords do not match'));
           return;
       }
   
@@ -134,7 +137,7 @@
   
           if (!response.ok) {
               const errorData = await response.json();
-              throw new Error(errorData.message || 'Failed to change password');
+              throw new Error(errorData.message || t('Failed to change password'));
           }
   
           const result = await response.json();
@@ -145,7 +148,7 @@
               confirm_password: ''
           });
         } catch (err) {
-          setPasswordError(err.message || 'Failed to change password');
+          setPasswordError(err.message || t('Failed to change password'));
         }
       };
       useEffect(() => {
@@ -195,7 +198,7 @@
 
         if (!response.ok) {
           const errorData = await response.json();
-          throw new Error(errorData.message || 'Failed to update profile');
+          throw new Error(errorData.message || t('Failed to update profile'));
         }
 
         const updatedUser = await response.json();
@@ -207,7 +210,7 @@
         setEditMode(false);
       } catch (err) {
         console.error('Update error:', err);
-        setError(err.message || 'Failed to update profile');
+        setError(err.message || t('Failed to update profile'));
       } finally {
         setIsUploading(false);
       }
@@ -224,7 +227,7 @@
     if (error) {
       return (
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
-          <strong className="font-bold">Error!</strong>
+          <strong className="font-bold">{t("Error!")}</strong>
           <span className="block sm:inline"> {error}</span>
         </div>
       );
@@ -245,7 +248,7 @@
                     clipRule="evenodd"
                   />
                 </svg>
-                <span>Profile updated successfully!</span>
+                <span>{t("Profile updated successfully!")}</span>
               </div>
               <button onClick={() => setSavedSuccess(false)} className="text-green-700">
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -351,7 +354,7 @@
                           d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
                         />
                       </svg>
-                      Edit Profile
+                     {t("Edit Profile")}
                     </button>
                   ) : (
                     <div className="flex space-x-2">
@@ -375,7 +378,7 @@
                         }}
                         className="px-4 py-2 bg-white text-gray-600 rounded-lg font-medium hover:bg-gray-50 transition shadow-md"
                       >
-                        Cancel
+                        {t("Cancel")}
                       </button>
                       <button
                         onClick={handleSubmit}
@@ -404,7 +407,7 @@
                                 d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                               ></path>
                             </svg>
-                            Saving...
+                            {t("Saving...")}
                           </>
                         ) : (
                           <>
@@ -416,7 +419,7 @@
                                 d="M5 13l4 4L19 7"
                               />
                             </svg>
-                            Save Changes
+                            {t("Save Changes")}
                           </>
                         )}
                       </button>
@@ -437,7 +440,7 @@
             : 'text-gray-500 hover:text-gray-700'
         } focus:outline-none`}
       >
-        Personal Info
+        {t("Personal Info")}
       </button>
       <button
         onClick={() => setActiveTab('social')}
@@ -447,7 +450,7 @@
             : 'text-gray-500 hover:text-gray-700'
         } focus:outline-none`}
       >
-        Social Links
+        {t("Social Links")}
       </button>
     </nav>
   </div>
@@ -461,7 +464,7 @@
                     <div className="space-y-6">
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
-                          <label className="block text-sm font-medium text-gray-700">Full Name</label>
+                          <label className="block text-sm font-medium text-gray-700">{t("Full Name")}</label>
                           <input
                             type="text"
                             name="name"
@@ -471,7 +474,7 @@
                           />
                         </div>
                         <div>
-                          <label className="block text-sm font-medium text-gray-700">Email</label>
+                          <label className="block text-sm font-medium text-gray-700">{t("Email")}</label>
                           <input
                             type="email"
                             name="email"
@@ -481,7 +484,7 @@
                           />
                         </div>
                         <div>
-                          <label className="block text-sm font-medium text-gray-700">Phone</label>
+                          <label className="block text-sm font-medium text-gray-700">{t("Phone")}</label>
                           <input
                             type="tel"
                             name="phone"
@@ -491,7 +494,7 @@
                           />
                         </div>
                         <div>
-                          <label className="block text-sm font-medium text-gray-700">Country</label>
+                          <label className="block text-sm font-medium text-gray-700">{t("Country")}</label>
                           <input
                             type="text"
                             name="country"
@@ -501,7 +504,7 @@
                           />
                         </div>
                         <div>
-                          <label className="block text-sm font-medium text-gray-700">City/State</label>
+                          <label className="block text-sm font-medium text-gray-700">{t("City/State")}</label>
                           <input
                             type="text"
                             name="city_state"
@@ -511,7 +514,7 @@
                           />
                         </div>
                         <div>
-                          <label className="block text-sm font-medium text-gray-700">Postal Code</label>
+                          <label className="block text-sm font-medium text-gray-700">{t("Postal Code")}</label>
                           <input
                             type="text"
                             name="postal_code"
@@ -522,14 +525,14 @@
                         </div>
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-gray-700">Bio</label>
+                        <label className="block text-sm font-medium text-gray-700">{t("Bio")}</label>
                         <textarea
                           name="bio"
                           value={formData.bio}
                           onChange={handleInputChange}
                           rows="4"
                           className="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                          placeholder="Tell us a little about yourself"
+                          placeholder={t("Tell us a little about yourself")}
                         />
                       </div>
                     </div>
@@ -557,7 +560,7 @@
                                   value={formData[platform]}
                                   onChange={handleInputChange}
                                   className="flex-1 min-w-0 block w-full px-3 py-2 rounded-none rounded-r-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                                  placeholder="username"
+                                  placeholder={t("username")}
                                 />
                               </div>
                             </div>
@@ -573,26 +576,26 @@
                     <div className="space-y-8">
                       {/* Personal Information */}
                       <div>
-                        <h3 className="text-lg font-medium text-gray-900 mb-4">Personal Information</h3>
+                        <h3 className="text-lg font-medium text-gray-900 mb-4">{t("Personal Information")}</h3>
                         <div className="bg-gray-50 rounded-lg p-6">
                           <dl className="grid grid-cols-1 gap-x-6 gap-y-6 sm:grid-cols-2">
                             <div className="sm:col-span-1">
-                              <dt className="text-sm font-medium text-gray-500">Full name</dt>
+                              <dt className="text-sm font-medium text-gray-500">{t("Full name")}</dt>
                               <dd className="mt-1 text-lg text-gray-900">{user.name}</dd>
                             </div>
                             <div className="sm:col-span-1">
-                              <dt className="text-sm font-medium text-gray-500">Email address</dt>
+                              <dt className="text-sm font-medium text-gray-500">{t("Email address")}</dt>
                               <dd className="mt-1 text-lg text-gray-900">{user.email}</dd>
                             </div>
                             {user.phone && (
                               <div className="sm:col-span-1">
-                                <dt className="text-sm font-medium text-gray-500">Phone</dt>
+                                <dt className="text-sm font-medium text-gray-500">{t("Phone")}</dt>
                                 <dd className="mt-1 text-lg text-gray-900">{user.phone}</dd>
                               </div>
                             )}
                             {(user.city_state || user.country || user.postal_code) && (
                               <div className="sm:col-span-1">
-                                <dt className="text-sm font-medium text-gray-500">Location</dt>
+                                <dt className="text-sm font-medium text-gray-500">{t("Location")}</dt>
                                 <dd className="mt-1 text-lg text-gray-900">
                                   {user.city_state}
                                   {user.country && `, ${user.country}`}
@@ -602,7 +605,7 @@
                             )}
                             {user.bio && (
                               <div className="sm:col-span-2">
-                                <dt className="text-sm font-medium text-gray-500">About</dt>
+                                <dt className="text-sm font-medium text-gray-500">{t("About")}</dt>
                                 <dd className="mt-1 text-lg text-gray-900 whitespace-pre-line">{user.bio}</dd>
                               </div>
                             )}
@@ -612,11 +615,11 @@
 
                       {/* Account Information */}
                       <div>
-                        <h3 className="text-lg font-medium text-gray-900 mb-4">Account Information</h3>
+                        <h3 className="text-lg font-medium text-gray-900 mb-4">{t("Account Information")}</h3>
                         <div className="bg-gray-50 rounded-lg p-6">
                           <dl className="grid grid-cols-1 gap-x-6 gap-y-6 sm:grid-cols-2">
                             <div className="sm:col-span-1">
-                              <dt className="text-sm font-medium text-gray-500">Member since</dt>
+                              <dt className="text-sm font-medium text-gray-500">{t("Member since")}</dt>
                               <dd className="mt-1 text-lg text-gray-900">
                                 {new Date(user.created_at).toLocaleDateString('en-US', {
                                   year: 'numeric',
@@ -628,7 +631,7 @@
                             <div className="sm:col-span-1">
                                   {user && user.role === 'utilisateur' ?(
                                   <>
-                                    <dt className="text-sm font-medium text-gray-500">Changer mon role</dt>
+                                    <dt className="text-sm font-medium text-gray-500">{t("Changer mon role")}</dt>
                                     <dd className="mt-1 text-lg text-gray-900">
                                         <select
                                           name="role"
@@ -637,25 +640,25 @@
                                           className="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                                         >
                                           <option value="" disabled>
-                                            choisir un role
+                                            {t("choisir un role")}
                                           </option>
-                                          <option value="propriétaire">Propriétaire</option>
-                                          <option value="vendeur">Vendeur</option>
+                                          <option value="propriétaire">{t("Propriétaire")}</option>
+                                          <option value="vendeur">{t("Vendeur")}</option>
                                         </select>
                                     </dd>
                                   </>
                                   ) : user && user.role !== "admin" && user.is_confirmed == 0? (
                                     <>
-                                      <dt className="text-sm font-medium text-gray-500">Role</dt>
+                                      <dt className="text-sm font-medium text-gray-500">{t("Role")}</dt>
                                       <dd className="mt-1 text-lg text-gray-900">
-                                        <span className="text-gray-500">en attant de confirmation</span>
+                                        <span className="text-gray-500">{t("en attant de confirmation")}</span>
                                       </dd>
                                     </>
                                   ) :  (
                                     <>
-                                      <dt className="text-sm font-medium text-gray-500">Role</dt>
+                                      <dt className="text-sm font-medium text-gray-500">{t("Role")}</dt>
                                       <dd className="mt-1 text-lg text-gray-900">
-                                        <span className="text-gray-500">{user.role}</span>
+                                        <span className="text-gray-500">{t(user.role)}</span>
                                       </dd>
                                     </>
                                   )} 
@@ -669,7 +672,7 @@
                             onClick={() => setEditpassworForm(!editpassworForm)}
                             className="mt-4 bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded"
                           >
-                            {editpassworForm ? 'Cancel' : 'Edit Password'}
+                            {editpassworForm ? t("Cancel") : t('Edit Password')}
                           </button>
                       </div>
                     </div>
@@ -677,7 +680,7 @@
 
                   {activeTab === 'social' && (
                     <div className="space-y-6">
-                      <h3 className="text-lg font-medium text-gray-900">Social Links</h3>
+                      <h3 className="text-lg font-medium text-gray-900">{t("Social Links")}</h3>
 
                       {(user.facebook || user.instagram || user.linkedin || user.twitter) ? (
                         <div className="bg-gray-50 rounded-lg p-6">
@@ -774,9 +777,9 @@
                               d="M4 16l4.586-4.586a2 2 0 012.828 0L20 16m-16-7l4.586 4.586a2 2 0 002.828 0L20 9"
                             />
                           </svg>
-                          <h3 className="mt-2 text-sm font-medium text-gray-900">No social links added yet</h3>
+                          <h3 className="mt-2 text-sm font-medium text-gray-900">{t("No social links added yet")}</h3>
                           <p className="mt-1 text-sm text-gray-500">
-                            Add your social media profiles to connect with others
+                            {t("Add your social media profiles to connect with others")}
                           </p>
                         </div>
                       )}
@@ -798,14 +801,14 @@
                            clipRule="evenodd"
                          />
                        </svg>
-                       <span>Password changed successfully!</span>
+                       <span>{t("Password changed successfully!")}</span>
                      </div>
                    </div>
                  )}
            
                  {passwordError && (
                    <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
-                     <strong className="font-bold">Error!</strong>
+                     <strong className="font-bold">{t("Error!")}</strong>
                      <span className="block sm:inline"> {passwordError}</span>
                    </div>
                  )}
@@ -814,7 +817,7 @@
                    <div className="space-y-6">
                      <div className="grid grid-cols-1 gap-6">
                        <div>
-                         <label className="block text-sm font-medium text-gray-700">Current Password</label>
+                         <label className="block text-sm font-medium text-gray-700">{t("Current Password")}</label>
                          <input
                            type="password"
                            name="current_password"
@@ -824,7 +827,7 @@
                          />
                        </div>
                        <div>
-                         <label className="block text-sm font-medium text-gray-700">New Password</label>
+                         <label className="block text-sm font-medium text-gray-700">{t("New Password")}</label>
                          <input
                            type="password"
                            name="new_password"
@@ -834,7 +837,7 @@
                          />
                        </div>
                        <div>
-                         <label className="block text-sm font-medium text-gray-700">Confirm New Password</label>
+                         <label className="block text-sm font-medium text-gray-700">{t("Confirm New Password")}</label>
                          <input
                            type="password"
                            name="confirm_password"
@@ -856,7 +859,7 @@
                            d="M5 13l4 4L19 7"
                          />
                        </svg>
-                       Change Password
+                       {t("Change Password")}
                      </button>
                    </div>
                  </form>

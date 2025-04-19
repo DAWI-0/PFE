@@ -4,6 +4,9 @@ import logoBasket from '../../assets/Logo/basket.png';
 import logoFoot from '../../assets/Logo/foot.png';
 import logohand from '../../assets/Logo/hand.png';
 import logoTennis from '../../assets/Logo/tennis.png';
+import fr from "../../assets/flag/fr.png";
+import ar from "../../assets/flag/ar.png";
+import ang from "../../assets/flag/ang.png";
 import { 
   LayoutDashboard, 
   Users, 
@@ -17,6 +20,9 @@ import {
   ChevronLeft,
   ChevronRight
 } from 'lucide-react';
+import { MdOutlineTranslate } from 'react-icons/md';
+import { useTranslation } from 'react-i18next';
+import i18next from 'i18next';
 
 const LayoutUser = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -26,11 +32,34 @@ const LayoutUser = () => {
   const location = useLocation();
   const menuRef = useRef(null);
   const navigate = useNavigate();
-
+  const lang = localStorage.getItem("lang");
+  const {t}=useTranslation();
   // Parse user data from localStorage with fallback
   const user = JSON.parse(localStorage.getItem('user')) || {
     name: 'Utilisateur',
     profilePhoto: null,
+  };
+  const [isopen, setIsOpen] = useState(false);
+  const [selectedLanguage, setSelectedLanguage] = useState(lang);
+
+  useEffect(() => {
+    if (lang) {
+      setSelectedLanguage(lang);
+    }
+  },[lang]);
+
+
+  const languages = [
+    { flag: fr, code: "Fr" , name: "Français" },
+    { flag: ang, code: "En" , name: "English" },
+    { flag: ar, code: "Ar" , name: "العربية" },
+  ];
+
+  const handleLanguageChange = (code) => {
+    setSelectedLanguage(code);
+    setIsOpen(false);
+    localStorage.setItem("lang", code);
+    i18next.changeLanguage(code);
   };
 
   useEffect(() => {
@@ -50,20 +79,20 @@ const LayoutUser = () => {
 
   // Navigation items for sidebar (admin) and navbar (non-admin)
   const navigationItems = [
-    { id: 1, name: 'Accueil', to: '/home', icon: LayoutDashboard },
-    ...(isAdmin ? [{ id: 2, name: 'Stades', to: '/stades', icon: Store }] : []),
-    { id: 3, name: 'Magasin', to: '/magasin', icon: Store },
-    { id: 4, name: 'Commande', to: '/commande', icon: ShoppingCart },
+    { id: 1, name: t("Accueil"), to: '/home', icon: LayoutDashboard },
+    ...(isAdmin ? [{ id: 2, name: t('Stades'), to: '/stades', icon: Store }] : []),
+    { id: 3, name: t('Magasin'), to: '/magasin', icon: Store },
+    { id: 4, name: t('Commande'), to: '/commande', icon: ShoppingCart },
     ...(isAdmin ? [
-      { id: 5, name: 'Gestion des rôles', to: '/gestion_des_role', icon: UserCog },
-      { id: 6, name: 'Gestion des réservations', to: '/gestion_des_reservation', icon: CalendarRange },
-      { id: 8, name: 'Gestion des commandes', to: '/gestion_des_commendes', icon: ShoppingCart }
+      { id: 5, name: t('Gestion des rôles'), to: '/gestion_des_role', icon: UserCog },
+      { id: 6, name: t('Gestion des réservations'), to: '/gestion_des_reservation', icon: CalendarRange },
+      { id: 8, name: t('Gestion des commandes'), to: '/gestion_des_commendes', icon: ShoppingCart }
     ] : []),
     ...(user?.role === 'propriétaire' ? [
-      { id: 7, name: 'Gestion des réservations', to: '/gestion_des_reservation', icon: CalendarRange }
+      { id: 7, name: t('Gestion des réservations'), to: '/gestion_des_reservation', icon: CalendarRange }
     ] : []),
     ...(user?.role === 'vendeur' ? [
-      { id: 9, name: 'Gestion des commandes', to: '/gestion_des_commendes', icon: ShoppingCart }
+      { id: 9, name: t('Gestion des commandes'), to: '/gestion_des_commendes', icon: ShoppingCart }
     ] : [])
   ];
 
@@ -115,7 +144,7 @@ const LayoutUser = () => {
           <div className="flex h-16 items-center justify-between px-4">
             {sidebarExpanded && (
               <span className="text-xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
-                ArenaLink
+                {t("ArenaLink")}
               </span>
             )}
             <button
@@ -224,7 +253,33 @@ const LayoutUser = () => {
             </div>
 
             {/* Profile Menu */}
-            <div className="flex items-center" ref={menuRef}>
+
+            <div className="flex items-center gap-2" ref={menuRef}>
+            <button
+                  className="text-black"
+                  onClick={() => setIsOpen(!isopen)}
+                  aria-label="Toggle lang menu"
+                >
+                <MdOutlineTranslate size={20} />
+            </button>
+            {isopen &&(
+              <ul className="absolute top-full right-0 mt-1 w-32 border border-gray-300 rounded-md bg-white shadow-lg overflow-hidden z-10 text-black">
+              {languages.map((lang) => (
+                <li
+                  key={lang.code}
+                  className={`flex items-center px-3 py-2 cursor-pointer hover:bg-gray-100 ${selectedLanguage === lang.code ? 'bg-gray-100' : ''}`}
+                  onClick={() => handleLanguageChange(lang.code)}
+                >
+                  <img 
+                    src={lang.flag} 
+                    alt={`Drapeau ${lang.name}`} 
+                    className="w-6 h-6 object-cover rounded mr-2" 
+                  />
+                  <span className="text-sm">{lang.name}</span>
+                </li>
+              ))}
+            </ul>
+            )}
               <button
                   className="md:flex items-center focus:outline-none hidden"
                   onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -253,13 +308,13 @@ const LayoutUser = () => {
                       className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                       onClick={() => setIsMenuOpen(false)}
                     >
-                      Mon Profil
+                      {t("Mon Profil")}
                     </Link>
                     <button
                       onClick={handleLogout}
                       className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50"
                     >
-                      Se déconnecter
+                     {t( "Se déconnecter")}
                     </button>
                   </div>
                 </div>

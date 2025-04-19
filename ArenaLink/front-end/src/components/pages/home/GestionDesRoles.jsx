@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Check, X, UserCheck } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 export default function UserRoleConfirmation() {
   const [users, setUsers] = useState([]);
@@ -7,6 +8,7 @@ export default function UserRoleConfirmation() {
   const [error, setError] = useState(null);
   const [confirmingId, setConfirmingId] = useState(null);
   const [successMessage, setSuccessMessage] = useState("");
+  const { t } = useTranslation();
 
   useEffect(() => {
     fetchUsers();
@@ -23,7 +25,7 @@ export default function UserRoleConfirmation() {
       setUsers(data);
       setError(null);
     } catch (err) {
-      setError("Erreur lors du chargement des utilisateurs: " + err.message);
+      setError(t("Erreur lors du chargement des utilisateurs: ") + err.message);
     } finally {
       setLoading(false);
     }
@@ -50,10 +52,10 @@ export default function UserRoleConfirmation() {
         )
       );
       
-      setSuccessMessage(`L'utilisateur avec l'ID ${id} a été confirmé avec succès!`);
+      setSuccessMessage(`t(L'utilisateur avec l'ID) ${id} t(a été confirmé avec succès!)`);
       setTimeout(() => setSuccessMessage(""), 3000);
     } catch (err) {
-      setError("Erreur lors de la confirmation: " + err.message);
+      setError(t("Erreur lors de la confirmation: ") + err.message);
     } finally {
       setConfirmingId(null);
     }
@@ -62,7 +64,7 @@ export default function UserRoleConfirmation() {
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
-        <div className="text-lg text-blue-600">Chargement des utilisateurs...</div>
+        <div className="text-lg text-blue-600">{t("Chargement des utilisateurs...")}</div>
       </div>
     );
   }
@@ -75,7 +77,7 @@ export default function UserRoleConfirmation() {
           onClick={fetchUsers}
           className="mt-2 bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded"
         >
-          Réessayer
+          {t("Réessayer")}
         </button>
       </div>
     );
@@ -84,7 +86,7 @@ export default function UserRoleConfirmation() {
   return (
     <div className="max-w-6xl mx-auto p-4">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-gray-800">Gestion des confirmations d'utilisateurs</h1>
+        <h1 className="text-2xl font-bold text-gray-800">{t("Gestion des confirmations d'utilisateurs")}</h1>
       </div>
 
       {successMessage && (
@@ -98,12 +100,12 @@ export default function UserRoleConfirmation() {
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nom</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rôle</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Statut</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t("ID")}</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t("Nom")}</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t("Email")}</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t("Rôle")}</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t("Statut")}</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t("Action")}</th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
@@ -136,11 +138,11 @@ export default function UserRoleConfirmation() {
                     <td className="px-6 py-4 whitespace-nowrap">
                       {user.is_confirmed === 1 ? (
                         <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                          Confirmé
+                          {t("Confirmé")}
                         </span>
                       ) : (
                         <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
-                          En attente
+                          {t("En attente")}
                         </span>
                       )}
                     </td>
@@ -157,14 +159,14 @@ export default function UserRoleConfirmation() {
                           ) : (
                             <>
                               <Check size={16} className="mr-1" />
-                              Confirmer
+                              {t("Confirmer")}
                             </>
                           )}
                         </button>
                       ) : (
                         <div className="text-green-600 flex items-center">
                           <Check size={16} className="mr-1" />
-                          Confirmé
+                          {t("Confirmé")}
                         </div>
                       )}
                     </td>
@@ -173,7 +175,7 @@ export default function UserRoleConfirmation() {
               ) : (
                 <tr>
                   <td colSpan="6" className="px-6 py-4 text-center text-gray-500">
-                    Aucun utilisateur trouvé
+                    {t("Aucun utilisateur trouvé")}
                   </td>
                 </tr>
               )}

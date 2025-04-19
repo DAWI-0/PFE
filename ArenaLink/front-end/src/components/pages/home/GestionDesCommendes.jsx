@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { MapPin, Filter, Search, Trash } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 function GestionDesCommendes() {
   const [facilities, setFacilities] = useState([]);
@@ -14,6 +15,7 @@ function GestionDesCommendes() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const user = JSON.parse(localStorage.getItem('user')) || {user: null};
+  const {t}=useTranslation();
 
   // Fetch orders from the API
   const fetchOrders = async () => {
@@ -22,7 +24,7 @@ function GestionDesCommendes() {
       const response = await fetch(`http://127.0.0.1:8000/api/orders/status/pending` );
       
       if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
+        throw new Error(`t(HTTP error! Status:) ${response.status}`);
       }
       
       const data = await response.json();
@@ -56,17 +58,17 @@ function GestionDesCommendes() {
       case 'complete':
         bgColor = 'bg-green-100';
         textColor = 'text-green-800';
-        statusText = 'Confirmé';
+        statusText = t('Confirmé');
         break;
       case 'pending':
         bgColor = 'bg-yellow-100';
         textColor = 'text-yellow-800';
-        statusText = 'En attente';
+        statusText = t('En attente');
         break;
       case 'cancelled':
         bgColor = 'bg-red-100';
         textColor = 'text-red-800';
-        statusText = 'Annulé';
+        statusText = t('Annulé');
         break;
       default:
         bgColor = 'bg-gray-100';
@@ -88,17 +90,17 @@ function GestionDesCommendes() {
       <div className="container mx-auto px-4 py-6">
         {/* Reservations Section */}
         <div className="bg-white rounded-lg shadow p-6 mb-8">
-          <h2 className="text-2xl font-bold mb-6">Gestion des commendes</h2>
+          <h2 className="text-2xl font-bold mb-6">{t("Gestion des commendes")}</h2>
           
           {/* Loading and error states */}
-          {loading && <p className="text-center py-4">Chargement des commendes...</p>}
+          {loading && <p className="text-center py-4">{t("Chargement des commendes...")}</p>}
           {error && <p className="text-center py-4 text-red-600">Erreur: {error}</p>}
           
           {/* Reservation Cards */}
           {!loading && !error && (
             <div className="space-y-4">
               {orders.length === 0 ? (
-                <p className="text-center py-4 text-gray-600">Aucune commende trouvée.</p>
+                <p className="text-center py-4 text-gray-600">{t("Aucune commende trouvée.")}</p>
               ) : (
                 orders.map(order => (
                   <div key={order.id} className="flex flex-col md:flex-row p-4 border rounded-lg">
@@ -126,8 +128,8 @@ function GestionDesCommendes() {
                       </div>
                     </div>
                     <div className="font-bold text-blue-600 md:text-right mt-3 md:mt-0">
-                      {parseFloat(order.total_amount).toFixed(2)} DH
-                      <div className="text-sm text-gray-500">Total</div>
+                      {parseFloat(order.total_amount).toFixed(2)} {t("DH")}
+                      <div className="text-sm text-gray-500">{t("Total")}</div>
                     </div>
 
                     <div className="mt-4 md:mt-3 md:ml-4">
@@ -153,7 +155,7 @@ function GestionDesCommendes() {
                             }}
                             className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
                         >
-                            Confirmer
+                            {t("Confirmer")}
                         </button>
                     </div>
                   </div>

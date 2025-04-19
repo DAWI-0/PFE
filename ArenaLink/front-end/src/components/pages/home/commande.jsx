@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { MapPin, Filter, Search, Trash } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 function Commande() {
   const [facilities, setFacilities] = useState([]);
@@ -15,6 +16,7 @@ function Commande() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const user = JSON.parse(localStorage.getItem('user')) || {user: null};
+  const {t}=useTranslation()
 
   // Fetch orders from the API
   useEffect(() => {
@@ -24,7 +26,7 @@ function Commande() {
         const response = await fetch(`http://127.0.0.1:8000/api/orders/user/${user?.id}` );
         
         if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
+          throw new Error(`t("HTTP error! Status:") ${response.status}`);
         }
         
         const data = await response.json();
@@ -33,7 +35,7 @@ function Commande() {
       } catch (err) {
         setError(err.message);
         setLoading(false);
-        console.error('Error fetching orders:', err);
+        console.error(t('Error fetching orders:'), err);
       }
     };
     fetchOrders();
@@ -44,7 +46,7 @@ function Commande() {
       setLoading(true);
       const response = await fetch(`http://127.0.0.1:8000/api/reservations/user/${user?.id}` );
       if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
+        throw new Error(`t(HTTP error! Status:) ${response.status}`);
       }
       const data = await response.json();
       setReservations(data);
@@ -52,7 +54,7 @@ function Commande() {
     } catch (err) {
       setError(err.message);
       setLoading(false);
-      console.error('Error fetching reservations:', err);
+      console.error(t('Error fetching reservations:'), err);
     }
   };
 
@@ -70,13 +72,13 @@ function Commande() {
       });
 
       if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
+        throw new Error(`t(HTTP error! Status:) ${response.status}`);
       }
 
       fetchReservations();
     } catch (err) {
       console.error('Error cancelling reservation:', err);
-      alert('Erreur lors de l\'annulation de la réservation.');
+      alert(t("Erreur lors de l'annulation de la réservation."));
     }
   };
 
@@ -97,17 +99,17 @@ function Commande() {
       case 'complete':
         bgColor = 'bg-green-100';
         textColor = 'text-green-800';
-        statusText = 'Confirmé';
+        statusText = t('Confirmé');
         break;
       case 'pending':
         bgColor = 'bg-yellow-100';
         textColor = 'text-yellow-800';
-        statusText = 'En attente';
+        statusText = t('En attente');
         break;
       case 'cancelled':
         bgColor = 'bg-red-100';
         textColor = 'text-red-800';
-        statusText = 'Annulé';
+        statusText = t('Annulé');
         break;
       default:
         bgColor = 'bg-gray-100';
@@ -128,7 +130,7 @@ function Commande() {
       <header className="bg-blue-600 text-white py-6">
         <div className="container mx-auto px-4">
           <h1 className="text-3xl font-bold">ArenaLink</h1>
-          <p className="mt-2">Trouvez et réservez votre terrain de sport idéal</p>
+          <p className="mt-2">{t("Trouvez et réservez votre terrain de sport idéal")}</p>
         </div>
       </header>
 
@@ -136,17 +138,17 @@ function Commande() {
       <div className="container mx-auto px-4 py-6">
         {/* Reservations Section */}
         <div className="bg-white rounded-lg shadow p-6 mb-8">
-          <h2 className="text-2xl font-bold mb-6">Mes Réservations</h2>
+          <h2 className="text-2xl font-bold mb-6">{t("Mes Réservations")}</h2>
           
           {/* Loading and error states */}
-          {loading && <p className="text-center py-4">Chargement des réservations...</p>}
-          {error && <p className="text-center py-4 text-red-600">Erreur: {error}</p>}
+          {loading && <p className="text-center py-4">{t("Chargement des réservations...")}</p>}
+          {error && <p className="text-center py-4 text-red-600">{t("Erreur:")} {error}</p>}
           
           {/* Reservation Cards */}
           {!loading && !error && (
             <div className="space-y-4">
               {orders.length === 0 && reservations.length === 0 ? (
-                <p className="text-center py-4 text-gray-600">Aucune réservation trouvée.</p>
+                <p className="text-center py-4 text-gray-600">{t("Aucune réservation trouvée.")}</p>
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {reservations.map(reservation => (
@@ -154,34 +156,34 @@ function Commande() {
                       <div className="flex-1">
                         <div className="flex items-center">
                           <h3 className="text-lg font-semibold">
-                            Réservation #{reservation.id}
+                            {t("Réservation")} #{reservation.id}
                           </h3>
                           <StatusBadge status={reservation.status} />
                         </div>
                         
                         <div className="mt-2 grid grid-cols-1 md:grid-cols-2 gap-2">
                           <div>
-                            <p className="text-sm text-gray-500">Stade:</p>
-                            <p className="font-medium">{reservation.stade?.name || "N/A"}</p>
+                            <p className="text-sm text-gray-500">{t("Stade:")}</p>
+                            <p className="font-medium">{reservation.stade?.name || t("N/A")}</p>
                           </div>
                           <div>
-                            <p className="text-sm text-gray-500">Addresse:</p>
-                            <p className="font-medium">{reservation.stade?.address || "N/A"}</p>
+                            <p className="text-sm text-gray-500">{t("Addresse:")}</p>
+                            <p className="font-medium">{reservation.stade?.address || t("N/A")}</p>
                           </div>
                           <div>
-                            <p className="text-sm text-gray-500">Date et heure:</p>
+                            <p className="text-sm text-gray-500">{t("Date et heure:")}</p>
                             <p className="font-medium">{formatDate(reservation.start_time)}</p>
                           </div>
                           <div>
-                            <p className="text-sm text-gray-500">Durée:</p>
-                            <p className="font-medium">{reservation.duration} heure(s)</p>
+                            <p className="text-sm text-gray-500">{t("Durée:")}</p>
+                            <p className="font-medium">{reservation.duration} {t("heure(s)")}</p>
                           </div>
                         </div>
                       </div>
                       
                       <div className="mt-4 md:mt-0 md:ml-4 flex flex-col items-end justify-between">
                         <div className="font-bold text-blue-600 text-xl">
-                          {parseFloat(reservation.total_price).toFixed(2)} DH
+                          {parseFloat(reservation.total_price).toFixed(2)} {t("DH")}
                         </div>
                         
                         <div className="flex space-x-2 mt-4">
@@ -191,7 +193,7 @@ function Commande() {
                                 onClick={() => cancelReservation(reservation.id)}
                                 className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
                               >
-                                Annuler
+                                {t("Annuler")}
                               </button>
                             </>
                           )}
@@ -228,8 +230,8 @@ function Commande() {
                         </div>
                       </div>
                       <div className="font-bold text-blue-600 md:text-right mt-3 md:mt-0">
-                        {parseFloat(order.total_amount).toFixed(2)} DH
-                        <div className="text-sm text-gray-500">Total</div>
+                        {parseFloat(order.total_amount).toFixed(2)} {t("DH")}
+                        <div className="text-sm text-gray-500">{t("Total")}</div>
                       </div>
                     </div>
                   ))}

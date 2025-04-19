@@ -1,0 +1,967 @@
+{
+    "test":{
+        "en":"English",
+        "fr":"French",
+        "ar":"arabic"
+    },
+    "ArenaLink":{
+        "en":"ArenaLink",
+        "fr":"ArenaLink",
+        "ar":"ArenaLink"
+    },
+    "Mon Profil":{
+        "en":"My Profile",
+        "fr":"Mon Profil",
+        "ar":"Mi Perfil"
+    },
+    "Accueil":{
+        "en":"Home",
+        "fr":"Accueil",
+        "ar":"Home"
+    },
+    "Magasin":{
+        "en":"Store",
+        "fr":"Magasin",
+        "ar":"Tienda"
+    },
+    "Commande":{
+        "en":"Order",
+        "fr":"Commande",
+        "ar":"Pedido"
+    },
+    "Gestion des réservations":{    
+        "en":"Reservation Management",
+        "fr":"Gestion des réservations",
+        "ar":"Gestion des Reservas"
+    },
+    "Se déconnecter":{
+        "en":"Logout",
+        "fr":"Se déconnecter",
+        "ar":"Salir"
+    },
+    "Gestion des rôles":{
+        "en":"Role Management", 
+        "fr":"Gestion des rôles",
+        "ar":"Gestion de los roles"
+    },
+    "Stades":{
+        "en":"Stadiums",
+        "fr":"Stades",
+        "ar":"Estadios"
+    },
+    "Gestion des commandes":{
+        "en":"Order Management",
+        "fr":"Gestion des commandes",
+        "ar":"Gestion de los pedidos"
+    },
+    "Edit Profile":{
+        "en":"Edit Profile",
+        "fr":"Edit Profile",
+        "ar":"Editar Perfil"
+    },
+    "Cancel":{
+        "en":"Cancel",
+        "fr":"Annuller",
+        "ar":"Cancelar"
+    },
+    "Save Changes":{
+        "en":"Save Changes",
+        "fr":"Save Changes",
+        "ar":"Guardar Cambios"
+    },
+    "Personal Info":{
+        "en":"Personal Info",
+        "fr":"Personal Info",
+        "ar":"Información Personal"
+    },
+    "Social Links":{
+        "en":"Social Links",
+        "fr":"Social Links",
+        "ar":"Enlaces sociales"
+    },
+    "Personal Information":{
+        "en":"Personal Information",
+        "fr":"Personal Information",
+        "ar":"Información Personal"
+    },
+    "Full name":{
+        "en":"Full name",
+        "fr":"Full name",
+        "ar":"Nombre completo"
+    },
+    "Email":{
+        "en":"Email",
+        "fr":"Email",    
+        "ar":"Correo"
+    },
+    "Phone":{    
+        "en":"Phone",
+        "fr":"Phone",
+        "ar":"Teléfono"
+    },
+    "Country":{
+        "en":"Country",    
+        "fr":"Country",
+        "ar":"Países"
+    },
+    "City/State":{
+        "en":"City/State",
+        "fr":"City/State",
+        "ar":"Ciudad/Estado"
+    },
+    "Postal Code":{
+        "en":"Postal Code",
+        "fr":"Postal Code",
+        "ar":"Código Postal"
+    },
+    "Bio":{
+        "en":"Bio",     
+        "fr":"Bio",
+        "ar":"Biografía"
+    },
+    "Tell us a little about yourself":{
+        "en":"Tell us a little about yourself",
+        "fr":"Tell us a little about yourself",
+        "ar":"Cuentanos un poco sobre ti"
+    },
+    "Account Information":{
+        "en":"Account Information",
+        "fr":"Account Information",
+        "ar":"Información de la cuenta"
+    },
+    "Member since":{
+        "en":"Member since",
+        "fr":"Member since",
+        "ar":"Miembro desde"
+    },
+    "Changer mon role":{
+        "en":"Change my role",
+        "fr":"Changer mon role",
+        "ar":"Cambiar mi rol"
+    },
+    "choisir un role":{
+        "en":"Choose a role",
+        "fr":"choisir un role",
+        "ar":"Elegir un rol"
+    },
+    "Role":{
+        "en":"Role",
+        "fr":"Role",
+        "ar":"Rol"
+    },
+    "propriétaire":{
+        "en":"Owner",
+        "fr":"Propriétaire",
+        "ar":"Propietario"
+    },
+    "vendeur":{
+        "en":"Seller",
+        "fr":"Vendeur",
+        "ar":"Vendedor"
+    },
+    "Propriétaire":{
+        "en":"Owner",
+        "fr":"Propriétaire",
+        "ar":"Propietario"
+    },
+    "Vendeur":{
+        "en":"Seller",
+        "fr":"Vendeur",
+        "ar":"Vendedor"
+    },
+    "en attant de confirmation":{
+        "en":"Waiting for confirmation",
+        "fr":"en attant de confirmation",
+        "ar":"En espera de confirmación"
+    },
+    "Edit Password":{
+        "en":"Edit Password",
+        "fr":"Edit Password",
+        "ar":"Editar Contraseña"
+    },
+    "Current Password":{
+        "en":"Current Password",
+        "fr":"Current Password",
+        "ar":"Contraseña Actual"
+    },
+    "New Password":{
+        "en":"New Password",
+        "fr":"New Password",
+        "ar":"Nueva Contraseña"
+    },
+    "Confirm New Password":{
+        "en":"Confirm Password",
+        "fr":"Confirm Password",
+        "ar":"Confirmar Contraseña"
+    },
+    "Change Password":{
+        "en":"Change Password",
+        "fr":"Change Password",
+        "ar":"Cambiar Contraseña"
+    },
+    "Please enter your current password":{    
+        "en":"Please enter your current password",
+        "fr":"Please enter your current password",
+        "ar":"Por favor ingresa tu contraseña actual"
+    },
+    "New password must be at least 6 characters": {
+        "en":"New password must be at least 6 characters",
+        "fr":"New password must be at least 6 characters",
+        "ar":"La contraseña nueva debe tener al menos 6 caracteres"
+    },
+    "New passwords do not match": {
+        "en":"New passwords do not match",
+        "fr":"New passwords do not match",
+        "ar":"Las contrasenas no coinciden"
+    },
+    "No user ID found": {    
+        "en":"No user ID found",
+        "fr":"No user ID found",
+        "ar":"No se encontró un ID de usuario"
+    },
+    "Failed to change password": {
+        "en":"Failed to change password",
+        "fr":"Failed to change password",
+        "ar":"Fallo al cambiar la contraseña"
+    },
+    "Failed to update profile": {
+        "en":"Failed to update profile",
+        "fr":"Failed to update profile",
+        "ar":"Fallo al actualizar el perfil"
+    },
+    "Error!": {
+        "en":"Error!",
+        "fr":"Error!",
+        "ar":"Error!"
+    },
+    "Profile updated successfully!": {
+        "en":"Profile updated successfully!",
+        "fr":"Profile updated successfully!",
+        "ar":"Perfil actualizado correctamente!"
+    },
+    "Password changed successfully!": {
+        "en":"Password changed successfully!",
+        "fr":"Password changed successfully!",
+        "ar":"Contraseña cambiada correctamente!"
+    },
+    "Add your social media profiles to connect with others": {
+        "en":"Add your social media profiles to connect with others",
+        "fr":"Add your social media profiles to connect with others",
+        "ar":"Agrega tus perfiles de redes sociales para conectarte con otros"
+    },
+    "No social links added yet": {    
+        "en":"No social links added yet",
+        "fr":"No social links added yet",
+        "ar":"No se han agregado enlaces sociales todavía"
+    },
+    "About":{
+        "en":"About",
+        "fr":"About",
+        "ar":"Acerca de"
+    },
+    "Location":{
+        "en":"Location",
+        "fr":"Location",
+        "ar":"Ubicación"
+    },
+    "Saving...":{
+        "en":"Saving...",
+        "fr":"Saving...",
+        "ar":"Guardando..."
+    },
+    "Network error":{
+        "en":"Network error",
+        "fr":"Network error",
+        "ar":"Error de red"
+    },
+    "username":{
+        "en":"username",
+        "fr":"username",
+        "ar":"dfffffff"
+    },
+    "Sportif":{
+        "en":"Sportif",
+        "fr":"Sportif",
+        "ar":"Deportista"
+    },
+    "Erreur lors de la récupération des produits":{
+        "en":"Error retrieving products",
+        "fr":"Error retrieving products",
+        "ar":"Error al recuperar los productos"
+    },
+    "Commande confirmée avec succès !":{
+        "en":"Order confirmed successfully!",
+        "fr":"Order confirmed successfully!",
+        "ar":"Pedido confirmado con éxito!"
+    },
+    "Panier":{
+        "en":"Cart",
+        "fr":"Cart",
+        "ar":"Carrito"
+    },
+    "article(s)":{
+        "en":"article(s)",
+        "fr":"article(s)",
+        "ar":"artículos"
+    },
+    "DH":{
+        "en":"DH",
+        "fr":"DH",
+        "ar":"DH"
+    },
+    "Supprimer":{
+        "en":"Delete",
+        "fr":"Delete",
+        "ar":"Eliminar"
+    },
+    "Confirmer la commande":{
+        "en":"Confirm Order",
+        "fr":"Confirm Order",
+        "ar":"Confirmar Pedido"
+    },
+    "Boutique Sportive":{
+        "en":"Sport Shop",
+        "fr":"Sport Shop",
+        "ar":"Tienda Deportiva"
+    },
+    "Des équipements de qualité pour votre performance":{
+        "en":"High-quality equipment for your performance",
+        "fr":"High-quality equipment for your performance",
+        "ar":"Equipo de alta calidad para tu rendimiento"
+    },
+    "Annuler":{
+        "en":"Cancel",    
+        "fr":"Cancel",
+        "ar":"Cancelar"
+    },
+    "Supprimer Produits":{
+        "en":"Delete Products",
+        "fr":"Delete Products",
+        "ar":"Eliminar Productos"
+    },
+    "Nouveau Produit":{
+        "en":"New Product",
+        "fr":"New Product",
+        "ar":"Nuevo Producto"
+    },
+    "Fermer":{
+        "en":"Close",
+        "fr":"Close",
+        "ar":"Cerrar"
+    },
+    "Ajouter un nouveau produit":{
+        "en":"Add a new product",
+        "fr":"Add a new product",
+        "ar":"Agregar un nuevo producto"
+    },
+    "Nom":{
+        "en":"Name",
+        "fr":"Name",
+        "ar":"Nombre"
+    },
+    "Prix (DH)":{
+        "en":"Price",
+        "fr":"Price",
+        "ar":"Precio"
+    },
+    "Quantité en stock":{
+        "en":"Quantity",
+        "fr":"Quantity",
+        "ar":"Cantidad"
+    },
+    "Description":{
+        "en":"Description",
+        "fr":"Description",
+        "ar":"Descripción"
+    },
+    "Image":{
+        "en":"Image",
+        "fr":"Image",
+        "ar":"Imagen"
+    },
+    "Ajouter le produit":{
+        "en":"Add Product",
+        "fr":"Add Product",
+        "ar":"Agregar Producto"
+    },
+    "Aucun produit disponible pour le moment":{
+        "en":"No products available for now",
+        "fr":"No products available for now",
+        "ar":"No hay productos disponibles por ahora"
+    },
+    "Catégorie: Sportif":{
+        "en":"Sportif",    
+        "fr":"Sportif",
+        "ar":"Deportista"
+    },
+    "Stock restant: ":{
+        "en":"Stock remaining: ",
+        "fr":"Stock remaining: ",
+        "ar":"Stock reslltante: "
+    },
+    "Réduire la quantité":{
+        "en":"Reduce the quantity",
+        "fr":"Reduce the quantity",
+        "ar":"Reducir la cantidad"
+    },
+    "Ajouter":{
+        "en":"Add ",
+        "fr":"Add ",
+        "ar":"Agregar al carrito"
+    },
+    "Augmenter la quantité":{
+        "en":"Increase the quantity",
+        "fr":"Increase the quantity",
+        "ar":"Aumentar la cantidad"
+    },
+    "Stock insuffisant":{
+        "en":"Insufficient stock",
+        "fr":"Insufficient stock",
+        "ar":"Stock insuficiente"
+    },
+    "Total:":{
+        "en":"Total: ",
+        "fr":"Total: ",    
+        "ar":"Total: "
+    },
+    "HTTP error! Status:":{
+        "en":"HTTP error! Status: ",
+        "fr":"HTTP error! Status: ",
+        "ar":"HTTP error! Status: "
+    },
+    "Error fetching orders:":{
+        "en":"Error fetching orders: ",
+        "fr":"Error fetching orders: ",
+        "ar":"Error fetching orders: "
+    },
+    "Error fetching reservations:":{
+        "en":"Error fetching reservations: ",
+        "fr":"Error fetching reservations: ",
+        "ar":"Error fetching reservations: "
+    },
+   "Erreur lors de l'annulation de la réservation.":{
+        "en":"Error cancelling reservation.",
+        "fr":"Error cancelling reservation.",
+        "ar":"Error al cancelar la reserva."
+    },
+    "Confirmé":{
+        "en":"Confirmed",
+        "fr":"Confirmed",
+        "ar":"Confirmado"
+    },
+    "Annulé":{
+        "en":"Cancelled",
+        "fr":"Cancelled",
+        "ar":"Cancelado"
+    },
+    "En attente":{
+        "en":"Pending",
+        "fr":"Pending",
+        "ar":"Pendiente"
+    },
+    "Trouvez et réservez votre terrain de sport idéal":{
+        "en":"Find and reserve your ideal sport field",
+        "fr":"Find and reserve your ideal sport field",    
+        "ar":"Encuentre y reserve su campo deportivo ideal"
+    },
+    "Mes Réservations":{
+        "en":"My Reservations",
+        "fr":"My Reservations",
+        "ar":"Mis Reservas"
+    },
+    "Chargement des réservations...":{
+        "en":"Loading reservations...",
+        "fr":"Loading reservations...",
+        "ar":"Cargando reservas..."
+    },
+    "Erreur:":{
+        "en":"Error: ",
+        "fr":"Error: ",
+        "ar":"Error: "
+    },
+    "Aucune réservation trouvée.":{
+        "en":"No reservations found.",
+        "fr":"No reservations found.",
+        "ar":"No se encontraron reservas."
+    },
+    "Stade:":{
+        "en":"Stadium: ",
+        "fr":"Stadium: ",
+        "ar":"Estadio: "
+    },
+    "Addresse:":{    
+        "en":"Address: ",
+        "fr":"Address: ",
+        "ar":"Dirección: "
+    },
+    "Date et heure:":{
+        "en":"Date and time: ",
+        "fr":"Date and time: ",
+        "ar":"Fecha y hora: "
+    },
+    "N/A":{
+        "en":"N/A",
+        "fr":"N/A",
+        "ar":"N/ma"
+    },
+    "Durée:":{
+        "en":"Duration: ",
+        "fr":"Duration: ",
+        "ar":"Duración: "
+    },
+    "heure(s)":{
+        "en":"hour(s)",
+        "fr":"hour(s)",
+        "ar":"hora(s)"
+    },
+    "Total":{
+        "en":"Total",
+        "fr":"Total",
+        "ar":"Total"
+    },
+    "Réservation":{
+        "en":"Reservation",
+        "fr":"Reservation",
+        "ar":"Reserva"
+    },
+    "Erreur lors du chargement des utilisateurs: ":{
+        "en":"Error loading users: ",
+        "fr":"Error loading users: ",
+        "ar":"Error loading users: "
+    },
+    "a été confirmé avec succès!":{
+        "en":"has been confirmed successfully!",
+        "fr":"has been confirmed successfully!",
+        "ar":"has been confirmed successfully!"
+    },
+    "L'utilisateur avec l'ID":{
+        "en":"User with ID ",
+        "fr":"User with ID ",
+        "ar":"User with ID "
+    },
+    "Erreur lors de la confirmation: ":{
+        "en":"Error confirming: ",
+        "fr":"Error confirming: ",
+        "ar":"Error confirming: "
+    },
+    "a été annulé avec succès!":{
+        "en":"has been cancelled successfully!",
+        "fr":"has been cancelled successfully!",
+        "ar":"has been cancelled successfully!"
+    },
+    "Gestion des confirmations d'utilisateurs":{
+        "en":"User Confirmation Management",
+        "fr":"User Confirmation Management",
+        "ar":"Gestion de confirmaciones de usuarios"
+    },
+    "Réessayer":{
+        "en":"Retry",
+        "fr":"Retry",
+        "ar":"Reintentar"
+    },
+    "Chargement des utilisateurs...":{
+        "en":"Loading users...",
+        "fr":"Loading users...",
+        "ar":"Cargando usuarios..."
+    },
+    "Action":{
+        "en":"Action",
+        "fr":"Action",
+        "ar":"Accion"
+    },
+    "Statut":{
+        "en":"Status",
+        "fr":"Status",
+        "ar":"Estado"
+    },
+    "Rôle":{
+        "en":"Role",
+        "fr":"Role",
+        "ar":"Rol"
+    },
+    "ID":{
+        "en":"ID",
+        "fr":"ID",
+        "ar":"ID"
+    },
+    "Confirmer":{
+        "en":"Confirm",
+        "fr":"Confirm",
+        "ar":"Confirmar"
+    },
+    "Aucun utilisateur trouvé":{
+        "en":"No users found",
+        "fr":"No users found",
+        "ar":"No se encontraron usuarios"
+    },
+    "Erreur lors de la confirmation de la réservation.":{
+        "en":"Error confirming reservation.",
+        "fr":"Error confirming reservation.",
+        "ar":"Error al confirmar la reserva."
+    },
+    "Tous les stades":{
+        "en":"All stadiums",
+        "fr":"All stadiums",
+        "ar":"Todos los estadios"
+    },
+    "Stade":{
+        "en":"Stadium",
+        "fr":"Stadium",
+        "ar":"Estadio"
+    },
+    "Date de fin":{
+        "en":"End date",
+        "fr":"End date",
+        "ar":"Fecha de fin"
+    },
+    "Date de début":{
+        "en":"Start date",
+        "fr":"Start date",
+        "ar":"Fecha de inicio"
+    },
+    "ConfirméTous les statuts":{
+        "en":"All statuses",
+        "fr":"All statuses",
+        "ar":"Todos los estados"
+    },
+    "Réinitialiser":{
+        "en":"Reset",
+        "fr":"Reset",
+        "ar":"Reiniciar"
+    },
+    "Client:":{
+        "en":"Client: ",
+        "fr":"Client: ",
+        "ar":"Cliente: "
+    },
+    "Téléphone:":{
+        "en":"Phone: ",
+        "fr":"Phone: ",
+        "ar":"Teléfono: "
+    },
+    "Tous les statuts":{
+        "en":"All statuses",
+        "fr":"All statuses",
+        "ar":"Todos los estados"
+    },
+    "Gestion des commendes":{
+        "en":"Order Management",
+        "fr":"Order Management",
+        "ar":"Gestion de pedidos"
+    },
+    "Aucune commende trouvée.":{
+        "en":"No orders found.",
+        "fr":"No orders found.",
+        "ar":"No se encontraron pedidos."
+    },
+    "Chargement des commendes...":{
+        "en":"Loading orders...",
+        "fr":"Loading orders...",
+        "ar":"Cargando pedidos..."
+    },
+    "Vous devez être connecté pour effectuer une réservation.":{
+        "en":"You must be logged in to make a reservation.",
+        "fr":"You must be logged in to make a reservation.",
+        "ar":"Debe estar conectado para realizar una reserva."
+    },
+    "Veuillez sélectionner une date et une heure.":{
+        "en":"Please select a date and time.",    
+        "fr":"Please select a date and time.",
+        "ar":"Por favor seleccione una fecha y hora."
+    },
+    "Ce créneau est déjà réservé. Veuillez choisir un autre horaire.":{
+        "en":"This time slot is already reserved. Please choose another time.",
+        "fr":"This time slot is already reserved. Please choose another time.",
+        "ar":"Este intervalo de tiempo ya esta reservado. Por favor elija otro horario."
+    },
+    "Échec de la réservation.":{    
+        "en":"Reservation failed.",
+        "fr":"Reservation failed.",
+        "ar":"Fallo al realizar la reserva."
+    },
+    "Réserver -":{
+        "en":"Reserve -",
+        "fr":"Reserve -",
+        "ar":"Reservar -"
+    },
+    "Réservation confirmée !":{
+        "en":"Reservation confirmed!",
+        "fr":"Reservation confirmed!",
+        "ar":"Reserva confirmada!"
+    },
+    "Date":{
+        "en":"Date",
+        "fr":"Date",
+        "ar":"Fecha"
+    },
+    "Heure de début":{
+        "en":"Start time",
+        "fr":"Start time",
+        "ar":"Hora de inicio"
+    },
+    "Durée (heures)":{
+        "en":"Duration (hours)",
+        "fr":"Duration (hours)",    
+        "ar":"Duración (horas)"
+    },
+    "heure":{
+        "en":"hour",
+        "fr":"hour",
+        "ar":"hora"
+    },
+    "heures":{
+        "en":"hours",
+        "fr":"hours",
+        "ar":"horas"
+    },
+    "Prix total:":{
+        "en":"Total price: ",
+        "fr":"Total price: ",
+        "ar":"Precio total: "
+    },
+    "MAD":{
+        "en":"MAD",
+        "fr":"MAD",
+        "ar":"MAD"
+    },
+    "MAD/heure":{
+        "en":"MAD/hour",
+        "fr":"MAD/hour",
+        "ar":"MAD/hora"
+    },
+    "Traitement en cours...')":{
+        "en":"Processing...",    
+        "fr":"Processing...",
+        "ar":"Procesando..."
+    },
+    "Confirmer la réservation":{
+        "en":"Confirm reservation",    
+        "fr":"Confirm reservation",
+        "ar":"Confirmar reserva"
+    },
+    "Failed to add comment":{
+        "en":"Failed to add comment",
+        "fr":"Failed to add comment",
+        "ar":"Fallo al agregar comentario"
+    },
+    "Error adding comment:":{
+        "en":"Error adding comment: ",
+        "fr":"Error adding comment: ",
+        "ar":"Error al agregar comentario: "
+    },
+    "Failed to delete comment":{
+        "en":"Failed to delete comment",
+        "fr":"Failed to delete comment",
+        "ar":"Fallo al eliminar comentario"
+    },
+    "Error deleting comment:":{
+        "en":"Error deleting comment: ",
+        "fr":"Error deleting comment: ",
+        "ar":"Error al eliminar comentario: "
+    },
+    "Failed to update comment":{
+        "en":"Failed to update comment",
+        "fr":"Failed to update comment",
+        "ar":"Fallo al actualizar comentario"
+    },
+    "Commentaires -":{
+        "en":"Comments -",
+        "fr":"Comments -",
+        "ar":"Comentarios -"
+    },
+    "Note moyenne :":{
+        "en":"Average rating: ",
+        "fr":"Average rating: ",
+        "ar":"Calificación promedio: "
+    },
+    "Chargement des commentaires...":{
+        "en":"Loading comments...",
+        "fr":"Loading comments...",
+        "ar":"Cargando comentarios..."
+    },
+    "Aucun commentaire pour le moment":{
+        "en":"No comments for now",
+        "fr":"No comments for now",
+        "ar":"No hay comentarios por ahora"
+    },
+    "Votre note :":{
+        "en":"Your rating: ",
+        "fr":"Your rating: ",
+        "ar":"Su calificación: "
+    },
+    "Vous avez déjà noté ce terrain":{
+        "en":"You have already rated this field",
+        "fr":"You have already rated this field",
+        "ar":"Ya has calificado este campo"
+    },
+    "Failed to add facility":{
+        "en":"Failed to add facility",
+        "fr":"Failed to add facility",
+        "ar":"Fallo al agregar facilidad"
+    },
+    "Facility added successfully:":{
+        "en":"Facility added successfully: ",
+        "fr":"Facility added successfully: ",
+        "ar":"Facilidad agregada correctamente: "
+    },
+    "Ajouter un nouveau terrain":{
+        "en":"Add a new field",
+        "fr":"Add a new field",
+        "ar":"Agregar un nuevo campo"
+    },
+    "Adresse":{
+        "en":"Address",
+        "fr":"Address",
+        "ar":"Dirección"
+    },
+    "Type de sport":{
+        "en":"Sport type",
+        "fr":"Sport type",
+        "ar":"Tipo de deporte"
+    },
+    "Sélectionnez un sport":{
+        "en":"Select a sport",
+        "fr":"Select a sport",
+        "ar":"Seleccione un deporte"
+    },
+    "Capacité":{
+        "en":"Capacity",
+        "fr":"Capacity",
+        "ar":"Capacidad"
+    },
+    "Prix par heure (MAD)":{
+        "en":"Price per hour (MAD)",
+        "fr":"Price per hour (MAD)",
+        "ar":"Precio por hora (MAD)"
+    },
+    "Failed to fetch facilities:":{
+        "en":"Failed to fetch facilities:",
+        "fr":"Failed to fetch facilities:",
+        "ar":"Fallo al obtener las facilidades:"
+    },
+    "Erreur lors de la suppression:":{
+        "en":"Error deleting: ",
+        "fr":"Error deleting: ",
+        "ar":"Error al eliminar: "
+    },
+    "Tous les sports":{
+        "en":"All sports",
+        "fr":"All sports",
+        "ar":"Todos los deportes"
+    },
+    "Tous les prix":{
+        "en":"All prices",
+        "fr":"All prices",
+        "ar":"Todos los precios"
+    },
+    "Toutes les capacités":{
+        "en":"All capacities",
+        "fr":"All capacities",
+        "ar":"Todas las capacidades"
+    },
+    "Mes réservations":{
+        "en":"My reservations",
+        "fr":"My reservations",
+        "ar":"Mis reservas"
+    },
+    "Terrain":{
+        "en":"Field",
+        "fr":"Field",
+        "ar":"Campo"
+    },
+    "Prix":{
+        "en":"Price",
+        "fr":"Price",
+        "ar":"Precio"
+    },
+    "Durée":{
+        "en":"Duration",
+        "fr":"Duration",
+        "ar":"Duración"
+    },
+    "Heure":{
+        "en":"Hour",
+        "fr":"Hour",
+        "ar":"Hora"
+    },
+    "Chargement des terrains...":{
+        "en":"Loading fields...",
+        "fr":"Loading fields...",
+        "ar":"Cargando campos..."
+    },
+    "Erreur lors du chargement des terrains:":{
+        "en":"Error loading fields:",
+        "fr":"Error loading fields:",
+        "ar":"Error al cargar los campos:"
+    },
+    "Aucun terrain trouvé":{
+        "en":"No fields found",
+        "fr":"No fields found",
+        "ar":"No se encontraron campos"
+    },
+    "Type de sport :":{
+        "en":"Sport type: ",
+        "fr":"Sport type: ",    
+        "ar":"Tipo de deporte: "
+    },
+    "Capacité :":{
+        "en":"Capacity: ",
+        "fr":"Capacity: ",    
+        "ar":"Capacidad: "
+    },
+    "/heure":{
+        "en":"/hour",
+        "fr":"/hour",    
+        "ar":"/hora"
+    },
+    "Commentaires":{
+        "en":"Comments",
+        "fr":"Comments",    
+        "ar":"Comentarios"
+    },
+    "Football":{
+        "en":"Football",
+        "fr":"Football",    
+        "ar":"Fútbol"
+    },
+    "Basketball":{
+        "en":"Basketball",
+        "fr":"Basketball",    
+        "ar":"Baloncesto"
+    },
+    "Tennis":{
+        "en":"Tennis",
+        "fr":"Tennis",    
+        "ar":"Tenis"
+    },
+    "Volleyball":{
+        "en":"Volleyball",
+        "fr":"Volleyball",    
+        "ar":"Voleibol"
+    },
+    "Badminton":{
+        "en":"Badminton",
+        "fr":"Badminton",    
+        "ar":"Badminton"
+    },
+    "Handball":{
+        "en":"Handball",
+        "fr":"Handball",    
+        "ar":"Handball"
+    },
+    "Rugby":{
+        "en":"Rugby",
+        "fr":"Rugby",    
+        "ar":"Rugby"
+    },
+    "Athlétisme":{
+        "en":"Athletics",
+        "fr":"Athletics",    
+        "ar":"Atletismo"
+    },
+    "Paddle":{
+        "en":"Paddle",
+        "fr":"Paddle",    
+        "ar":"Paddle"
+    }
+}

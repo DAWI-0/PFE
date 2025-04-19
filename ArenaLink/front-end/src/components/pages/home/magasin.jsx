@@ -1,3 +1,4 @@
+import { t } from 'i18next';
 import React, { useEffect, useState } from 'react';
 import { FaBoxOpen, FaTimes, FaShoppingCart, FaTrash, FaPlus, FaMinus, FaTrashAlt, FaCheck } from 'react-icons/fa';
 
@@ -25,7 +26,7 @@ const Magasin = () => {
     try {
       const response = await fetch(`${URL}produits`);
       if (!response.ok) {
-        throw new Error('Erreur lors de la récupération des produits');
+        throw new Error(t('Erreur lors de la récupération des produits'));
       }
       const data = await response.json();
       // Initialize products with selectedQuantity property
@@ -223,7 +224,7 @@ const Magasin = () => {
     }
     const data = await response.json();
     console.log('Commande confirmée:', data)
-    setSuccessMessage('Commande confirmée avec succès !');
+    setSuccessMessage(t('Commande confirmée avec succès !'));
     setCart([]); 
     setTimeout(() => {
       setSuccessMessage('');
@@ -243,10 +244,10 @@ const Magasin = () => {
         <div className="bg-white rounded-lg shadow-sm p-4 border border-gray-200 mb-8 mx-4">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-xl font-semibold flex items-center gap-2">
-              <FaShoppingCart /> Panier
+              <FaShoppingCart /> {t("Panier")}
             </h2>
             <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">
-              {cart.reduce((sum, item) => sum + item.quantity, 0)} article(s)
+              {cart.reduce((sum, item) => sum + item.quantity, 0)} {t("article(s)")}
             </span>
           </div>
           <div className="space-y-3">
@@ -265,17 +266,17 @@ const Magasin = () => {
                   )}
                   <div>
                     <h3 className="text-sm font-medium">{item.name}</h3>
-                    <p className="text-gray-500 text-xs">{item.price} DH × {item.quantity}</p>
+                    <p className="text-gray-500 text-xs">{item.price} {t("DH")} × {item.quantity}</p>
                   </div>
                 </div>
                 <div className="flex items-center space-x-2">
                   <span className="text-gray-800 font-medium">
-                    {(item.price * item.quantity).toFixed(2)} DH
+                    {(item.price * item.quantity).toFixed(2)} {t("DH")}
                   </span>
                   <button
                     onClick={() => removeFromCart(item.id)}
                     className="text-gray-400 hover:text-red-500 transition-colors"
-                    aria-label="Supprimer"
+                    aria-label={t("Supprimer")}
                   >
                     <FaTrash className="h-5 w-5" />
                   </button>
@@ -284,15 +285,15 @@ const Magasin = () => {
             ))}
           </div>
           <div className="mt-4 pt-4 border-t border-gray-200 flex justify-between items-center">
-            <span className="font-semibold">Total:</span>
-            <span className="font-bold text-lg">{total.toFixed(2)} DH</span>
+            <span className="font-semibold">{t("Total:")}</span>
+            <span className="font-bold text-lg">{total.toFixed(2)} {t("DH")}</span>
           </div>
           <div className="flex justify-end mt-2">
             <button 
             onClick={handlConfirmOrder}
             disabled={cart.length === 0}
             className="bg-blue-600 hover:bg-blue-700 shadow-xl hover:scale-105 text-white p-2 rounded-xl flex items-center gap-2 transition-all">
-              <FaCheck className="text-lg" /> Confirmer la commande
+              <FaCheck className="text-lg" /> {t("Confirmer la commande")}
             </button>
           </div>
         </div>
@@ -300,8 +301,8 @@ const Magasin = () => {
 
       {/* En-tête */}
       <header className="text-center mb-8 px-4 pt-20">
-        <h1 className="text-3xl font-bold text-green-900">Boutique Sportive</h1>
-        <p className="text-green-600 mt-2">Des équipements de qualité pour votre performance</p>
+        <h1 className="text-3xl font-bold text-green-900">{t("Boutique Sportive")}</h1>
+        <p className="text-green-600 mt-2">{t("Des équipements de qualité pour votre performance")}</p>
       </header>
 
       {/* Boutons de contrôle */}
@@ -319,14 +320,14 @@ const Magasin = () => {
               disabled={selectedForDeletion.length === 0}
               aria-label="Supprimer les produits sélectionnés"
             >
-              <FaTrashAlt className="text-lg" /> Supprimer ({selectedForDeletion.length})
+              <FaTrashAlt className="text-lg" /> {t("Supprimer")} ({selectedForDeletion.length})
             </button>
             <button
               onClick={toggleDeleteMode}
               className="flex items-center gap-2 font-bold py-2 px-4 rounded-lg focus:outline-none transition-all duration-300 bg-blue-500 hover:bg-blue-600 text-white shadow-md hover:shadow-lg"
               aria-label="Annuler la suppression"
             >
-              <FaTimes className="text-lg" /> Annuler
+              <FaTimes className="text-lg" /> {t("Annuler")}
             </button>
           </>
         ) : (
@@ -344,7 +345,7 @@ const Magasin = () => {
                   disabled={products.length === 0}
                   aria-label="Sélectionner les produits à supprimer"
                 >
-                  <FaTrashAlt className="text-lg" /> Supprimer Produits
+                  <FaTrashAlt className="text-lg" /> {t("Supprimer Produits")}
                 </button>
                 <button
                   onClick={() => setShowAddProductForm(!showAddProductForm)}
@@ -357,11 +358,11 @@ const Magasin = () => {
                 >
                   {showAddProductForm ? (
                     <>
-                      <FaTimes className="text-lg" /> Fermer
+                      <FaTimes className="text-lg" /> {t("Fermer")}
                     </>
                   ) : (
                     <>
-                      <FaBoxOpen className="text-lg" /> Nouveau Produit
+                      <FaBoxOpen className="text-lg" /> {t("Nouveau Produit")}
                     </>
                   )}
                 </button>
@@ -375,12 +376,12 @@ const Magasin = () => {
       {showAddProductForm && (
         <div className="container mx-auto px-4 mb-8 animate-fadeIn">
           <div className="bg-white rounded-lg shadow-sm p-4 border border-gray-200">
-            <h2 className="text-xl font-semibold text-green-800 mb-4">Ajouter un nouveau produit</h2>
+            <h2 className="text-xl font-semibold text-green-800 mb-4">{t("Ajouter un nouveau produit")}</h2>
 
             {/* Nom */}
             <div className="mb-4">
               <label className="block text-green-700 text-sm font-bold mb-2" htmlFor="name">
-                Nom
+                {t("Nom")}
               </label>
               <input
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-green-700 leading-tight focus:outline-none focus:ring-2 focus:ring-green-500"
@@ -395,7 +396,7 @@ const Magasin = () => {
             {/* Description */}
             <div className="mb-4">
               <label className="block text-green-700 text-sm font-bold mb-2" htmlFor="description">
-                Description
+                {t("Description")}
               </label>
               <textarea
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-green-700 leading-tight focus:outline-none focus:ring-2 focus:ring-green-500"
@@ -409,7 +410,7 @@ const Magasin = () => {
             {/* Prix */}
             <div className="mb-4">
               <label className="block text-green-700 text-sm font-bold mb-2" htmlFor="price">
-                Prix (DH)
+                {t("Prix (DH)")}
               </label>
               <input
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-green-700 leading-tight focus:outline-none focus:ring-2 focus:ring-green-500"
@@ -426,20 +427,20 @@ const Magasin = () => {
             {/* Catégorie - maintenant en lecture seule avec la valeur "Sportif" */}
             <div className="mb-4">
               <label className="block text-green-700 text-sm font-bold mb-2" htmlFor="category">
-                Catégorie
+                {t("Catégorie")}
               </label>
               <input
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-500 leading-tight bg-gray-100"
                 id="category"
                 type="text"
-                value="Sportif"
+                value={t("Sportif")}
                 readOnly
               />
             </div>
 
             <div className="mb-4">
               <label className="block text-green-700 text-sm font-bold mb-2" htmlFor="image">
-              Image
+              {t("Image")}
               </label>
               <input
                 className="shadow cursor-pointer appearance-none border rounded w-full py-2 px-3 text-green-700 leading-tight focus:outline-none focus:ring-2 focus:ring-green-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-green-50 file:text-green-700 hover:file:bg-green-100"
@@ -457,14 +458,14 @@ const Magasin = () => {
             {/* Stock */}
             <div className="mb-4">
               <label className="block text-green-700 text-sm font-bold mb-2" htmlFor="stock">
-                Quantité en stock
+                {t("Quantité en stock")}
               </label>
               <input
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-green-700 leading-tight focus:outline-none focus:ring-2 focus:ring-green-500"
                 id="stock"
                 type="number"
                 min="0"
-                placeholder="Quantité en stock"
+                placeholder={t("Quantité en stock")}
                 value={newProduct.stock}
                 onChange={(e) => setNewProduct({ ...newProduct, stock: parseInt(e.target.value) })}
               />
@@ -480,7 +481,7 @@ const Magasin = () => {
                   : 'hover:bg-green-700'
               }`}
             >
-              Ajouter le produit
+              {t("Ajouter le produit")}
             </button>
           </div>
         </div>
@@ -490,7 +491,7 @@ const Magasin = () => {
       <div className="container mx-auto px-4 pb-12">
         {products.length === 0 ? (
           <div className="text-center py-8">
-            <p className="text-gray-500">Aucun produit disponible pour le moment</p>
+            <p className="text-gray-500">{t("Aucun produit disponible pour le moment")}</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
@@ -537,10 +538,10 @@ const Magasin = () => {
                 {/* Détails du produit */}
                 <div className="p-4">
                   <h3 className="text-lg font-semibold text-green-800 mb-1">{product.name}</h3>
-                  <p className="text-gray-600 text-sm mb-1">Catégorie: Sportif</p>
+                  <p className="text-gray-600 text-sm mb-1">{t("Catégorie: Sportif")}</p>
                   <p className="text-gray-500 text-xs mb-2">{product.description}</p>
-                  <p className="text-green-600 font-medium">{product.price} DH</p>
-                  <p className="text-gray-500 text-xs">Stock restant: {product.stock}</p>
+                  <p className="text-green-600 font-medium">{product.price} {t("DH")}</p>
+                  <p className="text-gray-500 text-xs">{t("Stock restant: ")}{product.stock}</p>
 
                   {/* Sélecteur de quantité (visible uniquement en mode normal) */}
                   {!deleteMode && (
@@ -550,7 +551,7 @@ const Magasin = () => {
                           onClick={() => updateQuantity(product.id, -1)}
                           className={`px-3 py-1 text-gray-600 hover:bg-gray-100 transition-colors ${(product.selectedQuantity || 0) === 0 ? 'cursor-not-allowed' : ''}`}
                           disabled={(product.selectedQuantity || 0) === 0}
-                          aria-label="Réduire la quantité"
+                          aria-label={t("Réduire la quantité")}
                         >
                           <FaMinus />
                         </button>
@@ -561,7 +562,7 @@ const Magasin = () => {
                           onClick={() => updateQuantity(product.id, 1)}
                           className={`px-3 py-1 text-gray-600 hover:bg-gray-100 transition-colors ${product.stock <= (product.selectedQuantity || 0) ? 'cursor-not-allowed' : ''}`}
                           disabled={product.stock <= (product.selectedQuantity || 0)}
-                          aria-label="Augmenter la quantité"
+                          aria-label={t("Augmenter la quantité")}
                         >
                           <FaPlus />
                         </button>
@@ -577,14 +578,14 @@ const Magasin = () => {
                             : 'bg-green-600 text-white hover:bg-green-700'
                         }`}
                       >
-                        <FaShoppingCart /> Ajouter
+                        <FaShoppingCart /> {t("Ajouter")}
                       </button>
                     </div>
                   )}
 
                   {/* Message d'erreur si le stock est insuffisant */}
                   {!deleteMode && (product.selectedQuantity || 0) > product.stock && (
-                    <p className="text-red-500 text-xs mt-1">Stock insuffisant</p>
+                    <p className="text-red-500 text-xs mt-1">{t("Stock insuffisant")}</p>
                   )}
                 </div>
               </div>

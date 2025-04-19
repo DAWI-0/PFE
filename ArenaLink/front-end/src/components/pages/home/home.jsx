@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { MapPin, Filter, Search, Trash, MessageCircle, X, Send, Star, Calendar, Clock } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 // Mock data for sports facilities (empty array to remove existing facilities)
 const initialFacilities = [];
-const cities = ["Paris", "Caen", "Lyon", "Marseille"];
+
 const sports = [
   "Football",
   "Basketball",
@@ -15,6 +16,7 @@ const sports = [
   "Badminton",
   "Paddle",
 ];
+
 const priceRanges = ["Tous les prix", "0-50 MAD", "50-100 MAD", "100 MAD+"];
 
 const currentUser = JSON.parse(localStorage.getItem('user'));
@@ -22,6 +24,7 @@ const currentUser = JSON.parse(localStorage.getItem('user'));
 // Star Rating component
 const StarRating = ({ rating, setRating, editable = false }) => {
   const [hover, setHover] = useState(0);
+
   
   return (
     <div className="flex">
@@ -60,6 +63,8 @@ const ReservationModal = ({ facility, isOpen, onClose }) => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [existingReservations, setExistingReservations] = useState([]);
+  const {t} = useTranslation();
+
 
   useEffect(() => {
     if (isOpen && facility) {
@@ -127,18 +132,18 @@ const ReservationModal = ({ facility, isOpen, onClose }) => {
     e.preventDefault();
     
     if (!currentUser) {
-      setError('Vous devez être connecté pour effectuer une réservation');
+      setError(t('Vous devez être connecté pour effectuer une réservation'));
       return;
     }
     
     if (!date || !startTime) {
-      setError('Veuillez sélectionner une date et une heure');
+      setError(t('Veuillez sélectionner une date et une heure'));
       return;
     }
     
     // Check if the selected time slot is available
     if (!isTimeSlotAvailable()) {
-      setError('Ce créneau est déjà réservé. Veuillez choisir un autre horaire.');
+      setError(t('Ce créneau est déjà réservé. Veuillez choisir un autre horaire.'));
       return;
     }
     
@@ -166,7 +171,7 @@ const ReservationModal = ({ facility, isOpen, onClose }) => {
       });
       
       if (!response.ok) {
-        throw new Error('Échec de la réservation');
+        throw new Error(t('Échec de la réservation'));
       }
       
       const data = await response.json();
@@ -189,7 +194,7 @@ const ReservationModal = ({ facility, isOpen, onClose }) => {
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg shadow-xl w-full max-w-md p-6">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-2xl font-bold">Réserver - {facility.name}</h2>
+          <h2 className="text-2xl font-bold">{t("Réserver -")} {facility.name}</h2>
           <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
             <X className="w-6 h-6" />
           </button>
@@ -198,14 +203,14 @@ const ReservationModal = ({ facility, isOpen, onClose }) => {
         {reservationSuccess ? (
           <div className="text-center py-8">
             <div className="bg-green-100 text-green-800 p-4 rounded-lg mb-4">
-              <p className="font-semibold">Réservation confirmée !</p>
-              <p>Votre terrain a été réservé avec succès.</p>
+              <p className="font-semibold">{t("Réservation confirmée !")}</p>
+              <p>{t("Votre terrain a été réservé avec succès.")}</p>
             </div>
             <button
               onClick={onClose}
               className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700"
             >
-              Fermer
+              {t("Fermer")}
             </button>
           </div>
         ) : (
@@ -213,7 +218,7 @@ const ReservationModal = ({ facility, isOpen, onClose }) => {
             {/* Date selection */}
             <div className="mb-4">
               <label className="block text-gray-700 font-bold mb-2" htmlFor="reservation-date">
-                Date
+                {t("Date")}
               </label>
               <div className="relative">
                 <Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
@@ -231,7 +236,7 @@ const ReservationModal = ({ facility, isOpen, onClose }) => {
             {/* Time selection */}
             <div className="mb-4">
               <label className="block text-gray-700 font-bold mb-2" htmlFor="reservation-time">
-                Heure de début
+                {t("Heure de début")}
               </label>
               <div className="relative">
                 <Clock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
@@ -249,7 +254,7 @@ const ReservationModal = ({ facility, isOpen, onClose }) => {
             {/* Duration selection */}
             <div className="mb-4">
               <label className="block text-gray-700 font-bold mb-2" htmlFor="reservation-duration">
-                Durée (heures)
+                {t("Durée (heures)")}
               </label>
               <select
                 id="reservation-duration"
@@ -260,7 +265,7 @@ const ReservationModal = ({ facility, isOpen, onClose }) => {
               >
                 {[1, 2, 3, 4].map((hours) => (
                   <option key={hours} value={hours}>
-                    {hours} {hours === 1 ? 'heure' : 'heures'}
+                    {hours} {hours === 1 ? t('heure') : t('heures')}
                   </option>
                 ))}
               </select>
@@ -289,11 +294,11 @@ const ReservationModal = ({ facility, isOpen, onClose }) => {
             {/* Total price */}
             <div className="bg-gray-50 p-4 rounded-lg mb-6">
               <div className="flex justify-between items-center">
-                <span className="font-bold">Prix total:</span>
-                <span className="text-2xl font-bold text-blue-600">{totalPrice} MAD</span>
+                <span className="font-bold">{t("Prix total:")}</span>
+                <span className="text-2xl font-bold text-blue-600">{totalPrice} {t("MAD")}</span>
               </div>
               <div className="text-sm text-gray-600 mt-1">
-                {facility.price_per_hour} MAD/heure × {duration} {duration === 1 ? 'heure' : 'heures'}
+                {facility.price_per_hour} t("MAD/heure") × {duration} {duration === 1 ? t("heure") : t('heures')}
               </div>
             </div>
             
@@ -310,7 +315,7 @@ const ReservationModal = ({ facility, isOpen, onClose }) => {
               className="w-full bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 disabled:bg-gray-400"
               disabled={loading}
             >
-              {loading ? 'Traitement en cours...' : 'Confirmer la réservation'}
+              {loading ? t('Traitement en cours...') : t('Confirmer la réservation')}
             </button>
           </form>
         )}
@@ -325,6 +330,8 @@ const CommentsModal = ({ facility, isOpen, onClose, onAddComment, onAddRating, h
   const [newRating, setNewRating] = useState(0);
   const [comments, setComments] = useState([]);
   const [loading, setLoading] = useState(true);
+  const {t} = useTranslation();
+
 
   useEffect(() => {
     if (isOpen && facility && facility.id) {
@@ -370,7 +377,7 @@ const CommentsModal = ({ facility, isOpen, onClose, onAddComment, onAddRating, h
       })
       .then((response) => {
         if (!response.ok) {
-          throw new Error('Failed to add comment');
+          throw new Error(t('Failed to add comment'));
         }
         return response.json();
       })
@@ -382,7 +389,7 @@ const CommentsModal = ({ facility, isOpen, onClose, onAddComment, onAddRating, h
         setNewRating(0);
       })
       .catch((error) => {
-        console.error('Error adding comment:', error);
+        console.error(t('Error adding comment:'), error);
       });
     }
   };
@@ -399,7 +406,7 @@ const CommentsModal = ({ facility, isOpen, onClose, onAddComment, onAddRating, h
       });
       
       if (!response.ok) {
-        throw new Error('Failed to delete comment');
+        throw new Error(t('Failed to delete comment'));
       }
       
       // Refresh comments after deletion
@@ -408,7 +415,7 @@ const CommentsModal = ({ facility, isOpen, onClose, onAddComment, onAddRating, h
       onDeleteComment(facility.id, commentId);
       
     } catch (error) {
-      console.error('Error deleting comment:', error);
+      console.error(t('Error deleting comment:'), error);
     }
   };
 
@@ -425,7 +432,7 @@ const CommentsModal = ({ facility, isOpen, onClose, onAddComment, onAddRating, h
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg shadow-xl w-full max-w-md p-6">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-2xl font-bold">Commentaires - {facility.name}</h2>
+          <h2 className="text-2xl font-bold">{t("Commentaires -")} {facility.name}</h2>
           <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
             <X className="w-6 h-6" />
           </button>
@@ -433,14 +440,14 @@ const CommentsModal = ({ facility, isOpen, onClose, onAddComment, onAddRating, h
 
         {/* Average Rating Display */}
         <div className="flex items-center mb-4">
-          <span className="text-gray-700 mr-2">Note moyenne :</span>
+          <span className="text-gray-700 mr-2">{t("Note moyenne :")}</span>
           <StarRating rating={averageRating} editable={false} />
           <span className="ml-2 text-gray-700">({averageRating.toFixed(1)})</span>
         </div>
 
         <div className="max-h-80 overflow-y-auto mb-4">
           {loading ? (
-            <p className="text-center py-4">Chargement des commentaires...</p>
+            <p className="text-center py-4">{t("Chargement des commentaires...")}</p>
           ) : comments.length > 0 ? (
             comments.map((comment) => (
               <div key={comment.id} className="bg-gray-50 p-3 rounded-lg mb-2">
@@ -485,7 +492,7 @@ const CommentsModal = ({ facility, isOpen, onClose, onAddComment, onAddRating, h
               </div>
             ))
           ) : (
-            <p className="text-gray-500 text-center py-4">Aucun commentaire pour le moment</p>
+            <p className="text-gray-500 text-center py-4">{t("Aucun commentaire pour le moment")}</p>
           )}
         </div>
 
@@ -494,19 +501,19 @@ const CommentsModal = ({ facility, isOpen, onClose, onAddComment, onAddRating, h
           {userRating > 0 ? (
             <div className="mb-3">
               <label className="block text-gray-700 font-bold mb-2">
-                Votre note :
+                {t("Votre note :")}
               </label>
               <div className="flex items-center">
                 <StarRating rating={userRating} editable={false} />
                 <span className="ml-2 text-gray-500 text-sm">
-                  Vous avez déjà noté ce terrain
+                  {t("Vous avez déjà noté ce terrain")}
                 </span>
               </div>
             </div>
           ) : (
             <div className="mb-3">
               <label className="block text-gray-700 font-bold mb-2">
-                Votre note :
+                {t("Votre note :")}
               </label>
               <StarRating rating={newRating} setRating={setNewRating} editable={true} />
             </div>
@@ -541,6 +548,7 @@ const AddFacilityForm = ({ onAdd }) => {
   const [pricePerHour, setPricePerHour] = useState('');
   const [image, setImage] = useState(null); // Store image file
   const [previewImage, setPreviewImage] = useState(''); // Store preview URL
+  const {t} = useTranslation();
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -574,12 +582,12 @@ const AddFacilityForm = ({ onAdd }) => {
     })
       .then((response) => {
       if (!response.ok) {
-        throw new Error('Failed to add facility');
+        throw new Error(t('Failed to add facility'));
       }
       return response.json();
       })
       .then((data) => {
-      console.log('Facility added successfully:', data);
+      console.log(t('Facility added successfully:'), data);
       onAdd(data);
       setName('');
       setAddress('');
@@ -596,12 +604,12 @@ const AddFacilityForm = ({ onAdd }) => {
 
   return (
     <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow p-6">
-      <h2 className="text-2xl font-bold mb-4">Ajouter un nouveau terrain</h2>
+      <h2 className="text-2xl font-bold mb-4">{t("Ajouter un nouveau terrain")}</h2>
 
       {/* Field: Name */}
       <div className="mb-4">
         <label className="block text-gray-700 font-bold mb-2" htmlFor="name">
-          Nom
+          {t("Nom")}
         </label>
         <input
           type="text"
@@ -616,7 +624,7 @@ const AddFacilityForm = ({ onAdd }) => {
       {/* Field: Address */}
       <div className="mb-4">
         <label className="block text-gray-700 font-bold mb-2" htmlFor="address">
-          Adresse
+          {t("Adresse")}
         </label>
         <input
           type="text"
@@ -631,7 +639,7 @@ const AddFacilityForm = ({ onAdd }) => {
       {/* Field: Sport Type */}
       <div className="mb-4">
         <label className="block text-gray-700 font-bold mb-2" htmlFor="sportType">
-          Type de sport
+          {t("Type de sport")}
         </label>
         <select
           id="sportType"
@@ -640,10 +648,10 @@ const AddFacilityForm = ({ onAdd }) => {
           onChange={(e) => setSportType(e.target.value)}
           required
         >
-          <option value="">Sélectionnez un sport</option>
+          <option value="">{t("Sélectionnez un sport")}</option>
           {sports.map((sport) => (
             <option key={sport} value={sport}>
-              {sport}
+              {t(sport)}
             </option>
           ))}
         </select>
@@ -652,7 +660,7 @@ const AddFacilityForm = ({ onAdd }) => {
       {/* Field: Capacity */}
       <div className="mb-4">
         <label className="block text-gray-700 font-bold mb-2" htmlFor="capacity">
-          Capacité
+          {t("Capacité")}
         </label>
         <input
           type="number"
@@ -667,7 +675,7 @@ const AddFacilityForm = ({ onAdd }) => {
       {/* Field: Price per hour */}
       <div className="mb-4">
         <label className="block text-gray-700 font-bold mb-2" htmlFor="pricePerHour">
-          Prix par heure (MAD)
+          {t("Prix par heure (MAD)")}
         </label>
         <input
           type="number"
@@ -683,7 +691,7 @@ const AddFacilityForm = ({ onAdd }) => {
       {/* Field: Image */}
       <div className="mb-4">
         <label className="block text-gray-700 font-bold mb-2" htmlFor="image">
-          Image
+          {t("Image")}
         </label>
         <input
           type="file"
@@ -720,6 +728,7 @@ function App() {
   const [selectedPrice, setSelectedPrice] = useState("Tous les prix");
   const [searchQuery, setSearchQuery] = useState("");
   const [showAddForm, setShowAddForm] = useState(false);
+  const {t} = useTranslation();
   const [commentsModal, setCommentsModal] = useState({
     isOpen: false,
     facilityId: null
@@ -738,7 +747,7 @@ function App() {
     try {
       const rep = await fetch("http://127.0.0.1:8000/api/stades");
       if (!rep.ok) {
-        throw new Error(`Failed to fetch facilities: ${rep.status}`);
+        throw new Error(`t(Failed to fetch facilities:) ${rep.status}`);
       }
       const data = await rep.json();
       setFacilities(data);
@@ -771,14 +780,14 @@ function App() {
       });
       
       if (!rep.ok) {
-        throw new Error(`Failed to delete facility: ${rep.status} ${rep.statusText}`);
+        throw new Error(`t(Failed to delete facility:) ${rep.status} ${rep.statusText}`);
       }
       
       // Update state after successful deletion
       setFacilities((prevFacilities) => prevFacilities.filter(facility => facility.id !== id));
     } catch (error) {
       console.error('Error deleting facility:', error);
-      alert(`Erreur lors de la suppression: ${error.message}`);
+      alert(`t(Erreur lors de la suppression:) ${error.message}`);
     }
   };
 
@@ -847,10 +856,10 @@ function App() {
       !selectedCity || facility.address.toLowerCase().includes(selectedCity.toLowerCase());
 
     const matchesSport =
-      selectedSport === "Tous les sports" || facility.sport_type === selectedSport;
+      selectedSport === t("Tous les sports") || facility.sport_type === selectedSport;
 
     const matchesPrice =
-      selectedPrice === "Tous les prix" ||
+      selectedPrice === t("Tous les prix") ||
       (selectedPrice === "0-50 MAD" && facility.price_per_hour <= 50) ||
       (selectedPrice === "50-100 MAD" && facility.price_per_hour > 50 && facility.price_per_hour <= 100) ||
       (selectedPrice === "100 MAD+" && facility.price_per_hour > 100);
@@ -871,7 +880,7 @@ function App() {
       <header className="bg-blue-600 text-white py-6">
         <div className="container mx-auto px-4">
           <h1 className="text-3xl font-bold">ArenaLink</h1>
-          <p className="mt-2">Trouvez et réservez votre terrain de sport idéal</p>
+          <p className="mt-2">{t("Trouvez et réservez votre terrain de sport idéal")}</p>
         </div>
       </header>
 
@@ -879,16 +888,16 @@ function App() {
       {currentUser && userReservations.length > 0 && (
         <div className="container mx-auto px-4 py-6">
           <div className="bg-white rounded-lg shadow p-6 mb-8">
-            <h2 className="text-xl font-bold mb-4">Mes réservations</h2>
+            <h2 className="text-xl font-bold mb-4">{t("Mes réservations")}</h2>
             <div className="overflow-x-auto">
               <table className="w-full table-auto">
                 <thead className="bg-gray-50">
                   <tr>
-                    <th className="px-4 py-2 text-left">Terrain</th>
-                    <th className="px-4 py-2 text-left">Date</th>
-                    <th className="px-4 py-2 text-left">Heure</th>
-                    <th className="px-4 py-2 text-left">Durée</th>
-                    <th className="px-4 py-2 text-left">Prix</th>
+                    <th className="px-4 py-2 text-left">{t("Terrain")}</th>
+                    <th className="px-4 py-2 text-left">{t("Date")}</th>
+                    <th className="px-4 py-2 text-left">{t("Heure")}</th>
+                    <th className="px-4 py-2 text-left">{t("Durée")}</th>
+                    <th className="px-4 py-2 text-left">{t("Prix")}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -901,8 +910,8 @@ function App() {
                         <td className="px-4 py-3">{facility ? facility.name : `Terrain #${reservation.stade_id}`}</td>
                         <td className="px-4 py-3">{startTime.toLocaleDateString()}</td>
                         <td className="px-4 py-3">{startTime.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</td>
-                        <td className="px-4 py-3">{reservation.duration} {reservation.duration === 1 ? 'heure' : 'heures'}</td>
-                        <td className="px-4 py-3">{reservation.total_price} MAD</td>
+                        <td className="px-4 py-3">{reservation.duration} {reservation.duration === 1 ? t('heure') : t('heures')}</td>
+                        <td className="px-4 py-3">{reservation.total_price} {t("MAD")}</td>
                       </tr>
                     );
                   })}
@@ -943,10 +952,10 @@ function App() {
                 value={selectedSport}
                 onChange={(e) => setSelectedSport(e.target.value)}
               >
-                <option value="Tous les sports">Tous les sports</option>
+                <option value="Tous les sports">{t("Tous les sports")}</option>
                 {sports.map((sport) => (
                   <option key={sport} value={sport}>
-                    {sport}
+                    {t(sport)}
                   </option>
                 ))}
               </select>
@@ -983,19 +992,19 @@ function App() {
         {/* Loading state */}
         {loading && (
           <div className="text-center py-12">
-            <p className="text-lg text-gray-600">Chargement des terrains...</p>
+            <p className="text-lg text-gray-600">{t("Chargement des terrains...")}</p>
           </div>
         )}
 
         {/* Error state */}
         {error && (
           <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
-            <p>Erreur lors du chargement des terrains: {error}</p>
+            <p>{t("Erreur lors du chargement des terrains:")} {error}</p>
             <button 
               className="underline mt-2"
               onClick={fetchStades}
             >
-              Réessayer
+              {t("Réessayer")}
             </button>
           </div>
         )}
@@ -1003,7 +1012,7 @@ function App() {
         {/* Empty state */}
         {!loading && !error && filteredFacilities.length === 0 && (
           <div className="text-center py-12">
-            <p className="text-lg text-gray-600">Aucun terrain trouvé</p>
+            <p className="text-lg text-gray-600">{t("Aucun terrain trouvé")}</p>
           </div>
         )}
 
@@ -1032,10 +1041,10 @@ function App() {
                     <span>{facility.address}</span>
                   </div>
                   <div className="flex items-center mb-2">
-                    <span className="text-gray-600">Type de sport : {facility.sport_type}</span>
+                    <span className="text-gray-600">{t("Type de sport :")} {facility.sport_type}</span>
                   </div>
                   <div className="flex items-center mb-2">
-                    <span className="text-gray-600">Capacité : {facility.capacity}</span>
+                    <span className="text-gray-600">{t("Capacité :")} {facility.capacity}</span>
                   </div>
                   
                   {/* Rating display */}
@@ -1050,7 +1059,7 @@ function App() {
                   
                   <div className="flex items-center justify-between">
                     <span className="text-2xl font-bold text-blue-600">
-                      {facility.price_per_hour} MAD<span className="text-sm">/heure</span>
+                      {facility.price_per_hour} {t("MAD")}<span className="text-sm">{t("/heure")}</span>
                     </span>
                     <button 
                       className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
@@ -1066,7 +1075,7 @@ function App() {
                       <button
                         onClick={() => handleDeleteFacility(facility.id)}
                         className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors"
-                        title="Supprimer"
+                        title={t("Supprimer")}
                       >
                         <Trash className="w-4 h-4" />
                       </button>
@@ -1076,7 +1085,7 @@ function App() {
                     <button
                       onClick={() => openCommentsModal(facility.id)}
                       className="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors flex items-center"
-                      title="Commentaires"
+                      title={t("Commentaires")}
                     >
                       <MessageCircle className="w-4 h-4" />
                       {facility.comment_count > 0 && (
