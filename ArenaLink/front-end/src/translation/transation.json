@@ -2,966 +2,966 @@
     "test":{
         "en":"English",
         "fr":"French",
-        "ar":"arabic"
+        "ar":"العربية"
     },
     "ArenaLink":{
         "en":"ArenaLink",
         "fr":"ArenaLink",
-        "ar":"ArenaLink"
+        "ar":"أرينا لينك"
     },
     "Mon Profil":{
         "en":"My Profile",
         "fr":"Mon Profil",
-        "ar":"Mi Perfil"
+        "ar":"ملفي الشخصي"
     },
     "Accueil":{
         "en":"Home",
         "fr":"Accueil",
-        "ar":"Home"
+        "ar":"الرئيسية"
     },
     "Magasin":{
         "en":"Store",
         "fr":"Magasin",
-        "ar":"Tienda"
+        "ar":"المتجر"
     },
     "Commande":{
         "en":"Order",
         "fr":"Commande",
-        "ar":"Pedido"
+        "ar":"الطلبات"
     },
     "Gestion des réservations":{    
         "en":"Reservation Management",
         "fr":"Gestion des réservations",
-        "ar":"Gestion des Reservas"
+        "ar":"إدارة الحجوزات"
     },
     "Se déconnecter":{
         "en":"Logout",
         "fr":"Se déconnecter",
-        "ar":"Salir"
+        "ar":"تسجيل الخروج"
     },
     "Gestion des rôles":{
         "en":"Role Management", 
         "fr":"Gestion des rôles",
-        "ar":"Gestion de los roles"
+        "ar":"إدارة الأدوار"
     },
     "Stades":{
         "en":"Stadiums",
         "fr":"Stades",
-        "ar":"Estadios"
+        "ar":"الملاعب"
     },
     "Gestion des commandes":{
         "en":"Order Management",
         "fr":"Gestion des commandes",
-        "ar":"Gestion de los pedidos"
+        "ar":"إدارة الطلبات"
     },
     "Edit Profile":{
         "en":"Edit Profile",
         "fr":"Edit Profile",
-        "ar":"Editar Perfil"
+        "ar":"تعديل الملف الشخصي"
     },
     "Cancel":{
         "en":"Cancel",
         "fr":"Annuller",
-        "ar":"Cancelar"
+        "ar":"إلغاء"
     },
     "Save Changes":{
         "en":"Save Changes",
         "fr":"Save Changes",
-        "ar":"Guardar Cambios"
+        "ar":"حفظ التغييرات"
     },
     "Personal Info":{
         "en":"Personal Info",
         "fr":"Personal Info",
-        "ar":"Información Personal"
+        "ar":"المعلومات الشخصية"
     },
     "Social Links":{
         "en":"Social Links",
         "fr":"Social Links",
-        "ar":"Enlaces sociales"
+        "ar":"روابط التواصل الاجتماعي"
     },
     "Personal Information":{
         "en":"Personal Information",
         "fr":"Personal Information",
-        "ar":"Información Personal"
+        "ar":"المعلومات الشخصية"
     },
     "Full name":{
         "en":"Full name",
         "fr":"Full name",
-        "ar":"Nombre completo"
+        "ar":"الاسم الكامل"
     },
     "Email":{
         "en":"Email",
         "fr":"Email",    
-        "ar":"Correo"
+        "ar":"البريد الإلكتروني"
     },
     "Phone":{    
         "en":"Phone",
         "fr":"Phone",
-        "ar":"Teléfono"
+        "ar":"الهاتف"
     },
     "Country":{
         "en":"Country",    
         "fr":"Country",
-        "ar":"Países"
+        "ar":"البلد"
     },
     "City/State":{
         "en":"City/State",
         "fr":"City/State",
-        "ar":"Ciudad/Estado"
+        "ar":"المدينة/الولاية"
     },
     "Postal Code":{
         "en":"Postal Code",
         "fr":"Postal Code",
-        "ar":"Código Postal"
+        "ar":"الرمز البريدي"
     },
     "Bio":{
         "en":"Bio",     
         "fr":"Bio",
-        "ar":"Biografía"
+        "ar":"السيرة الذاتية"
     },
     "Tell us a little about yourself":{
         "en":"Tell us a little about yourself",
         "fr":"Tell us a little about yourself",
-        "ar":"Cuentanos un poco sobre ti"
+        "ar":"أخبرنا قليلاً عن نفسك"
     },
     "Account Information":{
         "en":"Account Information",
         "fr":"Account Information",
-        "ar":"Información de la cuenta"
+        "ar":"معلومات الحساب"
     },
     "Member since":{
         "en":"Member since",
         "fr":"Member since",
-        "ar":"Miembro desde"
+        "ar":"عضو منذ"
     },
     "Changer mon role":{
         "en":"Change my role",
         "fr":"Changer mon role",
-        "ar":"Cambiar mi rol"
+        "ar":"تغيير دوري"
     },
     "choisir un role":{
         "en":"Choose a role",
         "fr":"choisir un role",
-        "ar":"Elegir un rol"
+        "ar":"اختر دوراً"
     },
     "Role":{
         "en":"Role",
         "fr":"Role",
-        "ar":"Rol"
+        "ar":"الدور"
     },
     "propriétaire":{
         "en":"Owner",
         "fr":"Propriétaire",
-        "ar":"Propietario"
+        "ar":"مالك"
     },
     "vendeur":{
         "en":"Seller",
         "fr":"Vendeur",
-        "ar":"Vendedor"
+        "ar":"بائع"
     },
     "Propriétaire":{
         "en":"Owner",
         "fr":"Propriétaire",
-        "ar":"Propietario"
+        "ar":"مالك"
     },
     "Vendeur":{
         "en":"Seller",
         "fr":"Vendeur",
-        "ar":"Vendedor"
+        "ar":"بائع"
     },
     "en attant de confirmation":{
         "en":"Waiting for confirmation",
         "fr":"en attant de confirmation",
-        "ar":"En espera de confirmación"
+        "ar":"في انتظار التأكيد"
     },
     "Edit Password":{
         "en":"Edit Password",
         "fr":"Edit Password",
-        "ar":"Editar Contraseña"
+        "ar":"تعديل كلمة المرور"
     },
     "Current Password":{
         "en":"Current Password",
         "fr":"Current Password",
-        "ar":"Contraseña Actual"
+        "ar":"كلمة المرور الحالية"
     },
     "New Password":{
         "en":"New Password",
         "fr":"New Password",
-        "ar":"Nueva Contraseña"
+        "ar":"كلمة المرور الجديدة"
     },
     "Confirm New Password":{
         "en":"Confirm Password",
         "fr":"Confirm Password",
-        "ar":"Confirmar Contraseña"
+        "ar":"تأكيد كلمة المرور"
     },
     "Change Password":{
         "en":"Change Password",
         "fr":"Change Password",
-        "ar":"Cambiar Contraseña"
+        "ar":"تغيير كلمة المرور"
     },
     "Please enter your current password":{    
         "en":"Please enter your current password",
         "fr":"Please enter your current password",
-        "ar":"Por favor ingresa tu contraseña actual"
+        "ar":"الرجاء إدخال كلمة المرور الحالية"
     },
     "New password must be at least 6 characters": {
         "en":"New password must be at least 6 characters",
         "fr":"New password must be at least 6 characters",
-        "ar":"La contraseña nueva debe tener al menos 6 caracteres"
+        "ar":"يجب أن تتكون كلمة المرور الجديدة من 6 أحرف على الأقل"
     },
     "New passwords do not match": {
         "en":"New passwords do not match",
         "fr":"New passwords do not match",
-        "ar":"Las contrasenas no coinciden"
+        "ar":"كلمات المرور الجديدة غير متطابقة"
     },
     "No user ID found": {    
         "en":"No user ID found",
         "fr":"No user ID found",
-        "ar":"No se encontró un ID de usuario"
+        "ar":"لم يتم العثور على معرف المستخدم"
     },
     "Failed to change password": {
         "en":"Failed to change password",
         "fr":"Failed to change password",
-        "ar":"Fallo al cambiar la contraseña"
+        "ar":"فشل تغيير كلمة المرور"
     },
     "Failed to update profile": {
         "en":"Failed to update profile",
         "fr":"Failed to update profile",
-        "ar":"Fallo al actualizar el perfil"
+        "ar":"فشل تحديث الملف الشخصي"
     },
     "Error!": {
         "en":"Error!",
         "fr":"Error!",
-        "ar":"Error!"
+        "ar":"خطأ!"
     },
     "Profile updated successfully!": {
         "en":"Profile updated successfully!",
         "fr":"Profile updated successfully!",
-        "ar":"Perfil actualizado correctamente!"
+        "ar":"تم تحديث الملف الشخصي بنجاح!"
     },
     "Password changed successfully!": {
         "en":"Password changed successfully!",
         "fr":"Password changed successfully!",
-        "ar":"Contraseña cambiada correctamente!"
+        "ar":"تم تغيير كلمة المرور بنجاح!"
     },
     "Add your social media profiles to connect with others": {
         "en":"Add your social media profiles to connect with others",
         "fr":"Add your social media profiles to connect with others",
-        "ar":"Agrega tus perfiles de redes sociales para conectarte con otros"
+        "ar":"أضف حسابات التواصل الاجتماعي الخاصة بك للتواصل مع الآخرين"
     },
     "No social links added yet": {    
         "en":"No social links added yet",
         "fr":"No social links added yet",
-        "ar":"No se han agregado enlaces sociales todavía"
+        "ar":"لم تتم إضافة روابط اجتماعية بعد"
     },
     "About":{
         "en":"About",
         "fr":"About",
-        "ar":"Acerca de"
+        "ar":"حول"
     },
     "Location":{
         "en":"Location",
         "fr":"Location",
-        "ar":"Ubicación"
+        "ar":"الموقع"
     },
     "Saving...":{
         "en":"Saving...",
         "fr":"Saving...",
-        "ar":"Guardando..."
+        "ar":"جارٍ الحفظ..."
     },
     "Network error":{
         "en":"Network error",
         "fr":"Network error",
-        "ar":"Error de red"
+        "ar":"خطأ في الشبكة"
     },
     "username":{
         "en":"username",
         "fr":"username",
-        "ar":"dfffffff"
+        "ar":"اسم المستخدم"
     },
     "Sportif":{
         "en":"Sportif",
         "fr":"Sportif",
-        "ar":"Deportista"
+        "ar":"رياضي"
     },
     "Erreur lors de la récupération des produits":{
         "en":"Error retrieving products",
         "fr":"Error retrieving products",
-        "ar":"Error al recuperar los productos"
+        "ar":"خطأ في استرجاع المنتجات"
     },
     "Commande confirmée avec succès !":{
         "en":"Order confirmed successfully!",
         "fr":"Order confirmed successfully!",
-        "ar":"Pedido confirmado con éxito!"
+        "ar":"تم تأكيد الطلب بنجاح!"
     },
     "Panier":{
         "en":"Cart",
         "fr":"Cart",
-        "ar":"Carrito"
+        "ar":"سلة التسوق"
     },
     "article(s)":{
         "en":"article(s)",
         "fr":"article(s)",
-        "ar":"artículos"
+        "ar":"منتج(ات)"
     },
     "DH":{
         "en":"DH",
         "fr":"DH",
-        "ar":"DH"
+        "ar":"درهم"
     },
     "Supprimer":{
         "en":"Delete",
         "fr":"Delete",
-        "ar":"Eliminar"
+        "ar":"حذف"
     },
     "Confirmer la commande":{
         "en":"Confirm Order",
         "fr":"Confirm Order",
-        "ar":"Confirmar Pedido"
+        "ar":"تأكيد الطلب"
     },
     "Boutique Sportive":{
         "en":"Sport Shop",
         "fr":"Sport Shop",
-        "ar":"Tienda Deportiva"
+        "ar":"متجر الرياضة"
     },
     "Des équipements de qualité pour votre performance":{
         "en":"High-quality equipment for your performance",
         "fr":"High-quality equipment for your performance",
-        "ar":"Equipo de alta calidad para tu rendimiento"
+        "ar":"معدات عالية الجودة لأدائك"
     },
     "Annuler":{
         "en":"Cancel",    
         "fr":"Cancel",
-        "ar":"Cancelar"
+        "ar":"إلغاء"
     },
     "Supprimer Produits":{
         "en":"Delete Products",
         "fr":"Delete Products",
-        "ar":"Eliminar Productos"
+        "ar":"حذف المنتجات"
     },
     "Nouveau Produit":{
         "en":"New Product",
         "fr":"New Product",
-        "ar":"Nuevo Producto"
+        "ar":"منتج جديد"
     },
     "Fermer":{
         "en":"Close",
         "fr":"Close",
-        "ar":"Cerrar"
+        "ar":"إغلاق"
     },
     "Ajouter un nouveau produit":{
         "en":"Add a new product",
         "fr":"Add a new product",
-        "ar":"Agregar un nuevo producto"
+        "ar":"إضافة منتج جديد"
     },
     "Nom":{
         "en":"Name",
         "fr":"Name",
-        "ar":"Nombre"
+        "ar":"الاسم"
     },
     "Prix (DH)":{
         "en":"Price",
         "fr":"Price",
-        "ar":"Precio"
+        "ar":"السعر"
     },
     "Quantité en stock":{
         "en":"Quantity",
         "fr":"Quantity",
-        "ar":"Cantidad"
+        "ar":"الكمية"
     },
     "Description":{
         "en":"Description",
         "fr":"Description",
-        "ar":"Descripción"
+        "ar":"الوصف"
     },
     "Image":{
         "en":"Image",
         "fr":"Image",
-        "ar":"Imagen"
+        "ar":"الصورة"
     },
     "Ajouter le produit":{
         "en":"Add Product",
         "fr":"Add Product",
-        "ar":"Agregar Producto"
+        "ar":"إضافة المنتج"
     },
     "Aucun produit disponible pour le moment":{
         "en":"No products available for now",
         "fr":"No products available for now",
-        "ar":"No hay productos disponibles por ahora"
+        "ar":"لا توجد منتجات متاحة حالياً"
     },
     "Catégorie: Sportif":{
         "en":"Sportif",    
         "fr":"Sportif",
-        "ar":"Deportista"
+        "ar":"الفئة: رياضي"
     },
     "Stock restant: ":{
         "en":"Stock remaining: ",
         "fr":"Stock remaining: ",
-        "ar":"Stock reslltante: "
+        "ar":"المخزون المتبقي: "
     },
     "Réduire la quantité":{
         "en":"Reduce the quantity",
         "fr":"Reduce the quantity",
-        "ar":"Reducir la cantidad"
+        "ar":"تقليل الكمية"
     },
     "Ajouter":{
         "en":"Add ",
         "fr":"Add ",
-        "ar":"Agregar al carrito"
+        "ar":"إضافة"
     },
     "Augmenter la quantité":{
         "en":"Increase the quantity",
         "fr":"Increase the quantity",
-        "ar":"Aumentar la cantidad"
+        "ar":"زيادة الكمية"
     },
     "Stock insuffisant":{
         "en":"Insufficient stock",
         "fr":"Insufficient stock",
-        "ar":"Stock insuficiente"
+        "ar":"المخزون غير كافٍ"
     },
     "Total:":{
         "en":"Total: ",
         "fr":"Total: ",    
-        "ar":"Total: "
+        "ar":"المجموع: "
     },
     "HTTP error! Status:":{
         "en":"HTTP error! Status: ",
         "fr":"HTTP error! Status: ",
-        "ar":"HTTP error! Status: "
+        "ar":"خطأ HTTP! الحالة: "
     },
     "Error fetching orders:":{
         "en":"Error fetching orders: ",
         "fr":"Error fetching orders: ",
-        "ar":"Error fetching orders: "
+        "ar":"خطأ في جلب الطلبات: "
     },
     "Error fetching reservations:":{
         "en":"Error fetching reservations: ",
         "fr":"Error fetching reservations: ",
-        "ar":"Error fetching reservations: "
+        "ar":"خطأ في جلب الحجوزات: "
     },
    "Erreur lors de l'annulation de la réservation.":{
         "en":"Error cancelling reservation.",
         "fr":"Error cancelling reservation.",
-        "ar":"Error al cancelar la reserva."
+        "ar":"خطأ في إلغاء الحجز."
     },
     "Confirmé":{
         "en":"Confirmed",
         "fr":"Confirmed",
-        "ar":"Confirmado"
+        "ar":"مؤكد"
     },
     "Annulé":{
         "en":"Cancelled",
         "fr":"Cancelled",
-        "ar":"Cancelado"
+        "ar":"ملغى"
     },
     "En attente":{
         "en":"Pending",
         "fr":"Pending",
-        "ar":"Pendiente"
+        "ar":"قيد الانتظار"
     },
     "Trouvez et réservez votre terrain de sport idéal":{
         "en":"Find and reserve your ideal sport field",
         "fr":"Find and reserve your ideal sport field",    
-        "ar":"Encuentre y reserve su campo deportivo ideal"
+        "ar":"ابحث واحجز ملعبك الرياضي المثالي"
     },
     "Mes Réservations":{
         "en":"My Reservations",
         "fr":"My Reservations",
-        "ar":"Mis Reservas"
+        "ar":"حجوزاتي"
     },
     "Chargement des réservations...":{
         "en":"Loading reservations...",
         "fr":"Loading reservations...",
-        "ar":"Cargando reservas..."
+        "ar":"جارٍ تحميل الحجوزات..."
     },
     "Erreur:":{
         "en":"Error: ",
         "fr":"Error: ",
-        "ar":"Error: "
+        "ar":"خطأ: "
     },
     "Aucune réservation trouvée.":{
         "en":"No reservations found.",
         "fr":"No reservations found.",
-        "ar":"No se encontraron reservas."
+        "ar":"لم يتم العثور على حجوزات."
     },
     "Stade:":{
         "en":"Stadium: ",
         "fr":"Stadium: ",
-        "ar":"Estadio: "
+        "ar":"الملعب: "
     },
     "Addresse:":{    
         "en":"Address: ",
         "fr":"Address: ",
-        "ar":"Dirección: "
+        "ar":"العنوان: "
     },
     "Date et heure:":{
         "en":"Date and time: ",
         "fr":"Date and time: ",
-        "ar":"Fecha y hora: "
+        "ar":"التاريخ والوقت: "
     },
     "N/A":{
         "en":"N/A",
         "fr":"N/A",
-        "ar":"N/ma"
+        "ar":"غير متاح"
     },
     "Durée:":{
         "en":"Duration: ",
         "fr":"Duration: ",
-        "ar":"Duración: "
+        "ar":"المدة: "
     },
     "heure(s)":{
         "en":"hour(s)",
         "fr":"hour(s)",
-        "ar":"hora(s)"
+        "ar":"ساعة(ساعات)"
     },
     "Total":{
         "en":"Total",
         "fr":"Total",
-        "ar":"Total"
+        "ar":"المجموع"
     },
     "Réservation":{
         "en":"Reservation",
         "fr":"Reservation",
-        "ar":"Reserva"
+        "ar":"الحجز"
     },
     "Erreur lors du chargement des utilisateurs: ":{
         "en":"Error loading users: ",
         "fr":"Error loading users: ",
-        "ar":"Error loading users: "
+        "ar":"خطأ في تحميل المستخدمين: "
     },
     "a été confirmé avec succès!":{
         "en":"has been confirmed successfully!",
         "fr":"has been confirmed successfully!",
-        "ar":"has been confirmed successfully!"
+        "ar":"تم تأكيده بنجاح!"
     },
     "L'utilisateur avec l'ID":{
         "en":"User with ID ",
         "fr":"User with ID ",
-        "ar":"User with ID "
+        "ar":"المستخدم ذو المعرف "
     },
     "Erreur lors de la confirmation: ":{
         "en":"Error confirming: ",
         "fr":"Error confirming: ",
-        "ar":"Error confirming: "
+        "ar":"خطأ في التأكيد: "
     },
     "a été annulé avec succès!":{
         "en":"has been cancelled successfully!",
         "fr":"has been cancelled successfully!",
-        "ar":"has been cancelled successfully!"
+        "ar":"تم إلغاؤه بنجاح!"
     },
     "Gestion des confirmations d'utilisateurs":{
         "en":"User Confirmation Management",
         "fr":"User Confirmation Management",
-        "ar":"Gestion de confirmaciones de usuarios"
+        "ar":"إدارة تأكيدات المستخدمين"
     },
     "Réessayer":{
         "en":"Retry",
         "fr":"Retry",
-        "ar":"Reintentar"
+        "ar":"إعادة المحاولة"
     },
     "Chargement des utilisateurs...":{
         "en":"Loading users...",
         "fr":"Loading users...",
-        "ar":"Cargando usuarios..."
+        "ar":"جارٍ تحميل المستخدمين..."
     },
     "Action":{
         "en":"Action",
         "fr":"Action",
-        "ar":"Accion"
+        "ar":"الإجراء"
     },
     "Statut":{
         "en":"Status",
         "fr":"Status",
-        "ar":"Estado"
+        "ar":"الحالة"
     },
     "Rôle":{
         "en":"Role",
         "fr":"Role",
-        "ar":"Rol"
+        "ar":"الدور"
     },
     "ID":{
         "en":"ID",
         "fr":"ID",
-        "ar":"ID"
+        "ar":"المعرف"
     },
     "Confirmer":{
         "en":"Confirm",
         "fr":"Confirm",
-        "ar":"Confirmar"
+        "ar":"تأكيد"
     },
     "Aucun utilisateur trouvé":{
         "en":"No users found",
         "fr":"No users found",
-        "ar":"No se encontraron usuarios"
+        "ar":"لم يتم العثور على مستخدمين"
     },
     "Erreur lors de la confirmation de la réservation.":{
         "en":"Error confirming reservation.",
         "fr":"Error confirming reservation.",
-        "ar":"Error al confirmar la reserva."
+        "ar":"خطأ في تأكيد الحجز."
     },
     "Tous les stades":{
         "en":"All stadiums",
         "fr":"All stadiums",
-        "ar":"Todos los estadios"
+        "ar":"جميع الملاعب"
     },
     "Stade":{
         "en":"Stadium",
         "fr":"Stadium",
-        "ar":"Estadio"
+        "ar":"ملعب"
     },
     "Date de fin":{
         "en":"End date",
         "fr":"End date",
-        "ar":"Fecha de fin"
+        "ar":"تاريخ الانتهاء"
     },
     "Date de début":{
         "en":"Start date",
         "fr":"Start date",
-        "ar":"Fecha de inicio"
+        "ar":"تاريخ البدء"
     },
     "ConfirméTous les statuts":{
         "en":"All statuses",
         "fr":"All statuses",
-        "ar":"Todos los estados"
+        "ar":"جميع الحالات"
     },
     "Réinitialiser":{
         "en":"Reset",
         "fr":"Reset",
-        "ar":"Reiniciar"
+        "ar":"إعادة تعيين"
     },
     "Client:":{
         "en":"Client: ",
         "fr":"Client: ",
-        "ar":"Cliente: "
+        "ar":"العميل: "
     },
     "Téléphone:":{
         "en":"Phone: ",
         "fr":"Phone: ",
-        "ar":"Teléfono: "
+        "ar":"الهاتف: "
     },
     "Tous les statuts":{
         "en":"All statuses",
         "fr":"All statuses",
-        "ar":"Todos los estados"
+        "ar":"جميع الحالات"
     },
     "Gestion des commendes":{
         "en":"Order Management",
         "fr":"Order Management",
-        "ar":"Gestion de pedidos"
+        "ar":"إدارة الطلبات"
     },
     "Aucune commende trouvée.":{
         "en":"No orders found.",
         "fr":"No orders found.",
-        "ar":"No se encontraron pedidos."
+        "ar":"لم يتم العثور على طلبات."
     },
     "Chargement des commendes...":{
         "en":"Loading orders...",
         "fr":"Loading orders...",
-        "ar":"Cargando pedidos..."
+        "ar":"جارٍ تحميل الطلبات..."
     },
     "Vous devez être connecté pour effectuer une réservation.":{
         "en":"You must be logged in to make a reservation.",
         "fr":"You must be logged in to make a reservation.",
-        "ar":"Debe estar conectado para realizar una reserva."
+        "ar":"يجب عليك تسجيل الدخول لإجراء حجز."
     },
     "Veuillez sélectionner une date et une heure.":{
         "en":"Please select a date and time.",    
         "fr":"Please select a date and time.",
-        "ar":"Por favor seleccione una fecha y hora."
+        "ar":"الرجاء اختيار تاريخ ووقت."
     },
     "Ce créneau est déjà réservé. Veuillez choisir un autre horaire.":{
         "en":"This time slot is already reserved. Please choose another time.",
         "fr":"This time slot is already reserved. Please choose another time.",
-        "ar":"Este intervalo de tiempo ya esta reservado. Por favor elija otro horario."
+        "ar":"هذه الفترة الزمنية محجوزة بالفعل. الرجاء اختيار وقت آخر."
     },
     "Échec de la réservation.":{    
         "en":"Reservation failed.",
         "fr":"Reservation failed.",
-        "ar":"Fallo al realizar la reserva."
+        "ar":"فشل الحجز."
     },
     "Réserver -":{
         "en":"Reserve -",
         "fr":"Reserve -",
-        "ar":"Reservar -"
+        "ar":"حجز -"
     },
     "Réservation confirmée !":{
         "en":"Reservation confirmed!",
         "fr":"Reservation confirmed!",
-        "ar":"Reserva confirmada!"
+        "ar":"تم تأكيد الحجز!"
     },
     "Date":{
         "en":"Date",
         "fr":"Date",
-        "ar":"Fecha"
+        "ar":"التاريخ"
     },
     "Heure de début":{
         "en":"Start time",
         "fr":"Start time",
-        "ar":"Hora de inicio"
+        "ar":"وقت البدء"
     },
     "Durée (heures)":{
         "en":"Duration (hours)",
         "fr":"Duration (hours)",    
-        "ar":"Duración (horas)"
+        "ar":"المدة (ساعات)"
     },
     "heure":{
         "en":"hour",
         "fr":"hour",
-        "ar":"hora"
+        "ar":"ساعة"
     },
     "heures":{
         "en":"hours",
         "fr":"hours",
-        "ar":"horas"
+        "ar":"ساعات"
     },
     "Prix total:":{
         "en":"Total price: ",
         "fr":"Total price: ",
-        "ar":"Precio total: "
+        "ar":"السعر الإجمالي: "
     },
     "MAD":{
         "en":"MAD",
         "fr":"MAD",
-        "ar":"MAD"
+        "ar":"درهم"
     },
     "MAD/heure":{
         "en":"MAD/hour",
         "fr":"MAD/hour",
-        "ar":"MAD/hora"
+        "ar":"درهم/ساعة"
     },
     "Traitement en cours...')":{
         "en":"Processing...",    
         "fr":"Processing...",
-        "ar":"Procesando..."
+        "ar":"جارٍ المعالجة..."
     },
     "Confirmer la réservation":{
         "en":"Confirm reservation",    
         "fr":"Confirm reservation",
-        "ar":"Confirmar reserva"
+        "ar":"تأكيد الحجز"
     },
     "Failed to add comment":{
         "en":"Failed to add comment",
         "fr":"Failed to add comment",
-        "ar":"Fallo al agregar comentario"
+        "ar":"فشل في إضافة التعليق"
     },
     "Error adding comment:":{
         "en":"Error adding comment: ",
         "fr":"Error adding comment: ",
-        "ar":"Error al agregar comentario: "
+        "ar":"خطأ في إضافة التعليق: "
     },
     "Failed to delete comment":{
         "en":"Failed to delete comment",
         "fr":"Failed to delete comment",
-        "ar":"Fallo al eliminar comentario"
+        "ar":"فشل في حذف التعليق"
     },
     "Error deleting comment:":{
         "en":"Error deleting comment: ",
         "fr":"Error deleting comment: ",
-        "ar":"Error al eliminar comentario: "
+        "ar":"خطأ في حذف التعليق: "
     },
     "Failed to update comment":{
         "en":"Failed to update comment",
         "fr":"Failed to update comment",
-        "ar":"Fallo al actualizar comentario"
+        "ar":"فشل في تحديث التعليق"
     },
     "Commentaires -":{
         "en":"Comments -",
         "fr":"Comments -",
-        "ar":"Comentarios -"
+        "ar":"التعليقات -"
     },
     "Note moyenne :":{
         "en":"Average rating: ",
         "fr":"Average rating: ",
-        "ar":"Calificación promedio: "
+        "ar":"متوسط التقييم: "
     },
     "Chargement des commentaires...":{
         "en":"Loading comments...",
         "fr":"Loading comments...",
-        "ar":"Cargando comentarios..."
+        "ar":"جارٍ تحميل التعليقات..."
     },
     "Aucun commentaire pour le moment":{
         "en":"No comments for now",
         "fr":"No comments for now",
-        "ar":"No hay comentarios por ahora"
+        "ar":"لا توجد تعليقات حاليًا"
     },
     "Votre note :":{
         "en":"Your rating: ",
         "fr":"Your rating: ",
-        "ar":"Su calificación: "
+        "ar":"تقييمك: "
     },
     "Vous avez déjà noté ce terrain":{
         "en":"You have already rated this field",
         "fr":"You have already rated this field",
-        "ar":"Ya has calificado este campo"
+        "ar":"لقد قمت بتقييم هذا الملعب مسبقًا"
     },
     "Failed to add facility":{
         "en":"Failed to add facility",
         "fr":"Failed to add facility",
-        "ar":"Fallo al agregar facilidad"
+        "ar":"فشل في إضافة المرفق"
     },
     "Facility added successfully:":{
         "en":"Facility added successfully: ",
         "fr":"Facility added successfully: ",
-        "ar":"Facilidad agregada correctamente: "
+        "ar":"تمت إضافة المرفق بنجاح: "
     },
     "Ajouter un nouveau terrain":{
         "en":"Add a new field",
         "fr":"Add a new field",
-        "ar":"Agregar un nuevo campo"
+        "ar":"إضافة ملعب جديد"
     },
     "Adresse":{
         "en":"Address",
         "fr":"Address",
-        "ar":"Dirección"
+        "ar":"العنوان"
     },
     "Type de sport":{
         "en":"Sport type",
         "fr":"Sport type",
-        "ar":"Tipo de deporte"
+        "ar":"نوع الرياضة"
     },
     "Sélectionnez un sport":{
         "en":"Select a sport",
         "fr":"Select a sport",
-        "ar":"Seleccione un deporte"
+        "ar":"اختر رياضة"
     },
     "Capacité":{
         "en":"Capacity",
         "fr":"Capacity",
-        "ar":"Capacidad"
+        "ar":"السعة"
     },
     "Prix par heure (MAD)":{
         "en":"Price per hour (MAD)",
         "fr":"Price per hour (MAD)",
-        "ar":"Precio por hora (MAD)"
+        "ar":"السعر بالساعة (درهم)"
     },
     "Failed to fetch facilities:":{
         "en":"Failed to fetch facilities:",
         "fr":"Failed to fetch facilities:",
-        "ar":"Fallo al obtener las facilidades:"
+        "ar":"فشل في جلب المرافق:"
     },
     "Erreur lors de la suppression:":{
         "en":"Error deleting: ",
         "fr":"Error deleting: ",
-        "ar":"Error al eliminar: "
+        "ar":"خطأ في الحذف: "
     },
     "Tous les sports":{
         "en":"All sports",
         "fr":"All sports",
-        "ar":"Todos los deportes"
+        "ar":"جميع الرياضات"
     },
     "Tous les prix":{
         "en":"All prices",
         "fr":"All prices",
-        "ar":"Todos los precios"
+        "ar":"جميع الأسعار"
     },
     "Toutes les capacités":{
         "en":"All capacities",
         "fr":"All capacities",
-        "ar":"Todas las capacidades"
+        "ar":"جميع السعات"
     },
     "Mes réservations":{
         "en":"My reservations",
         "fr":"My reservations",
-        "ar":"Mis reservas"
+        "ar":"حجوزاتي"
     },
     "Terrain":{
         "en":"Field",
         "fr":"Field",
-        "ar":"Campo"
+        "ar":"الملعب"
     },
     "Prix":{
         "en":"Price",
         "fr":"Price",
-        "ar":"Precio"
+        "ar":"السعر"
     },
     "Durée":{
         "en":"Duration",
         "fr":"Duration",
-        "ar":"Duración"
+        "ar":"المدة"
     },
     "Heure":{
         "en":"Hour",
         "fr":"Hour",
-        "ar":"Hora"
+        "ar":"الساعة"
     },
     "Chargement des terrains...":{
         "en":"Loading fields...",
         "fr":"Loading fields...",
-        "ar":"Cargando campos..."
+        "ar":"جارٍ تحميل الملاعب..."
     },
     "Erreur lors du chargement des terrains:":{
         "en":"Error loading fields:",
         "fr":"Error loading fields:",
-        "ar":"Error al cargar los campos:"
+        "ar":"خطأ في تحميل الملاعب:"
     },
     "Aucun terrain trouvé":{
         "en":"No fields found",
         "fr":"No fields found",
-        "ar":"No se encontraron campos"
+        "ar":"لم يتم العثور على ملاعب"
     },
     "Type de sport :":{
         "en":"Sport type: ",
         "fr":"Sport type: ",    
-        "ar":"Tipo de deporte: "
+        "ar":"نوع الرياضة: "
     },
     "Capacité :":{
         "en":"Capacity: ",
         "fr":"Capacity: ",    
-        "ar":"Capacidad: "
+        "ar":"السعة: "
     },
     "/heure":{
         "en":"/hour",
         "fr":"/hour",    
-        "ar":"/hora"
+        "ar":"/ساعة"
     },
     "Commentaires":{
         "en":"Comments",
         "fr":"Comments",    
-        "ar":"Comentarios"
+        "ar":"التعليقات"
     },
     "Football":{
         "en":"Football",
         "fr":"Football",    
-        "ar":"Fútbol"
+        "ar":"كرة القدم"
     },
     "Basketball":{
         "en":"Basketball",
         "fr":"Basketball",    
-        "ar":"Baloncesto"
+        "ar":"كرة السلة"
     },
     "Tennis":{
         "en":"Tennis",
         "fr":"Tennis",    
-        "ar":"Tenis"
+        "ar":"التنس"
     },
     "Volleyball":{
         "en":"Volleyball",
         "fr":"Volleyball",    
-        "ar":"Voleibol"
+        "ar":"الكرة الطائرة"
     },
     "Badminton":{
         "en":"Badminton",
         "fr":"Badminton",    
-        "ar":"Badminton"
+        "ar":"الريشة الطائرة"
     },
     "Handball":{
         "en":"Handball",
         "fr":"Handball",    
-        "ar":"Handball"
+        "ar":"كرة اليد"
     },
     "Rugby":{
         "en":"Rugby",
         "fr":"Rugby",    
-        "ar":"Rugby"
+        "ar":"الركبي"
     },
     "Athlétisme":{
         "en":"Athletics",
         "fr":"Athletics",    
-        "ar":"Atletismo"
+        "ar":"ألعاب القوى"
     },
     "Paddle":{
         "en":"Paddle",
         "fr":"Paddle",    
-        "ar":"Paddle"
+        "ar":"بادل"
     }
 }
