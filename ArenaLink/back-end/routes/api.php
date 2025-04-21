@@ -78,4 +78,6 @@ Route::prefix("dashboard")->group(function () {
     Route::get("/users", [dashboardController::class, "Users"]);
     Route::get("/produits",[dashboardController::class, "Produits"]);
     Route::get("/stades",[dashboardController::class, "Stades"]);
+    Route::get("/reservations",[dashboardController::class, "Reservations"]);
+    Route::get("/orders",[dashboardController::class, "Orders"]);
 });

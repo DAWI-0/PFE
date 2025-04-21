@@ -80,6 +80,21 @@ export default function DashboardCharts() {
     const data= await response.json();
     setProducts(data)
   };
+  const fetchStades =async () => {
+    const response = await fetch('http://localhost:8000/api/dashboard/stades');
+    const data= await response.json();
+    setStades(data)
+  };
+  const fetchReservations =async () => {
+    const response = await fetch('http://localhost:8000/api/dashboard/reservations');
+    const data= await response.json();
+    setReservations(data)
+  };
+  const fetchOrders =async () => {
+    const response = await fetch('http://localhost:8000/api/dashboard/orders');
+    const data= await response.json();
+    setOrders(data)
+  };
   useEffect(() => {
     fetchAllData();
   }, []);
@@ -94,23 +109,22 @@ export default function DashboardCharts() {
       
       fetchUsers();
       fetchProduits();
-      setOrders(mockOrders);
-     
-      setStades(mockStades);
-      setReservations(mockReservations);
-      setPendingOrders(mockOrders.filter(order => order.status === 'pending'));
+      fetchStades();
+      fetchReservations();
+      fetchOrders();
+      setPendingOrders(orders.filter(order => order.status === 'pending'));
 
       const sortedReservations = [...mockReservations]
         .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
         .slice(0, 5);
       setRecentReservations(sortedReservations);
 
-      const pendingCount = mockOrders.filter(order => order.status === 'pending').length;
-      const confirmedCount = mockOrders.filter(order => order.status === 'confirmed').length;
+      const pendingCount = orders.filter(order => order.status === 'pending').length;
+      const confirmedCount = orders.filter(order => order.status === 'confirmed').length;
       setOrderStats({
         pending: pendingCount,
         confirmed: confirmedCount,
-        total: mockOrders.length,
+        total: orders.length,
       });
     } catch (err) {
       console.error("Erreur lors du chargement des données:", err);

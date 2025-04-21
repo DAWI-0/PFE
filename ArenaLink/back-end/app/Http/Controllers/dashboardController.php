@@ -21,4 +21,22 @@ class dashboardController extends Controller
         $data=stade::all();
         return response()->json($data);
     }
+    public function Reservations(){
+        $data=stade::all();
+        return response()->json($data);
+    }
+
+    public function Orders(){
+        $data=stade::all();
+        return response()->json($data->map(function($data){
+            return [
+                'id'=>$data->id,
+                'user_id'=>$data->user_id,
+                'total_price'=>$data->total_amount,
+                'status'=>$data->status,
+                'created_at'=>$data->created_at
+            ];
+        }));
+    }
+
 }
