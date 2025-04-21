@@ -17,7 +17,7 @@ const mockOrders = [
   { id: 3, user_id: 1, total_price: 150, status: 'pending', created_at: '2023-10-03T12:00:00Z' },
   { id: 4, user_id: 4, total_price: 250, status: 'confirmed', created_at: '2023-10-04T13:00:00Z' },
   { id: 5, user_id: 5, total_price: 300, status: 'pending', created_at: '2023-10-05T14:00:00Z' },
-];
+];  
 
 // Données simulées pour les produits
 const mockProducts = [
@@ -70,17 +70,32 @@ export default function DashboardCharts() {
   // État pour les données des tableaux
   const [pendingOrders, setPendingOrders] = useState([]);
   const [recentReservations, setRecentReservations] = useState([]);
-
+  const fetchUsers =async () => {
+    const response = await fetch('http://localhost:8000/api/dashboard/users');
+    const data= await response.json();
+    setUsers(data)
+  };
+  const fetchProduits =async () => {
+    const response = await fetch('http://localhost:8000/api/dashboard/produits');
+    const data= await response.json();
+    setProducts(data)
+  };
   useEffect(() => {
     fetchAllData();
   }, []);
 
+  useEffect(() => {
+    console.log(users);
+  }, [users]);
+
   const fetchAllData = () => {
     setLoading(true);
     try {
-      setUsers(mockUsers);
+      
+      fetchUsers();
+      fetchProduits();
       setOrders(mockOrders);
-      setProducts(mockProducts);
+     
       setStades(mockStades);
       setReservations(mockReservations);
       setPendingOrders(mockOrders.filter(order => order.status === 'pending'));
@@ -403,8 +418,8 @@ export default function DashboardCharts() {
         {/* Derniers utilisateurs inscrits */}
         <div className="bg-white p-6 rounded-lg shadow-md">
           <h2 className="text-lg font-semibold mb-4">Derniers utilisateurs inscrits</h2>
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
+          <div>
+            <table className="min-w-full max-w-full divide-y divide-gray-200">
               <thead className="bg-gray-50">
                 <tr>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
@@ -421,11 +436,11 @@ export default function DashboardCharts() {
                 ) : (
                   users.slice(0, 5).map(user => (
                     <tr key={user.id}>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{user.id}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-xs text-gray-500">{user.id}</td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                         {user.name}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      <td className="px-6 py-4 whitespace-nowrap text-xs text-gray-500">
                         {user.email}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
@@ -469,7 +484,7 @@ export default function DashboardCharts() {
                         {product.nom || product.name}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {product.prix || product.price || 0} €
+                        {product.prix || product.price || 0} DH
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                         {product.stock || 0}

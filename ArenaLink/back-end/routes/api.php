@@ -11,6 +11,7 @@ use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\StadeController;
 use App\Http\Controllers\Auth\PasswordController;
+use App\Http\Controllers\dashboardController;
 
 Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
     return $request->user();
@@ -72,4 +73,9 @@ Route::prefix("reservations")->group(function () {
     Route::POST("/annuler/{id}", [ReservationController::class, "annuler"]);
     Route::POST("/confirmer/{id}", [ReservationController::class, "confirmer"]);
     Route::get("/user/{id}", [ReservationController::class, "showByUserId"]);
+});
+Route::prefix("dashboard")->group(function () {
+    Route::get("/users", [dashboardController::class, "Users"]);
+    Route::get("/produits",[dashboardController::class, "Produits"]);
+    Route::get("/stades",[dashboardController::class, "Stades"]);
 });
