@@ -125,7 +125,7 @@ function Commande() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className={`min-h-screen md:w-full bg-gray-50 ${user.role === 'admin' ? 'w-[370px]' : ''}`}>
       {/* Header */}
       <header className="bg-blue-600 text-white py-6">
         <div className="container mx-auto px-4">

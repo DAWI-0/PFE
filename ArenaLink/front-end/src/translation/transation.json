@@ -963,5 +963,115 @@
         "en":"Paddle",
         "fr":"Paddle",    
         "ar":"بادل"
+    },
+    "Produits populaires": {
+        "en": "Popular Products",
+        "fr": "Produits populaires",
+        "ar": "المنتجات الشائعة"
+    },
+    "Stock": {
+        "en": "Stock",
+        "fr": "Stock",
+        "ar": "المخزون"
+    },
+    "Aucun produit disponible": {
+        "en": "No products available",
+        "fr": "Aucun produit disponible",
+        "ar": "لا توجد منتجات متاحة"
+    },
+    "Tableau de bord": {
+        "en": "Dashboard",
+        "fr": "Tableau de bord",
+        "ar": "لوحة التحكم"
+    },
+    "Total Utilisateurs": {
+        "en": "Total Users",
+        "fr": "Total Utilisateurs",
+        "ar": "إجمالي المستخدمين"
+    },
+    "Total Produits": {
+        "en": "Total Products",
+        "fr": "Total Produits",
+        "ar": "إجمالي المنتجات"
+    },
+    "Total Stades": {
+        "en": "Total Stadiums",
+        "fr": "Total Stades",
+        "ar": "إجمالي الملاعب"
+    },
+    "Total Réservations": {
+        "en": "Total Reservations",
+        "fr": "Total Réservations",
+        "ar": "إجمالي الحجوزات"
+    },
+    "Réservations par stade": {
+        "en": "Reservations by Stadium",
+        "fr": "Réservations par stade",
+        "ar": "الحجوزات حسب الملعب"
+    },
+    "Distribution des rôles": {
+        "en": "Role Distribution",
+        "fr": "Distribution des rôles",
+        "ar": "توزيع الأدوار"
+    },
+    "Statut des commandes": {
+        "en": "Order Status",
+        "fr": "Statut des commandes",
+        "ar": "حالة الطلبات"
+    },
+    "Activités récentes (7 derniers jours)": {
+        "en": "Recent Activity (Last 7 Days)",
+        "fr": "Activités récentes (7 derniers jours)",
+        "ar": "النشاط الحديث (آخر 7 أيام)"
+    },
+    "Derniers Commandes": {
+        "en": "Latest Orders",
+        "fr": "Derniers Commandes",
+        "ar": "أحدث الطلبات"
+    },
+    "Client": {
+        "en": "Customer",
+        "fr": "Client",
+        "ar": "العميل"
+    },
+    "Aucune commande en attente": {
+        "en": "No pending orders",
+        "fr": "Aucune commande en attente",
+        "ar": "لا توجد طلبات قيد الانتظار"
+    },
+    "Réservations récentes": {
+        "en": "Recent Reservations",
+        "fr": "Réservations récentes",
+        "ar": "الحجوزات الحديثة"
+    },
+    "Utilisateur": {
+        "en": "User",
+        "fr": "Utilisateur",
+        "ar": "المستخدم"
+    },
+    "Aucune réservation récente": {
+        "en": "No recent reservations",
+        "fr": "Aucune réservation récente",
+        "ar": "لا توجد حجوزات حديثة"
+    },
+    "Derniers utilisateurs inscrits": {
+        "en": "Latest Registered Users",
+        "fr": "Derniers utilisateurs inscrits",
+        "ar": "آخر المستخدمين المسجلين"
+    },
+    "Aucun utilisateur inscrit": {
+        "en": "No registered users",
+        "fr": "Aucun utilisateur inscrit",
+        "ar": "لا يوجد مستخدمين مسجلين"
+    },
+    "Confirmées": {
+        "en": "Confirmed",
+        "fr": "Confirmées",
+        "ar": "مؤكدة"
+    },
+    "Annulées": {
+        "en": "Cancelled",
+        "fr": "Annulées",
+        "ar": "ملغاة"
     }
 }

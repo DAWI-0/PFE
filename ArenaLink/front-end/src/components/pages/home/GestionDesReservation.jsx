@@ -225,7 +225,7 @@ function GestionDesReservations() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className={`min-h-screen md:w-full bg-gray-50 ${user.role === 'admin' ? 'w-[370px]' : ''}`}>
       {/* Main Content */}
       <div className="container mx-auto px-4 py-6">
         {/* Reservations Section */}

@@ -84,7 +84,7 @@ function GestionDesCommendes() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen w-[370px] md:w-full bg-gray-50">
 
       {/* Main Content */}
       <div className="container mx-auto px-4 py-6">

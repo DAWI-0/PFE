@@ -232,7 +232,7 @@ const Magasin = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className={`min-h-screen md:w-full bg-gray-50 ${user.role === 'admin' ? 'w-[370px]' : ''}`}>
       {/* Message de succès */}
       {successMessage && (
         <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mx-4 mb-4" role="alert">

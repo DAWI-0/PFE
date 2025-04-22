@@ -873,9 +873,9 @@ function App() {
 
   // Find the currently selected facility for modals
   const selectedFacility = facilities.find(f => f.id === commentsModal.facilityId || f.id === reservationModal.facilityId) || { comments: [] };
-
+  const user = currentUser || { role: 'guest' }; // Default to guest if no user is logged in
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className={`min-h-screen md:w-full bg-gray-50 ${user.role === 'admin' ? 'w-[370px]' : ''}`}>
       {/* Header */}
       <header className="bg-blue-600 text-white py-6">
         <div className="container mx-auto px-4">

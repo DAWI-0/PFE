@@ -236,7 +236,7 @@ import { useTranslation } from 'react-i18next';
     if (!user) return null;
 
     return (
-      <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
+      <div className={`min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8 ${user.role === 'admin' ? 'w-[370px] md:w-full' : ''}`}>
         <div className="max-w-4xl mx-auto">
           {savedSuccess && (
             <div className="mb-4 p-4 bg-green-100 border border-green-400 text-green-700 rounded flex items-center justify-between">

@@ -1,57 +1,21 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, PieChart, Pie, ResponsiveContainer, Cell, LineChart, Line } from 'recharts';
 
-// Données simulées pour les utilisateurs
-const mockUsers = [
-  { id: 1, name: 'Alice', email: 'alice@example.com', role: 'admin' },
-  { id: 2, name: 'Bob', email: 'bob@example.com', role: 'user' },
-  { id: 3, name: 'Charlie', email: 'charlie@example.com', role: 'user' },
-  { id: 4, name: 'David', email: 'david@example.com', role: 'admin' },
-  { id: 5, name: 'Eve', email: 'eve@example.com', role: 'user' },
-];
-
-// Données simulées pour les commandes
-const mockOrders = [
-  { id: 1, user_id: 2, total_price: 100, status: 'pending', created_at: '2023-10-01T10:00:00Z' },
-  { id: 2, user_id: 3, total_price: 200, status: 'confirmed', created_at: '2023-10-02T11:00:00Z' },
-  { id: 3, user_id: 1, total_price: 150, status: 'pending', created_at: '2023-10-03T12:00:00Z' },
-  { id: 4, user_id: 4, total_price: 250, status: 'confirmed', created_at: '2023-10-04T13:00:00Z' },
-  { id: 5, user_id: 5, total_price: 300, status: 'pending', created_at: '2023-10-05T14:00:00Z' },
-];  
-
-// Données simulées pour les produits
-const mockProducts = [
-  { id: 1, nom: 'Produit A', prix: 50, stock: 10 },
-  { id: 2, nom: 'Produit B', prix: 100, stock: 5 },
-  { id: 3, nom: 'Produit C', prix: 150, stock: 20 },
-  { id: 4, nom: 'Produit D', prix: 200, stock: 15 },
-  { id: 5, nom: 'Produit E', prix: 250, stock: 8 },
-];
-
-// Données simulées pour les stades
-const mockStades = [
-  { id: 1, nom: 'Stade Alpha' },
-  { id: 2, nom: 'Stade Beta' },
-  { id: 3, nom: 'Stade Gamma' },
-  { id: 4, nom: 'Stade Delta' },
-  { id: 5, nom: 'Stade Epsilon' },
-];
-
-// Données simulées pour les réservations
-const mockReservations = [
-  { id: 1, stade_id: 1, user_id: 2, created_at: '2023-10-01T15:00:00Z' },
-  { id: 2, stade_id: 2, user_id: 3, created_at: '2023-10-02T16:00:00Z' },
-  { id: 3, stade_id: 1, user_id: 1, created_at: '2023-10-03T17:00:00Z' },
-  { id: 4, stade_id: 3, user_id: 4, created_at: '2023-10-04T18:00:00Z' },
-  { id: 5, stade_id: 2, user_id: 5, created_at: '2023-10-05T19:00:00Z' },
-];
-
 // Couleurs pour les graphiques
-const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8', '#82ca9d'];
+const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8', '#82ca9d', '#ff4d4f'];
 
 export default function DashboardCharts() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const {t}=useTranslation();
+  const [chartLoading, setChartLoading] = useState({
+    users: true,
+    products: true,
+    stades: true,
+    reservations: true,
+    orders: true
+  });
   
   // États pour les données
   const [users, setUsers] = useState([]);
@@ -64,93 +28,156 @@ export default function DashboardCharts() {
   const [orderStats, setOrderStats] = useState({
     pending: 0,
     confirmed: 0,
+    canceled: 0,
     total: 0
   });
 
   // État pour les données des tableaux
   const [pendingOrders, setPendingOrders] = useState([]);
   const [recentReservations, setRecentReservations] = useState([]);
-  const fetchUsers =async () => {
-    const response = await fetch('http://localhost:8000/api/dashboard/users');
-    const data= await response.json();
-    setUsers(data)
+  
+  const fetchUsers = async () => {
+    try {
+      const response = await fetch('http://localhost:8000/api/dashboard/users');
+      const data = await response.json();
+      setUsers(data);
+    } catch (err) {
+      console.error("Erreur lors du chargement des utilisateurs:", err);
+      setError("Impossible de charger les utilisateurs.");
+    } finally {
+      setChartLoading(prev => ({ ...prev, users: false }));
+    }
   };
-  const fetchProduits =async () => {
-    const response = await fetch('http://localhost:8000/api/dashboard/produits');
-    const data= await response.json();
-    setProducts(data)
+  
+  const fetchProduits = async () => {
+    try {
+      const response = await fetch('http://localhost:8000/api/dashboard/produits');
+      const data = await response.json();
+      setProducts(data);
+    } catch (err) {
+      console.error("Erreur lors du chargement des produits:", err);
+      setError("Impossible de charger les produits.");
+    } finally {
+      setChartLoading(prev => ({ ...prev, products: false }));
+    }
   };
-  const fetchStades =async () => {
-    const response = await fetch('http://localhost:8000/api/dashboard/stades');
-    const data= await response.json();
-    setStades(data)
+  
+  const fetchStades = async () => {
+    try {
+      const response = await fetch('http://localhost:8000/api/dashboard/stades');
+      const data = await response.json();
+      setStades(data);
+    } catch (err) {
+      console.error("Erreur lors du chargement des stades:", err);
+      setError("Impossible de charger les stades.");
+    } finally {
+      setChartLoading(prev => ({ ...prev, stades: false }));
+    }
   };
-  const fetchReservations =async () => {
-    const response = await fetch('http://localhost:8000/api/dashboard/reservations');
-    const data= await response.json();
-    setReservations(data)
+  
+  const fetchReservations = async () => {
+    try {
+      const response = await fetch('http://localhost:8000/api/dashboard/reservations');
+      const data = await response.json();
+      setReservations(data);
+    } catch (err) {
+      console.error("Erreur lors du chargement des réservations:", err);
+      setError("Impossible de charger les réservations.");
+    } finally {
+      setChartLoading(prev => ({ ...prev, reservations: false }));
+    }
   };
-  const fetchOrders =async () => {
-    const response = await fetch('http://localhost:8000/api/dashboard/orders');
-    const data= await response.json();
-    setOrders(data)
+  
+  const fetchOrders = async () => {
+    try {
+      const response = await fetch('http://localhost:8000/api/dashboard/orders');
+      const data = await response.json();
+      setOrders(data);
+      processOrderData(data);
+    } catch (err) {
+      console.error("Erreur lors du chargement des commandes:", err);
+      setError("Impossible de charger les commandes.");
+    } finally {
+      setChartLoading(prev => ({ ...prev, orders: false }));
+    }
   };
+
+  // Fonction pour traiter les données des commandes
+  const processOrderData = (ordersData) => {
+    const pendingCount = ordersData.filter(order => order.status === 'pending').length;
+    const confirmedCount = ordersData.filter(order => order.status === 'confirmed').length;
+    const canceledCount = ordersData.filter(order => order.status === 'canceled').length;
+    
+    setPendingOrders(ordersData.filter(order => order.status === 'pending'));
+    
+    setOrderStats({
+      pending: pendingCount,
+      confirmed: confirmedCount,
+      canceled: canceledCount,
+      total: ordersData.length,
+    });
+  };
+  
   useEffect(() => {
     fetchAllData();
   }, []);
 
   useEffect(() => {
-    console.log(users);
-  }, [users]);
+    // Vérifier si toutes les données sont chargées
+    if (!Object.values(chartLoading).some(loading => loading)) {
+      setLoading(false);
+    }
+  }, [chartLoading]);
 
-  const fetchAllData = () => {
-    setLoading(true);
-    try {
-      
-      fetchUsers();
-      fetchProduits();
-      fetchStades();
-      fetchReservations();
-      fetchOrders();
-      setPendingOrders(orders.filter(order => order.status === 'pending'));
-
-      const sortedReservations = [...mockReservations]
+  useEffect(() => {
+    // Traiter les données de réservations une fois chargées
+    if (reservations.length > 0) {
+      const sortedReservations = [...reservations]
         .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
         .slice(0, 5);
       setRecentReservations(sortedReservations);
-
-      const pendingCount = orders.filter(order => order.status === 'pending').length;
-      const confirmedCount = orders.filter(order => order.status === 'confirmed').length;
-      setOrderStats({
-        pending: pendingCount,
-        confirmed: confirmedCount,
-        total: orders.length,
-      });
-    } catch (err) {
-      console.error("Erreur lors du chargement des données:", err);
-      setError("Impossible de charger les données. Veuillez réessayer plus tard.");
-    } finally {
-      setLoading(false);
     }
+  }, [reservations]);
+
+  const fetchAllData = () => {
+    setLoading(true);
+    // Réinitialiser le statut de chargement pour chaque source de données
+    setChartLoading({
+      users: true,
+      products: true,
+      stades: true,
+      reservations: true,
+      orders: true
+    });
+    
+    fetchUsers();
+    fetchProduits();
+    fetchStades();
+    fetchReservations();
+    fetchOrders();
   };
 
   const confirmOrder = (orderId) => {
     try {
-      const updatedOrders = mockOrders.map(order =>
+      const updatedOrders = orders.map(order =>
         order.id === orderId ? { ...order, status: 'confirmed' } : order
       );
       setOrders(updatedOrders);
-      setPendingOrders(updatedOrders.filter(order => order.status === 'pending'));
-
-      const pendingCount = updatedOrders.filter(order => order.status === 'pending').length;
-      const confirmedCount = updatedOrders.filter(order => order.status === 'confirmed').length;
-      setOrderStats({
-        pending: pendingCount,
-        confirmed: confirmedCount,
-        total: updatedOrders.length,
-      });
+      processOrderData(updatedOrders);
     } catch (err) {
       console.error("Erreur lors de la confirmation de la commande:", err);
+    }
+  };
+
+  const cancelOrder = (orderId) => {
+    try {
+      const updatedOrders = orders.map(order =>
+        order.id === orderId ? { ...order, status: 'canceled' } : order
+      );
+      setOrders(updatedOrders);
+      processOrderData(updatedOrders);
+    } catch (err) {
+      console.error("Erreur lors de l'annulation de la commande:", err);
     }
   };
 
@@ -192,14 +219,53 @@ export default function DashboardCharts() {
   const prepareOrderStatusData = () => {
     return [
       { name: 'En attente', value: orderStats.pending },
-      { name: 'Confirmées', value: orderStats.confirmed }
+      { name: 'Confirmées', value: orderStats.confirmed },
+      { name: 'Annulées', value: orderStats.canceled }
     ];
   };
 
+  // Préparer les données pour le graphique d'activité récente
+  const prepareActivityData = () => {
+    // Créer les 7 derniers jours
+    const days = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
+    const today = new Date();
+    const activityData = [];
+    
+    for (let i = 6; i >= 0; i--) {
+      const date = new Date();
+      date.setDate(today.getDate() - i);
+      
+      const dayReservations = reservations.filter(r => {
+        const resDate = new Date(r.created_at);
+        return resDate.toDateString() === date.toDateString();
+      }).length;
+      
+      const dayOrders = orders.filter(o => {
+        const orderDate = new Date(o.created_at);
+        return orderDate.toDateString() === date.toDateString();
+      }).length;
+      
+      activityData.push({
+        name: days[date.getDay()],
+        reservations: dayReservations,
+        commandes: dayOrders
+      });
+    }
+    
+    return activityData;
+  };
+
+  const LoadingSpinner = () => (
+    <div className="flex justify-center items-center h-64">
+      <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-blue-500"></div>
+    </div>
+  );
+
   if (loading) {
     return (
-      <div className="flex justify-center items-center h-screen">
-        <div className="text-lg font-semibold">Chargement des données...</div>
+      <div className="flex flex-col justify-center items-center h-screen bg-gray-50">
+        <div className="animate-spin rounded-full h-20 w-20 border-t-4 border-b-4 border-blue-500 mb-4"></div>
+        <div className="text-lg font-semibold text-gray-700">Chargement des données...</div>
       </div>
     );
   }
@@ -209,33 +275,39 @@ export default function DashboardCharts() {
       <div className="p-8 bg-red-50 text-red-700 rounded-lg">
         <h3 className="text-xl font-bold mb-2">Erreur</h3>
         <p>{error}</p>
+        <button 
+          onClick={() => fetchAllData()}
+          className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+        >
+          Réessayer
+        </button>
       </div>
     );
   }
 
   return (
-    <div className="p-6 bg-gray-50 min-h-screen">
-      <h1 className="text-2xl font-bold mb-6 text-gray-800">Tableau de bord</h1>
+    <div className=" bg-gray-50 min-h-screen w-[370px] md:w-full p-8">
+      <h1 className="text-2xl font-bold mb-6 text-gray-800">{t("Tableau de bord")}</h1>
       
       {/* Statistiques générales */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <div className="bg-white p-6 rounded-lg shadow-md">
-          <div className="text-sm font-medium text-gray-500 mb-1">Total Utilisateurs</div>
+          <div className="text-sm font-medium text-gray-500 mb-1">{t("Total Utilisateurs")}</div>
           <div className="text-3xl font-bold text-gray-800">{users.length}</div>
         </div>
         
         <div className="bg-white p-6 rounded-lg shadow-md">
-          <div className="text-sm font-medium text-gray-500 mb-1">Total Produits</div>
+          <div className="text-sm font-medium text-gray-500 mb-1">{t("Total Produits")}</div>
           <div className="text-3xl font-bold text-gray-800">{products.length}</div>
         </div>
         
         <div className="bg-white p-6 rounded-lg shadow-md">
-          <div className="text-sm font-medium text-gray-500 mb-1">Total Stades</div>
+          <div className="text-sm font-medium text-gray-500 mb-1">{t("Total Stades")}</div>
           <div className="text-3xl font-bold text-gray-800">{stades.length}</div>
         </div>
         
         <div className="bg-white p-6 rounded-lg shadow-md">
-          <div className="text-sm font-medium text-gray-500 mb-1">Total Réservations</div>
+          <div className="text-sm font-medium text-gray-500 mb-1">{t("Total Réservations")}</div>
           <div className="text-3xl font-bold text-gray-800">{reservations.length}</div>
         </div>
       </div>
@@ -244,98 +316,105 @@ export default function DashboardCharts() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
         {/* Graphique à barres des réservations par stade */}
         <div className="bg-white p-6 rounded-lg shadow-md">
-          <h2 className="text-lg font-semibold mb-4">Réservations par stade</h2>
+          <h2 className="text-lg font-semibold mb-4">{t("Réservations par stade")}</h2>
           <div className="h-64">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={prepareReservationsByStade()}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" />
-                <YAxis />
-                <Tooltip />
-                <Legend />
-                <Bar dataKey="count" fill="#0088FE" name="Réservations" />
-              </BarChart>
-            </ResponsiveContainer>
+            {chartLoading.stades || chartLoading.reservations ? (
+              <LoadingSpinner />
+            ) : (
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={prepareReservationsByStade()}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="name" />
+                  <YAxis />
+                  <Tooltip />
+                  <Legend />
+                  <Bar dataKey="count" fill="#0088FE" name="Réservations" />
+                </BarChart>
+              </ResponsiveContainer>
+            )}
           </div>
         </div>
         
         {/* Graphique en camembert des rôles utilisateurs */}
         <div className="bg-white p-6 rounded-lg shadow-md">
-          <h2 className="text-lg font-semibold mb-4">Distribution des rôles</h2>
+          <h2 className="text-lg font-semibold mb-4">{t("Distribution des rôles")}</h2>
           <div className="h-64">
-            <ResponsiveContainer width="100%" height="100%">
-              <PieChart>
-                <Pie
-                  data={prepareUserRoleData()}
-                  cx="50%"
-                  cy="50%"
-                  labelLine={false}
-                  outerRadius={80}
-                  fill="#8884d8"
-                  dataKey="value"
-                  label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
-                >
-                  {prepareUserRoleData().map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                  ))}
-                </Pie>
-                <Tooltip />
-              </PieChart>
-            </ResponsiveContainer>
+            {chartLoading.users ? (
+              <LoadingSpinner />
+            ) : (
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie
+                    data={prepareUserRoleData()}
+                    cx="50%"
+                    cy="50%"
+                    labelLine={false}
+                    outerRadius={80}
+                    fill="#8884d8"
+                    dataKey="value"
+                    label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+                  >
+                    {prepareUserRoleData().map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    ))}
+                  </Pie>
+                  <Tooltip />
+                </PieChart>
+              </ResponsiveContainer>
+            )}
           </div>
         </div>
         
         {/* Graphique en camembert des commandes par statut */}
         <div className="bg-white p-6 rounded-lg shadow-md">
-          <h2 className="text-lg font-semibold mb-4">Statut des commandes</h2>
+          <h2 className="text-lg font-semibold mb-4">{t("Statut des commandes")}</h2>
           <div className="h-64">
-            <ResponsiveContainer width="100%" height="100%">
-              <PieChart>
-                <Pie
-                  data={prepareOrderStatusData()}
-                  cx="50%"
-                  cy="50%"
-                  labelLine={false}
-                  outerRadius={80}
-                  fill="#8884d8"
-                  dataKey="value"
-                  label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
-                >
-                  <Cell fill="#FFBB28" />
-                  <Cell fill="#00C49F" />
-                </Pie>
-                <Tooltip />
-                <Legend />
-              </PieChart>
-            </ResponsiveContainer>
+            {chartLoading.orders ? (
+              <LoadingSpinner />
+            ) : (
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie
+                    data={prepareOrderStatusData()}
+                    cx="50%"
+                    cy="50%"
+                    labelLine={false}
+                    outerRadius={80}
+                    fill="#8884d8"
+                    dataKey="value"
+                    label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+                  >
+                    <Cell fill="#FFBB28" /> {/* En attente */}
+                    <Cell fill="#00C49F" /> {/* Confirmées */}
+                    <Cell fill="#FF8042" /> {/* Annulées */}
+                  </Pie>
+                  <Tooltip />
+                  <Legend />
+                </PieChart>
+              </ResponsiveContainer>
+            )}
           </div>
         </div>
         
         {/* Graphique linéaire des activités récentes */}
         <div className="bg-white p-6 rounded-lg shadow-md">
-          <h2 className="text-lg font-semibold mb-4">Activités récentes</h2>
+          <h2 className="text-lg font-semibold mb-4">{t("Activités récentes (7 derniers jours)")}</h2>
           <div className="h-64">
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart
-                data={[
-                  { name: 'Lun', reservations: 4, commandes: 2 },
-                  { name: 'Mar', reservations: 3, commandes: 5 },
-                  { name: 'Mer', reservations: 5, commandes: 3 },
-                  { name: 'Jeu', reservations: 6, commandes: 4 },
-                  { name: 'Ven', reservations: 8, commandes: 7 },
-                  { name: 'Sam', reservations: 12, commandes: 9 },
-                  { name: 'Dim', reservations: 10, commandes: 6 },
-                ]}
-              >
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" />
-                <YAxis />
-                <Tooltip />
-                <Legend />
-                <Line type="monotone" dataKey="reservations" stroke="#8884d8" activeDot={{ r: 8 }} name="Réservations" />
-                <Line type="monotone" dataKey="commandes" stroke="#82ca9d" name="Commandes" />
-              </LineChart>
-            </ResponsiveContainer>
+            {chartLoading.orders || chartLoading.reservations ? (
+              <LoadingSpinner />
+            ) : (
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={prepareActivityData()}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="name" />
+                  <YAxis />
+                  <Tooltip />
+                  <Legend />
+                  <Line type="monotone" dataKey="reservations" stroke="#8884d8" activeDot={{ r: 8 }} name="Réservations" />
+                  <Line type="monotone" dataKey="commandes" stroke="#82ca9d" name="Commandes" />
+                </LineChart>
+              </ResponsiveContainer>
+            )}
           </div>
         </div>
       </div>
@@ -344,170 +423,185 @@ export default function DashboardCharts() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Commandes en attente */}
         <div className="bg-white p-6 rounded-lg shadow-md">
-          <h2 className="text-lg font-semibold mb-4">Commandes en attente</h2>
+          <h2 className="text-lg font-semibold mb-4">{t("Derniers Commandes")}</h2>
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Client</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {pendingOrders.length === 0 ? (
+            {chartLoading.orders ? (
+              <div className="flex justify-center py-4">
+                <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
+              </div>
+            ) : (
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead className="bg-gray-50">
                   <tr>
-                    <td colSpan="5" className="px-6 py-4 text-center text-gray-500">Aucune commande en attente</td>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t("ID")}</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t("Client")}</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t("Total")}</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t("Date")}</th>
                   </tr>
-                ) : (
-                  pendingOrders.slice(0, 5).map(order => (
-                    <tr key={order.id}>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{order.id}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                        {order.user_id}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {order.total_price || 0} €
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {new Date(order.created_at).toLocaleDateString()}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                        <button 
-                          onClick={() => confirmOrder(order.id)}
-                          className="text-indigo-600 hover:text-indigo-900"
-                        >
-                          Confirmer
-                        </button>
-                      </td>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {orders.length === 0 ? (
+                    <tr>
+                      <td colSpan="5" className="px-6 py-4 text-center text-gray-500">{t("Aucune commande en attente")}</td>
                     </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
+                  ) : (
+                    orders.slice(0, 5).map(order => (
+                      <tr key={order.id}>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{order.id}</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                          {order.user_id}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {order.total_price || 0} DH
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {new Date(order.created_at).toLocaleDateString()}
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            )}
           </div>
         </div>
         
         {/* Réservations récentes */}
         <div className="bg-white p-6 rounded-lg shadow-md">
-          <h2 className="text-lg font-semibold mb-4">Réservations récentes</h2>
+          <h2 className="text-lg font-semibold mb-4">{t("Réservations récentes")}</h2>
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Stade</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Utilisateur</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {recentReservations.length === 0 ? (
+            {chartLoading.reservations ? (
+              <div className="flex justify-center py-4">
+                <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
+              </div>
+            ) : (
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead className="bg-gray-50">
                   <tr>
-                    <td colSpan="4" className="px-6 py-4 text-center text-gray-500">Aucune réservation récente</td>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t("ID")}</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t("Stade")}</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t("Utilisateur")}</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t("Date")}</th>
                   </tr>
-                ) : (
-                  recentReservations.map(reservation => (
-                    <tr key={reservation.id}>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{reservation.id}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                        {reservation.stade_id}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {reservation.user_id}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {new Date(reservation.created_at).toLocaleDateString()}
-                      </td>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {recentReservations.length === 0 ? (
+                    <tr>
+                      <td colSpan="4" className="px-6 py-4 text-center text-gray-500">{t("Aucune réservation récente")}</td>
                     </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
+                  ) : (
+                    recentReservations.map(reservation => (
+                      <tr key={reservation.id}>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{reservation.id}</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                          {reservation.stade_id}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {reservation.user_id}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {new Date(reservation.created_at).toLocaleDateString()}
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            )}
           </div>
         </div>
         
         {/* Derniers utilisateurs inscrits */}
-        <div className="bg-white p-6 rounded-lg shadow-md">
-          <h2 className="text-lg font-semibold mb-4">Derniers utilisateurs inscrits</h2>
+        <div className="bg-white p-6 overflow-x-auto rounded-lg shadow-md">
+          <h2 className="text-lg font-semibold mb-4">{t("Derniers utilisateurs inscrits")}</h2>
           <div>
-            <table className="min-w-full max-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nom</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rôle</th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {users.length === 0 ? (
+            {chartLoading.users ? (
+              <div className="flex justify-center py-4">
+                <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
+              </div>
+            ) : (
+              <table className="min-w-full max-w-full overflow-x-auto divide-y divide-gray-200">
+                <thead className="bg-gray-50">
                   <tr>
-                    <td colSpan="4" className="px-6 py-4 text-center text-gray-500">Aucun utilisateur inscrit</td>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t("ID")}</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t("Nom")}</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t("Email")}</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t("Rôle")}</th>
                   </tr>
-                ) : (
-                  users.slice(0, 5).map(user => (
-                    <tr key={user.id}>
-                      <td className="px-6 py-4 whitespace-nowrap text-xs text-gray-500">{user.id}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                        {user.name}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-xs text-gray-500">
-                        {user.email}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                          user.role === 'admin' ? 'bg-purple-100 text-purple-800' : 'bg-green-100 text-green-800'
-                        }`}>
-                          {user.role || 'user'}
-                        </span>
-                      </td>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {users.length === 0 ? (
+                    <tr>
+                      <td colSpan="4" className="px-6 py-4 text-center text-gray-500">{t("Aucun utilisateur inscrit")}</td>
                     </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
+                  ) : (
+                    users.slice(0, 5).map(user => (
+                      <tr key={user.id}>
+                        <td className="px-6 py-4 whitespace-nowrap text-xs text-gray-500">{user.id}</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                          {user.name}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-xs text-gray-500">
+                          {user.email}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                            user.role === 'admin' ? 'bg-purple-100 text-purple-800' : 'bg-green-100 text-green-800'
+                          }`}>
+                            {user.role || 'user'}
+                          </span>
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            )}
           </div>
         </div>
         
         {/* Produits populaires */}
         <div className="bg-white p-6 rounded-lg shadow-md">
-          <h2 className="text-lg font-semibold mb-4">Produits populaires</h2>
+          <h2 className="text-lg font-semibold mb-4">{t("Produits populaires")}</h2>
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nom</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Prix</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Stock</th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {products.length === 0 ? (
+            {chartLoading.products ? (
+              <div className="flex justify-center py-4">
+                <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
+              </div>
+            ) : (
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead className="bg-gray-50">
                   <tr>
-                    <td colSpan="4" className="px-6 py-4 text-center text-gray-500">Aucun produit disponible</td>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t("ID")}</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t("Nom")}</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t("Prix")}</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t("Stock")}</th>
                   </tr>
-                ) : (
-                  products.slice(0, 5).map(product => (
-                    <tr key={product.id}>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{product.id}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                        {product.nom || product.name}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {product.prix || product.price || 0} DH
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {product.stock || 0}
-                      </td>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {products.length === 0 ? (
+                    <tr>
+                      <td colSpan="4" className="px-6 py-4 text-center text-gray-500">{t("Aucun produit disponible")}</td>
                     </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
+                  ) : (
+                    products.slice(0, 5).map(product => (
+                      <tr key={product.id}>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{product.id}</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                          {product.nom || product.name}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {product.prix || product.price || 0} DH
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {product.stock || 0}
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            )}
           </div>
         </div>
       </div>

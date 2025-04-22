@@ -154,10 +154,10 @@ const LayoutUser = () => {
       <div className="flex h-screen bg-gray-100" dir={defaultDirection}>
           <aside 
             className={`
-              fixed top-0 ${defaultDirection === 'rtl' ? 'left-0' : 'right-0'} z-30 h-full 
+              fixed top-0 ${defaultDirection === 'rtl' ? 'right-0' : 'left-0'} z-30 h-full 
               bg-gray-900 text-white transition-all duration-300 ease-in-out
               ${sidebarExpanded ? 'w-64' : 'w-16'}
-              lg:relative lg:z-0
+              relative z-0
             `}
           >
             <div className="flex h-16 items-center justify-between px-4">
@@ -280,7 +280,7 @@ const LayoutUser = () => {
 
           {/* Main Content */}
           <div className="flex-1 overflow-auto">
-            <main className={`mx-auto ${defaultDirection === 'rtl' ? 'pr-16' : 'pl-16'} md:p-0`}>
+            <main className={`mx-auto ${sidebarExpanded ? '' : defaultDirection === 'rtl' ? 'pl-16' : 'pr-16'} md:p-0`}>
               <Outlet />
             </main>
           </div>
@@ -316,7 +316,8 @@ const LayoutUser = () => {
               ))}
             </div>
 
-            {/* Profile Menu */}
+            <div className='flex items-center'>
+              {/* Profile Menu */}
             <div className="flex items-center gap-2" ref={navbarLangMenuRef}>
               <button
                 className="text-black"
@@ -395,6 +396,7 @@ const LayoutUser = () => {
                 <Menu size={24} />
               </button>
             </div>
+            </div>
           </div>
         </div>
 
@@ -430,7 +432,7 @@ const LayoutUser = () => {
         )}
       </nav>
 
-      <main className="mx-auto pt-16 pb-10 min-h-screen">
+      <main className={`pt-16 pb-10 min-h-screen`}>
         <Outlet />
       </main>
     </div>
