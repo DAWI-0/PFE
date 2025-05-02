@@ -851,25 +851,29 @@ function App() {
     );
   };
 
-  const filteredFacilities = facilities.filter((facility) => {
-    const matchesCity =
-      !selectedCity || facility.address.toLowerCase().includes(selectedCity.toLowerCase());
+// Update the filteredFacilities calculation
+const filteredFacilities = facilities.filter((facility) => {
+  const matchesCity =
+    !selectedCity || 
+    facility.address.toLowerCase().includes(selectedCity.toLowerCase());
 
-    const matchesSport =
-      selectedSport === t("Tous les sports") || facility.sport_type === selectedSport;
+  const matchesSport =
+    selectedSport === "Tous les sports" ||
+    facility.sport_type.toLowerCase() === selectedSport.toLowerCase();
 
-    const matchesPrice =
-      selectedPrice === t("Tous les prix") ||
-      (selectedPrice === "0-50 MAD" && facility.price_per_hour <= 50) ||
-      (selectedPrice === "50-100 MAD" && facility.price_per_hour > 50 && facility.price_per_hour <= 100) ||
-      (selectedPrice === "100 MAD+" && facility.price_per_hour > 100);
+  const price = parseFloat(facility.price_per_hour);
+  const matchesPrice =
+    selectedPrice === "Tous les prix" ||
+    (selectedPrice === "0-50 MAD" && price <= 50) ||
+    (selectedPrice === "50-100 MAD" && price > 50 && price <= 100) ||
+    (selectedPrice === "100 MAD+" && price > 100);
 
-    const matchesSearch =
-      facility.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      facility.address.toLowerCase().includes(searchQuery.toLowerCase());
+  const matchesSearch =
+    facility.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    facility.address.toLowerCase().includes(searchQuery.toLowerCase());
 
-    return matchesCity && matchesSport && matchesPrice && matchesSearch;
-  });
+  return matchesCity && matchesSport && matchesPrice && matchesSearch;
+});
 
   // Find the currently selected facility for modals
   const selectedFacility = facilities.find(f => f.id === commentsModal.facilityId || f.id === reservationModal.facilityId) || { comments: [] };
