@@ -22,7 +22,7 @@ function GestionDesReservations() {
       setError(null);
       let response;
         if (user?.role === "admin") {
-            response = await fetch(`http:////127.0.0.1:8000/api/reservations/stade/${id}`);
+            response = await fetch(`http://127.0.0.1:8000/api/reservations/stade/${id}`);
         } else if (user?.role === "propriétaire") {
             response = await fetch(`http://127.0.0.1:8000/api/reservations/${id}`);
         }
@@ -103,7 +103,7 @@ function GestionDesReservations() {
     }
 
     // Filter by status
-    if (selectedStatus !== t("Tous les statuts")) {
+    if (selectedStatus !== "Tous les statuts") {
       const statusMap = {
         "Confirmé": "confirmed",
         "En attente": "pending",
