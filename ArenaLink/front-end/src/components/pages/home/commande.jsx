@@ -190,6 +190,13 @@ function Commande() {
                           {reservation.status === "confirmed" && (
                             <>
                               <button
+                                onClick={() =>window.open("http://localhost:8000/storage/" + reservation.qr_code, "_blank")}
+                                className={`px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 ${reservation.qr_code === null ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                disabled={reservation.qr_code === null}
+                              >
+                                {t("Show QR Code")}
+                              </button>
+                              <button
                                 onClick={() => cancelReservation(reservation.id)}
                                 className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
                               >

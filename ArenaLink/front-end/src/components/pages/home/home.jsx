@@ -65,7 +65,7 @@ const ReservationModal = ({ facility, isOpen, onClose }) => {
   const [existingReservations, setExistingReservations] = useState([]);
   const {t} = useTranslation();
 
-
+  const today = new Date().toISOString().split('T')[0];
   useEffect(() => {
     if (isOpen && facility) {
       // Reset form when modal opens
@@ -75,10 +75,6 @@ const ReservationModal = ({ facility, isOpen, onClose }) => {
       setTotalPrice(facility.price_per_hour);
       setReservationSuccess(false);
       setError('');
-      
-      // Get today's date in YYYY-MM-DD format for min attribute
-      const today = new Date().toISOString().split('T')[0];
-      document.getElementById('reservation-date').min = today;
       
       // Fetch existing reservations for this facility
       fetchExistingReservations(facility.id);
@@ -229,6 +225,7 @@ const ReservationModal = ({ facility, isOpen, onClose }) => {
                   value={date}
                   onChange={(e) => setDate(e.target.value)}
                   required
+                  min={today}
                 />
               </div>
             </div>
@@ -298,7 +295,7 @@ const ReservationModal = ({ facility, isOpen, onClose }) => {
                 <span className="text-2xl font-bold text-blue-600">{totalPrice} {t("MAD")}</span>
               </div>
               <div className="text-sm text-gray-600 mt-1">
-                {facility.price_per_hour} t("MAD/heure") × {duration} {duration === 1 ? t("heure") : t('heures')}
+                {facility.price_per_hour} {t("MAD/heure")} × {duration} {duration === 1 ? t("heure") : t('heures')}
               </div>
             </div>
             

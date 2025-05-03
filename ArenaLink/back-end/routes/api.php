@@ -74,6 +74,7 @@ Route::prefix("reservations")->group(function () {
     Route::POST("/confirmer/{id}", [ReservationController::class, "confirmer"]);
     Route::get("/user/{id}", [ReservationController::class, "showByUserId"]);
 });
+Route::get("/ReservationadminControlle", [ReservationController::class, "admin"]);
 Route::prefix("dashboard")->group(function () {
     Route::get("/users", [dashboardController::class, "Users"]);
     Route::get("/produits",[dashboardController::class, "Produits"]);

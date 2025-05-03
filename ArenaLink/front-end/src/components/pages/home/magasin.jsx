@@ -187,7 +187,27 @@ const Magasin = () => {
   // Supprimer les produits sélectionnés sans vérifier le panier
   const deleteSelectedProducts = () => {
     if (selectedForDeletion.length === 0) return;
-
+    
+    Promise.all(
+      selectedForDeletion.map((productId) =>
+        fetch(`${URL}produits/${productId}`, {
+          method: 'DELETE',
+          headers: {
+            'Accept': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+          },
+        })
+      )
+    )
+      .then((responses) => {
+        const failedResponses = responses.filter((response) => !response.ok);
+        if (failedResponses.length > 0) {
+          console.error('Erreur lors de la suppression de certains produits');
+        }
+      })
+      .catch((error) => {
+        console.error('Erreur:', error);
+      });
     // Supprimer les produits sélectionnés (même s'ils sont dans le panier)
     setProducts(products.filter(product => !selectedForDeletion.includes(product.id)));
     

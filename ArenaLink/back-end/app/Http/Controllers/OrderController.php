@@ -63,7 +63,6 @@ class OrderController extends Controller
         if (!$order) {
             return response()->json(['message' => 'Order not found'], 404);
         }
-
         $order->status = 'confirmed';
         $order->save();
 

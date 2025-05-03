@@ -22,7 +22,7 @@ function GestionDesReservations() {
       setError(null);
       let response;
         if (user?.role === "admin") {
-            response = await fetch(`http://127.0.0.1:8000/api/reservations/stade/${id}`);
+          response = await fetch(`http://127.0.0.1:8000/api/ReservationadminControlle`);
         } else if (user?.role === "propriétaire") {
             response = await fetch(`http://127.0.0.1:8000/api/reservations/${id}`);
         }
@@ -44,9 +44,36 @@ function GestionDesReservations() {
       console.error('Error fetching reservations:', err);
     }
   };
+  const fetchReservationsStade = async (id) => {
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await fetch(`http://127.0.0.1:8000/api/reservations/stade/${id}`);
+      if (!response.ok) {
+          setReservations([]);
+          setFilteredReservations([]);
+          setLoading(false);
+          return;
+      }
+      const data = await response.json();
+      setReservations(data);
+      setFilteredReservations(data);
+      setLoading(false);
+    } catch (err) {
+      setError(err.message);
+      setLoading(false);
+      setReservations([]);
+      setFilteredReservations([]);
+      console.error('Error fetching reservations:', err);
+    }
+  };
 
   useEffect(() => {
-    fetchReservations(selectedStadeId)
+    if(selectedStadeId !== "") {
+      fetchReservationsStade(selectedStadeId);
+    }
+    else {
+      fetchReservations()}
   }, [selectedStadeId]);
 
 
