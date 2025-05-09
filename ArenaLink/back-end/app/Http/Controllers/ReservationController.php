@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Reservation;
 use App\Models\Stade;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
@@ -102,11 +103,11 @@ class ReservationController extends Controller
         $qrCodeData = [
             'reservation_id' => $reservation->id,
             'nom_du_stade' => $stade->name,
-            'heure_de_debut' => $reservation->start_time,
+            'Date/Heure_de_Debut' => $reservation->start_time,
             'duree' => $reservation->duration,
         ];
 
-        $qrCodePath = 'qrcodes/reservation_' . $reservation->id . '.png';
+        $pdfPath = 'receipts/reservation_' . $reservation->id . '.pdf';
         try {
             $qrCodeContent = json_encode($qrCodeData);
             Log::debug('QR Code Content: ' . $qrCodeContent);
@@ -114,45 +115,35 @@ class ReservationController extends Controller
                 throw new \Exception('Invalid QR code data');
             }
 
-            $directory = dirname(storage_path('app/public/' . $qrCodePath));
-            if (!is_dir($directory)) {
-                if (!mkdir($directory, 0755, true)) {
-                    throw new \Exception('Failed to create QR code directory');
-                }
-            }
+            $qrCodeSvg = QrCode::format('svg')->size(200)->generate($qrCodeContent);
+            $qrCodeBase64 = base64_encode($qrCodeSvg);
 
-            if (!is_writable($directory)) {
-                throw new \Exception('QR code directory is not writable');
-            }
+            $pdfData = [
+                'reservation_id' => $reservation->id,
+                'stade_name' => $stade->name,
+                'start_time' => $reservation->start_time,
+                'duration' => $reservation->duration,
+                'user_name' => $reservation->user->name,
+                'qr_code_svg' => $qrCodeBase64,
+            ];
 
-            $qrCodeBinary = QrCode::format('png')->size(300)->generate($qrCodeContent);
+            $pdf = Pdf::loadView('pdf.reservation_receipt', $pdfData);
+            $pdfBinary = $pdf->output();
 
-            Storage::disk('public')->put($qrCodePath, $qrCodeBinary);
+            Storage::disk('public')->put($pdfPath, $pdfBinary);
+            $fullPath = Storage::disk('public')->path($pdfPath);
 
-            $fullPath = Storage::disk('public')->path($qrCodePath);
-            Log::debug('QR Code Full Path: ' . $fullPath);
-            if (!file_exists($fullPath) || filesize($fullPath) === 0) {
-                throw new \Exception('QR code file was not created or is empty');
-            }
+            $reservation->qr_code = $pdfPath;
+            $reservation->save();
 
-            $finfo = finfo_open(FILEINFO_MIME_TYPE);
-            $mimeType = finfo_file($finfo, $fullPath);
-            finfo_close($finfo);
-            if ($mimeType !== 'image/png') {
-                throw new \Exception('Generated QR code is not a valid PNG, MIME type: ' . $mimeType);
-            }
         } catch (\Exception $e) {
-            Log::error('Failed to generate QR code: ' . $e->getMessage());
+            Log::error('Failed to generate PDF: ' . $e->getMessage());
             return response()->json([
-                'message' => 'Reservation confirmed, but QR code generation failed',
-                'qr_code_status' => 'QR code generation failed',
-                'qr_code_path' => null,
+                'message' => 'Reservation confirmed, but PDF generation failed',
+                'pdf_status' => 'PDF generation failed',
                 'error_details' => $e->getMessage()
             ], 500);
         }
-
-        $reservation->qr_code = $qrCodePath;
-        $reservation->save();
 
         $emailData = [
             'reservation_id' => $reservation->id,
@@ -166,12 +157,10 @@ class ReservationController extends Controller
             Mail::send('emails.reservation_confirmation', $emailData, function ($message) use ($reservation, $fullPath) {
                 $message->to($reservation->user->email)
                         ->subject('La confirmation de votre réservation');
-                if (file_exists($fullPath)) {
-                    $message->attach($fullPath, [
-                        'as' => 'reservation_' . $reservation->id . '.png',
-                        'mime' => 'image/png',
-                    ]);
-                }
+                $message->attach($fullPath, [
+                    'as' => 'reservation_' . $reservation->id . '.pdf',
+                    'mime' => 'application/pdf',
+                ]);
             });
         } catch (\Exception $e) {
             Log::error('Failed to send confirmation email: ' . $e->getMessage());
@@ -179,7 +168,7 @@ class ReservationController extends Controller
 
         return response()->json([
             'message' => 'Reservation confirmed successfully',
-            'qr_code_status' => file_exists($fullPath) ? 'QR code generated' : 'QR code generation failed',
+            'pdf_status' => 'PDF generated',
         ]);
     }
 
